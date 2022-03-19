@@ -1,13 +1,13 @@
-pipeline {
-    agent: any
+ pipeline {
+    agent any
+
     stages {
-        stage("build") {
-            steps {
-                echo 'Executing gradle...'
-                withGradle() {
-                    sh './gradlew -v'
-                }
-            }
-        }
+       stage('gitlab') {
+          steps {
+             echo 'Notify GitLab'
+             updateGitlabCommitStatus name: 'build', state: 'pending'
+             updateGitlabCommitStatus name: 'build', state: 'success'
+          }
+       }
     }
-}
+ }
