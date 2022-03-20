@@ -1,8 +1,10 @@
 package com.mygdx.claninvasion;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.Camera;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Vector3;
 
 public class GameInputProcessor implements InputProcessor {
@@ -33,6 +35,14 @@ public class GameInputProcessor implements InputProcessor {
         camera.translate(translate);
 
         return false;
+    }
+
+    public void onRender() {
+        if (Gdx.input.isKeyPressed(Input.Keys.Z) && camera instanceof OrthographicCamera) {
+            ((OrthographicCamera)camera).zoom -= 0.01;
+        } else if (Gdx.input.isKeyPressed(Input.Keys.X) && camera instanceof OrthographicCamera) {
+            ((OrthographicCamera)camera).zoom += 0.01;
+        }
     }
 
     @Override
