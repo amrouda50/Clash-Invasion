@@ -1,50 +1,26 @@
 package com.mygdx.claninvasion;
 
-import com.badlogic.gdx.ApplicationAdapter;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.maps.tiled.*;
-import com.badlogic.gdx.maps.tiled.renderers.IsometricTiledMapRenderer;
+import com.badlogic.gdx.Game;
+import com.mygdx.claninvasion.game.screens.GameScreens;
+import com.mygdx.claninvasion.game.screens.MainGamePage;
 
 
-public class ClanInvasion extends ApplicationAdapter {
-	private TiledMap map;
-	private OrthographicCamera camera;
-	private TiledMapRenderer renderer;
-	private GameInputProcessor inputProcessor;
+public class ClanInvasion extends Game {
+	private final GameScreens screens;
+
+	public ClanInvasion() {
+		screens = new GameScreens();
+		screens.push(new MainGamePage());
+	}
 
 	@Override
 	public void create() {
-		Gdx.app.log("Message", "Game screen created");
-		float width = Gdx.graphics.getWidth();
-		float height = Gdx.graphics.getHeight();
-
-		camera = new OrthographicCamera();
-		camera.setToOrtho(false, width, height);
-
-		camera.update();
-
-		inputProcessor = new GameInputProcessor(camera);
-
-		map = new TmxMapLoader().load( Gdx.files.getLocalStoragePath() + "/TileMap/TiledMap.tmx");
-		renderer = new IsometricTiledMapRenderer(map);
-		Gdx.input.setInputProcessor(inputProcessor);
+		setScreen(screens.get());
 	}
 
 
 	@Override
 	public void render(){
-		Gdx.gl.glClearColor(0, 0, 0, 1);
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		inputProcessor.onRender();
-
-		camera.update();
-		renderer.setView(camera);
-		renderer.render();
+		super.render();
 	}
-	@Override
-	public void dispose(){
-	}
-
 }

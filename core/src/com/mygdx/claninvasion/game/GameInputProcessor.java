@@ -1,4 +1,4 @@
-package com.mygdx.claninvasion;
+package com.mygdx.claninvasion.game;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -22,27 +22,41 @@ public class GameInputProcessor implements InputProcessor {
     @Override
     public boolean keyUp(int keycode) {
         Vector3 translate = new Vector3(0, 0, 0);
-        if (keycode == Input.Keys.LEFT) {
-            translate.x -= 32;
-        } else if (keycode == Input.Keys.RIGHT) {
-            translate.x += 32;
-        } else if (keycode == Input.Keys.UP) {
-            translate.y -= 32;
-        } else if (keycode == Input.Keys.DOWN) {
-            translate.y += 32;
-        }
+//        if (keycode == Input.Keys.LEFT) {
+//            translate.x -= 32;
+//        } else if (keycode == Input.Keys.RIGHT) {
+//            translate.x += 32;
+//        } else if (keycode == Input.Keys.UP) {
+//            translate.y -= 32;
+//        } else if (keycode == Input.Keys.DOWN) {
+//            translate.y += 32;
+//        }
 
-        camera.translate(translate);
+//        camera.translate(translate);
 
         return false;
     }
 
     public void onRender() {
+        Vector3 translate = new Vector3(0, 0, 0);
+
         if (Gdx.input.isKeyPressed(Input.Keys.Z) && camera instanceof OrthographicCamera) {
             ((OrthographicCamera)camera).zoom -= 0.01;
         } else if (Gdx.input.isKeyPressed(Input.Keys.X) && camera instanceof OrthographicCamera) {
             ((OrthographicCamera)camera).zoom += 0.01;
         }
+
+        if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
+            translate.x -= 1;
+        } else if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
+            translate.x += 1;
+        } else if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
+            translate.y -= 1;
+        } else if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
+            translate.y += 1;
+        }
+
+        camera.translate(translate);
     }
 
     @Override
