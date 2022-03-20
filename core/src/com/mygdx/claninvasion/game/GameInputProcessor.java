@@ -21,19 +21,6 @@ public class GameInputProcessor implements InputProcessor {
 
     @Override
     public boolean keyUp(int keycode) {
-        Vector3 translate = new Vector3(0, 0, 0);
-//        if (keycode == Input.Keys.LEFT) {
-//            translate.x -= 32;
-//        } else if (keycode == Input.Keys.RIGHT) {
-//            translate.x += 32;
-//        } else if (keycode == Input.Keys.UP) {
-//            translate.y -= 32;
-//        } else if (keycode == Input.Keys.DOWN) {
-//            translate.y += 32;
-//        }
-
-//        camera.translate(translate);
-
         return false;
     }
 
