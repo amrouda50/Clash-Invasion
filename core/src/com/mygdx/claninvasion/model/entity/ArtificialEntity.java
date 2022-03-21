@@ -4,7 +4,7 @@ import com.mygdx.claninvasion.model.level.LevelIterator;
 
 public class ArtificialEntity extends Entity {
 
-    LevelIterator level;
+    private LevelIterator level;
 
     public LevelIterator getLevel() {
         return level;
@@ -13,7 +13,7 @@ public class ArtificialEntity extends Entity {
     public void setLevel(LevelIterator level) {
         this.level = level;
     }
-    
+
     public void heal() {
 
     }
