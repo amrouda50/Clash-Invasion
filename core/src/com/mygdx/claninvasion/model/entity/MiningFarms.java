@@ -1,10 +1,8 @@
 package com.mygdx.claninvasion.model.entity;
 
-interface Minable {
-    public void startMining();
-}
 
-public class MiningFarms extends ArtificialEntity implements Minable{
+
+public class MiningFarms extends ArtificialEntity implements Mineable{
     @Override
     public void startMining() {
 
