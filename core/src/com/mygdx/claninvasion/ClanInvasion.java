@@ -1,28 +1,26 @@
 package com.mygdx.claninvasion;
 
 import com.badlogic.gdx.Game;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.utils.ScreenUtils;
+import com.mygdx.claninvasion.game.screens.GameScreens;
+import com.mygdx.claninvasion.game.screens.MainGamePage;
+
 
 public class ClanInvasion extends Game {
-	private SpriteBatch batch;
-	private GameScreen gameScreen;
-	
-	@Override
-	public void create () {
-		batch = new SpriteBatch( );
-		gameScreen = new GameScreen(batch);
-		setScreen(gameScreen);
+	private final GameScreens screens;
+
+	public ClanInvasion() {
+		screens = new GameScreens();
+		screens.push(new MainGamePage());
 	}
 
 	@Override
-	public void render () {
+	public void create() {
+		setScreen(screens.get());
+	}
+
+
+	@Override
+	public void render(){
 		super.render();
-	}
-	
-	@Override
-	public void dispose () {
-
 	}
 }
