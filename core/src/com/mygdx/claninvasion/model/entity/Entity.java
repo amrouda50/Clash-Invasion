@@ -2,13 +2,6 @@ package com.mygdx.claninvasion.model.entity;
 
 import java.awt.Point;
 
-enum Symbol {
-    T,
-    O,
-    C
-}
-
-
 public class Entity {
 
     private Point position;

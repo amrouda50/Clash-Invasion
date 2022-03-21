@@ -17,7 +17,6 @@ public class Player {
 
     }
 
-
     public Player(Soldier[] soldiers, Castle castle) {
         this.soldiers = soldiers;
         this.castle = castle;

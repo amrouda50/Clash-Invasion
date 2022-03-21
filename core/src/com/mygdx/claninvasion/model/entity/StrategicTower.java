@@ -1,6 +1,11 @@
 package com.mygdx.claninvasion.model.entity;
 
-public class Tower extends ArtificialEntity implements Defensable {
+public class StrategicTower extends Tower {
+
+    @Override
+    public void heal() {
+        super.heal();
+    }
 
     @Override
     public void damage(int amount) {
@@ -8,13 +13,7 @@ public class Tower extends ArtificialEntity implements Defensable {
     }
 
     @Override
-    public void heal() {
-        super.heal();
-    }
-
-
-    @Override
     public void defend(ArtificialEntity ae) {
-
+        super.defend(ae);
     }
 }
