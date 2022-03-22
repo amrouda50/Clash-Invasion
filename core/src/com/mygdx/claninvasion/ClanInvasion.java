@@ -23,12 +23,12 @@ public class ClanInvasion extends Game {
 	public void create() {
 		camera = new OrthographicCamera();
 		camera.setToOrtho(false, Globals.V_WIDTH, Globals.V_HEIGHT);
+		font = new BitmapFont();
 
 		screens.push(new MainGamePage(this));
 		screens.push(new SplashScreen(this));
 
 		setScreen(screens.get());
-		font = new BitmapFont();
 	}
 
 

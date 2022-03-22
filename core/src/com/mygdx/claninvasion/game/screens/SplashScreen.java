@@ -17,6 +17,7 @@ public class SplashScreen implements GamePage {
     private final Stage stage;
     private final SpriteBatch batch;
     private Image splash;
+    private Image background;
 
     public SplashScreen(final ClanInvasion app) {
         this.app = app;
@@ -28,8 +29,14 @@ public class SplashScreen implements GamePage {
     private void initSplash() {
         Texture splashTexture = new Texture(Gdx.files.internal("splash/test-splash.png"));
         splash = new Image(splashTexture);
+
+        Texture backgroundTexture = new Texture(Gdx.files.internal("splash/background.jpeg"));
+        background = new Image(backgroundTexture);
+        background.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+
         splash.setScale(0.2f);
         splash.setPosition((stage.getWidth() / 2) - ((splash.getWidth() * 0.2f) / 2), stage.getHeight() / 2);
+        stage.addActor(background);
         stage.addActor(splash);
     }
 
@@ -38,6 +45,7 @@ public class SplashScreen implements GamePage {
         this.initSplash();
 
         splash.addAction( sequence(alpha(0f), fadeIn(2f)) );
+        app.getFont().getData().setScale(2.2f);
     }
 
     @Override
