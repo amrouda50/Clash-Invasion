@@ -6,16 +6,20 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.utils.viewport.FillViewport;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.mygdx.claninvasion.ClanInvasion;
 import com.mygdx.claninvasion.game.Globals;
 import com.mygdx.claninvasion.game.actors.StartButton;
+import sun.tools.jconsole.Tab;
 
+import java.awt.*;
 import java.lang.invoke.MutableCallSite;
 
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.*;
@@ -26,10 +30,11 @@ public class SplashScreen implements GamePage {
     private final SpriteBatch batch;
     private Image splash;
     private Image background;
-    private TextButton button;
+    private TextButton StartGame;
+    private TextButton EndGame;
     private TextButton.TextButtonStyle buttonStyle;
     private BitmapFont font;
-    private Skin skin;
+
     private Music Music;
 
 
@@ -54,6 +59,34 @@ public class SplashScreen implements GamePage {
         splash.setPosition((stage.getWidth() / 1000) - 170 , (stage.getHeight() /1000) - 100 );
         stage.addActor(background);
         stage.addActor(splash);
+        AddMusic();
+        addButtons(stage);
+
+
+    }
+    private void addButtons(Stage stage){
+
+        BitmapFont Font  = new BitmapFont(Gdx.files.internal("skin/skin/default.fnt"));
+        TextureAtlas atlas = new TextureAtlas("skin/skin/uiskin.atlas");
+        Skin Skin = new Skin(atlas);
+        Table Table = new Table(Skin);
+        Table.setBounds(-85 , -50 , Gdx.graphics.getWidth() , Gdx.graphics.getHeight());
+
+        buttonStyle = new TextButton.TextButtonStyle();
+        buttonStyle.up = Skin.getDrawable("default-window");
+        buttonStyle.down = Skin.getDrawable("default-window");
+        buttonStyle.pressedOffsetX = 1;
+        buttonStyle.pressedOffsetY = -1;
+        buttonStyle.font = Font ;
+        StartGame = new TextButton("Start Game" , buttonStyle );
+        EndGame = new TextButton("End Game" , buttonStyle );
+        StartGame.pad(2);
+        EndGame.pad(2);
+        Table.add(StartGame);
+        Table.add(EndGame);
+        stage.addActor(Table);
+    }
+    private void AddMusic(){
         Music = Gdx.audio.newMusic(Gdx.files.internal("music/SplashScreenMusic.mp3"));
         Music.setVolume(1.0f);
         Music.setLooping(true);
