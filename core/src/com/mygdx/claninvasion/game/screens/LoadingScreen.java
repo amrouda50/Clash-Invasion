@@ -18,20 +18,14 @@ import java.util.ArrayList;
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.*;
 
 public class LoadingScreen implements GamePage {
-    static private final int COUNTER = 1;
-    private ClanInvasion app;
-    private ArrayList<Image> images;
     private Image animated;
-    private Stage stage;
-    private Animation<TextureRegion> animation;
-    private SpriteBatch batch;
-    private float elapsed;
+    private final Stage stage;
+    private final ClanInvasion app;
 
     public LoadingScreen(final ClanInvasion app) {
         this.app = app;
-        images = new ArrayList<>();
         stage = new Stage(new FillViewport(Globals.V_WIDTH, Globals.V_HEIGHT, app.getCamera()));
-        batch = new SpriteBatch();
+        Gdx.input.setInputProcessor(stage);
     }
 
 
@@ -54,7 +48,7 @@ public class LoadingScreen implements GamePage {
 
     @Override
     public void render(float delta) {
-        Gdx.gl.glClearColor(0, 0, 0, 1);
+        Gdx.gl.glClearColor(255, 255, 255, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         update(delta);
 

@@ -3,12 +3,16 @@ package com.mygdx.claninvasion.game.screens;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.utils.viewport.FillViewport;
 import com.mygdx.claninvasion.ClanInvasion;
 import com.mygdx.claninvasion.game.Globals;
+import com.mygdx.claninvasion.game.actors.StartButton;
 
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.*;
 
@@ -18,6 +22,12 @@ public class SplashScreen implements GamePage {
     private final SpriteBatch batch;
     private Image splash;
     private Image background;
+    private TextButton button;
+    private TextButton.TextButtonStyle buttonStyle;
+    private BitmapFont font;
+    private Skin skin;
+
+
 
     public SplashScreen(final ClanInvasion app) {
         this.app = app;
