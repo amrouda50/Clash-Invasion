@@ -12,7 +12,11 @@ public class Castle extends ArtificialEntity implements SoldierCreatable{
         s.damage(1);
     }
 
-    public boolean trainSoldier(Soldier s) {
-        return false;
+    public void healSoldier(Soldier s) {
+
+    }
+
+    public void damageSoldier(Soldier s) {
+
     }
 }
