@@ -14,6 +14,7 @@ public class ClanInvasion extends Game {
 	private final GameScreens screens;
 	private BitmapFont font;
 	private OrthographicCamera camera;
+	private int timeout = 0;
 
 	public ClanInvasion() {
 		screens = new GameScreens();
@@ -28,13 +29,19 @@ public class ClanInvasion extends Game {
 		screens.push(new MainGamePage(this));
 		screens.push(new SplashScreen(this));
 
-		setScreen(screens.get());
+		setScreen(screens.pop());
 	}
 
 
 	@Override
 	public void render(){
 		super.render();
+
+		timeout++;
+		System.out.println(timeout);
+		if (timeout == 200) {
+			setScreen(screens.pop());
+		}
 	}
 
 	public BitmapFont getFont() {
