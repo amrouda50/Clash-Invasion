@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.mygdx.claninvasion.game.Globals;
 import com.mygdx.claninvasion.game.screens.GameScreens;
+import com.mygdx.claninvasion.game.screens.LoadingScreen;
 import com.mygdx.claninvasion.game.screens.MainGamePage;
 import com.mygdx.claninvasion.game.screens.SplashScreen;
 
@@ -28,6 +29,7 @@ public class ClanInvasion extends Game {
 
 		screens.push(new MainGamePage(this));
 		screens.push(new SplashScreen(this));
+		screens.push(new LoadingScreen(this));
 
 		setScreen(screens.pop());
 	}
@@ -38,7 +40,6 @@ public class ClanInvasion extends Game {
 		super.render();
 
 		timeout++;
-		System.out.println(timeout);
 		if (timeout == 200) {
 			setScreen(screens.pop());
 		}
