@@ -4,6 +4,7 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.mygdx.claninvasion.game.Globals;
 import com.mygdx.claninvasion.game.screens.GameScreens;
 import com.mygdx.claninvasion.game.screens.MainGamePage;
 import com.mygdx.claninvasion.game.screens.SplashScreen;
@@ -20,16 +21,14 @@ public class ClanInvasion extends Game {
 
 	@Override
 	public void create() {
+		camera = new OrthographicCamera();
+		camera.setToOrtho(false, Globals.V_WIDTH, Globals.V_HEIGHT);
+
 		screens.push(new MainGamePage(this));
 		screens.push(new SplashScreen(this));
-		font = new BitmapFont();
-
-		float width = Gdx.graphics.getWidth();
-		float height = Gdx.graphics.getHeight();
-		camera = new OrthographicCamera();
-		camera.setToOrtho(false, width, height);
 
 		setScreen(screens.get());
+		font = new BitmapFont();
 	}
 
 
@@ -44,5 +43,10 @@ public class ClanInvasion extends Game {
 
 	public OrthographicCamera getCamera() {
 		return camera;
+	}
+
+	@Override
+	public void dispose() {
+		this.getScreen().dispose();
 	}
 }

@@ -2,25 +2,42 @@ package com.mygdx.claninvasion.game.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.utils.viewport.FillViewport;
 import com.mygdx.claninvasion.ClanInvasion;
+import com.mygdx.claninvasion.game.Globals;
+
+import static com.badlogic.gdx.scenes.scene2d.actions.Actions.*;
 
 public class SplashScreen implements GamePage {
     private final ClanInvasion app;
     private final Stage stage;
     private final SpriteBatch batch;
+    private Image splash;
 
     public SplashScreen(final ClanInvasion app) {
         this.app = app;
-        this.stage = new Stage();
-        this.batch = new SpriteBatch();
+        stage = new Stage(new FillViewport(Globals.V_WIDTH, Globals.V_HEIGHT, app.getCamera()));
+        batch = new SpriteBatch();
         Gdx.input.setInputProcessor(stage);
+    }
+
+    private void initSplash() {
+        Texture splashTexture = new Texture(Gdx.files.internal("splash/test-splash.png"));
+        splash = new Image(splashTexture);
+        splash.setScale(0.2f);
+        splash.setPosition((stage.getWidth() / 2) - ((splash.getWidth() * 0.2f) / 2), stage.getHeight() / 2);
+        stage.addActor(splash);
     }
 
     @Override
     public void show() {
+        this.initSplash();
+
+        splash.addAction( sequence(alpha(0f), fadeIn(2f)) );
     }
 
     @Override
@@ -32,7 +49,7 @@ public class SplashScreen implements GamePage {
         stage.draw();
 
         batch.begin();
-        app.getFont().draw(batch, "Splash Screen", (stage.getWidth() / 2) - 40, stage.getHeight() / 2);
+        app.getFont().draw(batch, "Clan Invasion", (stage.getWidth() / 2) - 40, stage.getHeight() / 2);
         batch.end();
     }
 
@@ -61,6 +78,6 @@ public class SplashScreen implements GamePage {
 
     @Override
     public void dispose() {
-
+        stage.dispose();
     }
 }
