@@ -26,7 +26,7 @@ public class MainGamePage implements GamePage {
 
         inputProcessor = new GameInputProcessor(app.getCamera());
 
-        map = new TmxMapLoader().load( Gdx.files.getLocalStoragePath() + "/TileMap/TiledMap.tmx");
+        map = new TmxMapLoader().load( Gdx.files.getLocalStoragePath() + "/TileMap/Tilemap.tmx");
         renderer = new IsometricTiledMapRenderer(map);
         Gdx.input.setInputProcessor(inputProcessor);
     }
