@@ -3,24 +3,18 @@ package com.mygdx.claninvasion.model.entity;
 import java.awt.Point;
 
 public class Entity {
-
+    private EntitySymbol entitySymbol;
     private Point position;
-    Symbol EntitySymbol;
 
-
-    public Symbol getEntitySymbol() {
-        return EntitySymbol;
+    Entity() {
+        entitySymbol = EntitySymbol.C;
     }
 
-    public void setEntitySymbol(Symbol entitySymbol) {
-        EntitySymbol = entitySymbol;
+    public EntitySymbol getEntitySymbol() {
+        return entitySymbol;
     }
 
     public Point getPosition() {
         return position;
-    }
-
-    public void setPosition(Point position) {
-        this.position = position;
     }
 }

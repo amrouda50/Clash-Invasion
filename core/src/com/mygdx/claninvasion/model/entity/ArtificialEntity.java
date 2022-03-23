@@ -8,7 +8,7 @@ public class ArtificialEntity extends Entity {
 
     protected int health;
     private LevelIterator level;
-    private int position;
+    private Point position;
 
     public void heal() {
 
@@ -27,11 +27,6 @@ public class ArtificialEntity extends Entity {
         return position;
     }
 
-    @Override
-    public void setPosition(Point position) {
-        this.position = position;
-    }
-
     public int getHealth() {
         return health;
     }
@@ -47,6 +42,4 @@ public class ArtificialEntity extends Entity {
     public void setLevel(LevelIterator level) {
         this.level = level;
     }
-
-
 }
