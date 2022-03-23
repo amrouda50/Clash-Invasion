@@ -1,4 +1,4 @@
-package com.mygdx.claninvasion.view;
+package com.mygdx.claninvasion.view.utils;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -22,6 +22,11 @@ public class GameInputProcessor implements InputProcessor {
     @Override
     public boolean keyUp(int keycode) {
         return false;
+    }
+
+    public void onRender(InputUpdateListener runnable) {
+        onRender();
+        runnable.run(Gdx.input);
     }
 
     public void onRender() {
