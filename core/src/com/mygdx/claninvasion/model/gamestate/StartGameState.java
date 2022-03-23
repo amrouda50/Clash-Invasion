@@ -1,14 +1,9 @@
 package com.mygdx.claninvasion.model.gamestate;
 
-public class StartGameState implements GameState {
+import com.mygdx.claninvasion.model.GameModel;
 
-    private boolean startGame;
-
-    public boolean isStartGame() {
-        return startGame;
-    }
-
-    public void setStartGame(boolean startGame) {
-        this.startGame = startGame;
+public class StartGameState extends CommonGameState {
+    public StartGameState(GameModel game) {
+        super(game);
     }
 }

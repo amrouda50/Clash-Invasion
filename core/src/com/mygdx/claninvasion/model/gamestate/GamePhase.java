@@ -1,6 +1,6 @@
 package com.mygdx.claninvasion.model.gamestate;
 
-public enum GameStateSymbols {
+public enum GamePhase {
     BUILDING,
     ATTACK
 }

@@ -1,15 +1,9 @@
 package com.mygdx.claninvasion.model.gamestate;
 
-public class BuildingState implements GameState{
+import com.mygdx.claninvasion.model.GameModel;
 
-    public boolean isBuildingPhase() {
-        return buildingPhase;
+public class BuildingState extends CommonGameState{
+    public BuildingState(GameModel game) {
+        super(game);
     }
-
-    public void setBuildingPhase(boolean buildingPhase) {
-        this.buildingPhase = buildingPhase;
-    }
-
-    private boolean buildingPhase;
-
 }

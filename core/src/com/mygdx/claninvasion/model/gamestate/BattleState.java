@@ -1,14 +1,9 @@
 package com.mygdx.claninvasion.model.gamestate;
 
-public class BattleState implements GameState{
+import com.mygdx.claninvasion.model.GameModel;
 
-    private boolean battlePhase;
-
-    public boolean isBattlePhase() {
-        return battlePhase;
-    }
-
-    public void setBattlePhase(boolean battlePhase) {
-        this.battlePhase = battlePhase;
+public class BattleState extends  CommonGameState {
+    public BattleState(GameModel game) {
+        super(game);
     }
 }

@@ -1,14 +1,9 @@
 package com.mygdx.claninvasion.model.gamestate;
 
-public class EndGameState implements GameState{
+import com.mygdx.claninvasion.model.GameModel;
 
-    private boolean gameEnded;
-
-    public boolean isGameEnded() {
-        return gameEnded;
-    }
-
-    public void setGameEnded(boolean gameEnded) {
-        this.gameEnded = gameEnded;
+public class EndGameState extends CommonGameState {
+    public EndGameState(GameModel game) {
+        super(game);
     }
 }
