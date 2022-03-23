@@ -10,7 +10,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 public class GameButton {
     private final TextButton.TextButtonStyle buttonStyle;
     private BitmapFont font  = new BitmapFont(Gdx.files.internal("skin/skin/default.fnt"));
-    private final Skin skin;
+    private Skin skin;
     private final TextButton button;
 
     public GameButton(Skin skin, String text) {
@@ -40,6 +40,10 @@ public class GameButton {
 
     public void setFont(BitmapFont font) {
         this.font = font;
+    }
+
+    public void setSkin(Skin skin) {
+        this.skin = skin;
     }
 
     public TextButton getButton() {
