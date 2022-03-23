@@ -2,6 +2,7 @@ package com.mygdx.claninvasion.view.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapRenderer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
@@ -13,7 +14,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.viewport.FillViewport;
 import com.mygdx.claninvasion.model.Globals;
-import com.mygdx.claninvasion.view.GameInputProcessor;
+import com.mygdx.claninvasion.view.utils.GameInputProcessor;
 import com.mygdx.claninvasion.view.actors.GameButton;
 
 
@@ -23,6 +24,7 @@ public class MainGamePage implements GamePage {
     private GameInputProcessor inputProcessor;
     private final ClanInvasion app;
     private final Stage stage;
+    private final OrthographicCamera camera;
     private GameButton soldierButton;
     private GameButton towerButton;
     private GameButton mineButton;
@@ -30,7 +32,8 @@ public class MainGamePage implements GamePage {
 
     public MainGamePage(ClanInvasion app) {
         this.app = app;
-        stage = new Stage(new FillViewport(Globals.V_WIDTH, Globals.V_HEIGHT, app.getCamera()));
+        camera = new OrthographicCamera();
+        stage = new Stage(new FillViewport(Globals.V_WIDTH, Globals.V_HEIGHT, camera));
 
     }
 
@@ -46,9 +49,9 @@ public class MainGamePage implements GamePage {
         soldierButton.getButton().pad(2);
         towerButton.getButton().pad(2);
         mineButton.getButton().pad(2);
-        table.add(soldierButton.getButton());
-        table.add(towerButton.getButton());
-        table.add(mineButton.getButton());
+        table.add(soldierButton.getButton()).space(10);
+        table.add(towerButton.getButton()).spaceLeft(10);
+        table.add(mineButton.getButton()).spaceLeft(10);
         stage.addActor(table);
     }
 
