@@ -7,17 +7,51 @@ import com.badlogic.gdx.maps.tiled.TiledMapRenderer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.IsometricTiledMapRenderer;
 import com.mygdx.claninvasion.ClanInvasion;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.utils.viewport.FillViewport;
+import com.mygdx.claninvasion.model.Globals;
 import com.mygdx.claninvasion.view.GameInputProcessor;
+import com.mygdx.claninvasion.view.actors.GameButton;
+
 
 public class MainGamePage implements GamePage {
     private TiledMap map;
     private TiledMapRenderer renderer;
     private GameInputProcessor inputProcessor;
     private final ClanInvasion app;
+    private final Stage stage;
+    private GameButton soldierButton;
+    private GameButton towerButton;
+    private GameButton mineButton;
+
 
     public MainGamePage(ClanInvasion app) {
         this.app = app;
+        stage = new Stage(new FillViewport(Globals.V_WIDTH, Globals.V_HEIGHT, app.getCamera()));
+
     }
+
+    private void addButtons(){
+        TextureAtlas atlas = new TextureAtlas("skin/skin/uiskin.atlas");
+        Skin skin = new Skin(atlas);
+        Table table = new Table(skin);
+        table.setBounds(-145 , 150 , Gdx.graphics.getWidth() , Gdx.graphics.getHeight());
+
+        soldierButton = new GameButton(skin, "Train soldiers");
+        towerButton = new GameButton(skin, "Place towers" );
+        mineButton = new GameButton(skin, "Place goldmine" );
+        soldierButton.getButton().pad(2);
+        towerButton.getButton().pad(2);
+        mineButton.getButton().pad(2);
+        table.add(soldierButton.getButton());
+        table.add(towerButton.getButton());
+        table.add(mineButton.getButton());
+        stage.addActor(table);
+    }
+
 
     @Override
     public void show() {
@@ -28,6 +62,7 @@ public class MainGamePage implements GamePage {
         map = new TmxMapLoader().load( Gdx.files.getLocalStoragePath() + "/TileMap/Tilemap.tmx");
         renderer = new IsometricTiledMapRenderer(map);
         Gdx.input.setInputProcessor(inputProcessor);
+        addButtons();
     }
 
     @Override
@@ -35,6 +70,8 @@ public class MainGamePage implements GamePage {
         Gdx.gl.glClearColor(255, 255, 255, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         inputProcessor.onRender();
+
+        stage.draw();
 
         app.getCamera().update();
         renderer.setView(app.getCamera());
