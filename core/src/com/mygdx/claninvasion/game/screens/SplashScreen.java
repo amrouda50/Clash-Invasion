@@ -86,6 +86,14 @@ public class SplashScreen implements GamePage {
                 app.changeScreen();
             }
         });
+
+        endGameButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                super.clicked(event, x, y);
+                Gdx.app.exit();
+            }
+        });
     }
 
 
