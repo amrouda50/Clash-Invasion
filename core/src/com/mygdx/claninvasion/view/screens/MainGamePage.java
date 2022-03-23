@@ -7,6 +7,8 @@ import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapRenderer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.IsometricTiledMapRenderer;
+import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.mygdx.claninvasion.ClanInvasion;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -33,7 +35,7 @@ public class MainGamePage implements GamePage {
     public MainGamePage(ClanInvasion app) {
         this.app = app;
         camera = new OrthographicCamera();
-        stage = new Stage(new FillViewport(Globals.V_WIDTH, Globals.V_HEIGHT, camera));
+        stage = new Stage(new FitViewport(Globals.V_WIDTH, Globals.V_HEIGHT, camera));
 
     }
 
@@ -74,11 +76,10 @@ public class MainGamePage implements GamePage {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         inputProcessor.onRender();
 
-        stage.draw();
-
         app.getCamera().update();
         renderer.setView(app.getCamera());
         renderer.render();
+        stage.draw();
     }
 
     @Override
