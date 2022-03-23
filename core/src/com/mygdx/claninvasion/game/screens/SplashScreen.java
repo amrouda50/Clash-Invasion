@@ -7,11 +7,13 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.mygdx.claninvasion.ClanInvasion;
 import com.mygdx.claninvasion.game.Globals;
@@ -46,16 +48,15 @@ public class SplashScreen implements GamePage {
         background.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
         splash.setScale(2f);
-        System.out.println(stage.getWidth() +" "+ stage.getHeight());
         splash.setPosition((stage.getWidth() / 1000) - 170 , (stage.getHeight() /1000) - 100 );
         stage.addActor(background);
         stage.addActor(splash);
-        AddMusic();
-        addButtons(stage);
+        addMusic();
+        addButtons();
+        addActionListeners();
     }
 
-    private void addButtons(Stage stage){
-
+    private void addButtons(){
         BitmapFont Font  = new BitmapFont(Gdx.files.internal("skin/skin/default.fnt"));
         TextureAtlas atlas = new TextureAtlas("skin/skin/uiskin.atlas");
         Skin skin = new Skin(atlas);
@@ -77,8 +78,18 @@ public class SplashScreen implements GamePage {
         stage.addActor(table);
     }
 
+    private void addActionListeners() {
+        startGameButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                super.clicked(event, x, y);
+                app.changeScreen();
+            }
+        });
+    }
 
-    private void AddMusic(){
+
+    private void addMusic(){
         Music = Gdx.audio.newMusic(Gdx.files.internal("music/SplashScreenMusic.mp3"));
         Music.setVolume(1.0f);
         Music.setLooping(true);
@@ -90,7 +101,6 @@ public class SplashScreen implements GamePage {
         this.initSplash();
 
         splash.addAction( sequence(alpha(0f), fadeIn(2f)) );
-//        app.getFont().getData().setScale(2.2f);
     }
 
     @Override
@@ -100,10 +110,6 @@ public class SplashScreen implements GamePage {
         update(delta);
 
         stage.draw();
-
-//        batch.begin();
-//        app.getFont().draw(batch, "Clan Invasion", (stage.getWidth() / 2) - 40, stage.getHeight() / 2);
-//        batch.end();
     }
 
     public void update(float delta) {

@@ -30,4 +30,9 @@ public class GameScreens implements GameScreensManager {
     public GamePage get() {
         return pages.lastElement();
     }
+
+    @Override
+    public boolean isEmpty() {
+        return (long) pages.size() == 0;
+    }
 }

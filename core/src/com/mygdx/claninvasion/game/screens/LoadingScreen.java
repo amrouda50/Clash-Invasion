@@ -1,21 +1,16 @@
 package com.mygdx.claninvasion.game.screens;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Animation;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.actions.Actions;
+import com.badlogic.gdx.scenes.scene2d.actions.RepeatAction;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.utils.viewport.FillViewport;
 import com.mygdx.claninvasion.ClanInvasion;
 import com.mygdx.claninvasion.game.Globals;
-import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
-import java.util.ArrayList;
 
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.*;
 
@@ -24,6 +19,8 @@ public class LoadingScreen implements GamePage {
     private final Stage stage;
     private final ClanInvasion app;
     private Sound Sound;
+    private float elapsedTime = 0f;
+    private RepeatAction loadingAction = forever(sequence(alpha(0f), fadeIn(0.6f)));
 
     public LoadingScreen(final ClanInvasion app) {
         this.app = app;
@@ -50,7 +47,7 @@ public class LoadingScreen implements GamePage {
     public void show() {
         this.initAnimation();
 
-        animated.addAction(forever(sequence(alpha(0f), fadeIn(0.6f))) );
+        animated.addAction(loadingAction);
     }
 
     @Override
@@ -59,8 +56,17 @@ public class LoadingScreen implements GamePage {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         update(delta);
 
+        elapsedTime += delta;
         stage.draw();
 
+        if (elapsedTime > 1.5f) {
+            animated.removeAction(loadingAction);
+            animated.addAction(fadeOut(0.5f, Interpolation.bounceIn));
+        }
+
+        if (elapsedTime > 2.2f) {
+            app.changeScreen();
+        }
     }
 
     public void update(float delta) {
