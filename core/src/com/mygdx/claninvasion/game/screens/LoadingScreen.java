@@ -9,7 +9,7 @@ import com.badlogic.gdx.scenes.scene2d.actions.RepeatAction;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.utils.viewport.FillViewport;
 import com.mygdx.claninvasion.ClanInvasion;
-import com.mygdx.claninvasion.game.Globals;
+import com.mygdx.claninvasion.model.Globals;
 import com.badlogic.gdx.audio.Sound;
 
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.*;
