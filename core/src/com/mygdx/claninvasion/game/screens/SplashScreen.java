@@ -11,7 +11,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.mygdx.claninvasion.ClanInvasion;
-import com.mygdx.claninvasion.game.Globals;
+import com.mygdx.claninvasion.model.Globals;
 import com.mygdx.claninvasion.game.actors.GameButton;
 
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.*;
