@@ -1,14 +1,13 @@
-package com.mygdx.claninvasion.game.screens;
+package com.mygdx.claninvasion.view.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapRenderer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.IsometricTiledMapRenderer;
 import com.mygdx.claninvasion.ClanInvasion;
-import com.mygdx.claninvasion.game.GameInputProcessor;
+import com.mygdx.claninvasion.view.GameInputProcessor;
 
 public class MainGamePage implements GamePage {
     private TiledMap map;

@@ -4,7 +4,7 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.mygdx.claninvasion.model.Globals;
-import com.mygdx.claninvasion.game.screens.*;
+import com.mygdx.claninvasion.view.screens.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;

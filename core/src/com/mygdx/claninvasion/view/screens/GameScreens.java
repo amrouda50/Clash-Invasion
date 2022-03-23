@@ -1,4 +1,4 @@
-package com.mygdx.claninvasion.game.screens;
+package com.mygdx.claninvasion.view.screens;
 
 import java.util.Stack;
 
