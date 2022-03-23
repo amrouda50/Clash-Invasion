@@ -33,7 +33,6 @@ public class LoadingScreen implements GamePage {
 
 
     private void initAnimation() {
-
         Texture texture = new Texture(Gdx.files.internal("LoadingscreenAnimation/Loading-Screen-icon0.png"));
         animated = new Image(texture);
         animated.setSize(200, 200);
@@ -44,7 +43,6 @@ public class LoadingScreen implements GamePage {
         long id = Sound.play(1.0f);
         Sound.setPitch(id , 2);
         Sound.setLooping(id , false);
-
     }
 
 
