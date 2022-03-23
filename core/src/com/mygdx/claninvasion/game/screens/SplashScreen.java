@@ -4,38 +4,30 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.mygdx.claninvasion.ClanInvasion;
 import com.mygdx.claninvasion.game.Globals;
+import com.mygdx.claninvasion.game.actors.GameButton;
 
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.*;
 
 public class SplashScreen implements GamePage {
     private final ClanInvasion app;
     private final Stage stage;
-    private final SpriteBatch batch;
     private Image splash;
     private Image background;
-    private TextButton startGameButton;
-    private TextButton endGameButton;
-    private TextButton.TextButtonStyle buttonStyle;
-    private BitmapFont font;
-    private Music Music;
+    private GameButton startGameButton;
+    private GameButton endGameButton;
+    private Music music;
 
     public SplashScreen(final ClanInvasion app) {
         this.app = app;
         stage = new Stage(new FitViewport(Globals.V_WIDTH, Globals.V_HEIGHT, app.getCamera()));
-        batch = new SpriteBatch();
         Gdx.input.setInputProcessor(stage);
     }
 
@@ -57,51 +49,31 @@ public class SplashScreen implements GamePage {
     }
 
     private void addButtons(){
-        BitmapFont Font  = new BitmapFont(Gdx.files.internal("skin/skin/default.fnt"));
         TextureAtlas atlas = new TextureAtlas("skin/skin/uiskin.atlas");
         Skin skin = new Skin(atlas);
         Table table = new Table(skin);
         table.setBounds(-85 , -50 , Gdx.graphics.getWidth() , Gdx.graphics.getHeight());
 
-        buttonStyle = new TextButton.TextButtonStyle();
-        buttonStyle.up = skin.getDrawable("default-window");
-        buttonStyle.down = skin.getDrawable("default-window");
-        buttonStyle.pressedOffsetX = 1;
-        buttonStyle.pressedOffsetY = -1;
-        buttonStyle.font = Font ;
-        startGameButton = new TextButton("Start Game" , buttonStyle );
-        endGameButton = new TextButton("End Game" , buttonStyle );
-        startGameButton.pad(2);
-        endGameButton.pad(2);
-        table.add(startGameButton);
-        table.add(endGameButton);
+        startGameButton = new GameButton(skin, "Start Game");
+        endGameButton = new GameButton(skin, "End Game" );
+        startGameButton.getButton().pad(2);
+        endGameButton.getButton().pad(2);
+        table.add(startGameButton.getButton());
+        table.add(endGameButton.getButton());
         stage.addActor(table);
     }
 
     private void addActionListeners() {
-        startGameButton.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                super.clicked(event, x, y);
-                app.changeScreen();
-            }
-        });
-
-        endGameButton.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                super.clicked(event, x, y);
-                Gdx.app.exit();
-            }
-        });
+        startGameButton.addClickListener(app::changeScreen);
+        endGameButton.addClickListener(() -> Gdx.app.exit());
     }
 
 
     private void addMusic(){
-        Music = Gdx.audio.newMusic(Gdx.files.internal("music/SplashScreenMusic.mp3"));
-        Music.setVolume(1.0f);
-        Music.setLooping(true);
-        Music.play();
+        music = Gdx.audio.newMusic(Gdx.files.internal("music/SplashScreenMusic.mp3"));
+        music.setVolume(1.0f);
+        music.setLooping(true);
+        music.play();
     }
 
     @Override
@@ -146,6 +118,6 @@ public class SplashScreen implements GamePage {
     @Override
     public void dispose() {
         stage.dispose();
-        Music.dispose();
+        music.dispose();
     }
 }
