@@ -1,4 +1,4 @@
-package com.mygdx.claninvasion.game;
+package com.mygdx.claninvasion.view;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;

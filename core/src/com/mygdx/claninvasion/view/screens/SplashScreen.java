@@ -1,4 +1,4 @@
-package com.mygdx.claninvasion.game.screens;
+package com.mygdx.claninvasion.view.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
@@ -9,10 +9,11 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.utils.viewport.FillViewport;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.mygdx.claninvasion.ClanInvasion;
 import com.mygdx.claninvasion.model.Globals;
-import com.mygdx.claninvasion.game.actors.GameButton;
+import com.mygdx.claninvasion.view.actors.GameButton;
 
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.*;
 
@@ -27,7 +28,7 @@ public class SplashScreen implements GamePage {
 
     public SplashScreen(final ClanInvasion app) {
         this.app = app;
-        stage = new Stage(new FitViewport(Globals.V_WIDTH, Globals.V_HEIGHT, app.getCamera()));
+        stage = new Stage(new FillViewport(Globals.V_WIDTH, Globals.V_HEIGHT, app.getCamera()));
         Gdx.input.setInputProcessor(stage);
     }
 
