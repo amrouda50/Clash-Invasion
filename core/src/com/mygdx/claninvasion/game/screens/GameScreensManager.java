@@ -5,4 +5,5 @@ public interface GameScreensManager {
     GamePage pop();
     GamePage replace(GamePage page);
     GamePage get();
+    boolean isEmpty();
 }

@@ -7,46 +7,45 @@ import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapRenderer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.IsometricTiledMapRenderer;
+import com.mygdx.claninvasion.ClanInvasion;
 import com.mygdx.claninvasion.game.GameInputProcessor;
 
 public class MainGamePage implements GamePage {
     private TiledMap map;
-    private OrthographicCamera camera;
     private TiledMapRenderer renderer;
     private GameInputProcessor inputProcessor;
+    private final ClanInvasion app;
+
+    public MainGamePage(ClanInvasion app) {
+        this.app = app;
+    }
 
     @Override
     public void show() {
-        float width = Gdx.graphics.getWidth();
-        float height = Gdx.graphics.getHeight();
+        app.getCamera().update();
 
-        camera = new OrthographicCamera();
-        camera.setToOrtho(false, width, height);
+        inputProcessor = new GameInputProcessor(app.getCamera());
 
-        camera.update();
-
-        inputProcessor = new GameInputProcessor(camera);
-
-        map = new TmxMapLoader().load( Gdx.files.getLocalStoragePath() + "/TileMap/TiledMap.tmx");
+        map = new TmxMapLoader().load( Gdx.files.getLocalStoragePath() + "/TileMap/Tilemap.tmx");
         renderer = new IsometricTiledMapRenderer(map);
         Gdx.input.setInputProcessor(inputProcessor);
     }
 
     @Override
     public void render(float delta) {
-        Gdx.gl.glClearColor(0, 0, 0, 1);
+        Gdx.gl.glClearColor(255, 255, 255, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         inputProcessor.onRender();
 
-        camera.update();
-        renderer.setView(camera);
+        app.getCamera().update();
+        renderer.setView(app.getCamera());
         renderer.render();
     }
 
     @Override
     public void resize(int width, int height) {
-        camera.viewportHeight = height;
-        camera.viewportWidth = width;
+        app.getCamera().viewportHeight = height;
+        app.getCamera().viewportWidth = width;
     }
 
     @Override
