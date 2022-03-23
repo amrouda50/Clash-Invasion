@@ -6,4 +6,9 @@ public class BattleState extends  CommonGameState {
     public BattleState(GameModel game) {
         super(game);
     }
+
+    @Override
+    public void changeState() {
+        this.game.setGameState(new EndGameState(game));
+    }
 }

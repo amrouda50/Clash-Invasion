@@ -29,4 +29,9 @@ public abstract class CommonGameState implements GameState  {
     public void changeTurn() {
         game.changeActivePlayer();
     }
+
+    @Override
+    public void changeState() {
+        game.setGameState(new BuildingState(game));
+    }
 }

@@ -5,4 +5,5 @@ public interface GameState {
     void startGame();
     void changePhase();
     void changeTurn();
+    void changeState();
 }
