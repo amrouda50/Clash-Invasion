@@ -20,7 +20,7 @@ public class LoadingScreen implements GamePage {
     private final ClanInvasion app;
     private Sound Sound;
     private float elapsedTime = 0f;
-    private RepeatAction loadingAction = forever(sequence(alpha(0f), fadeIn(0.6f)));
+    private final RepeatAction loadingAction = forever(sequence(alpha(0f), fadeIn(0.6f)));
 
     public LoadingScreen(final ClanInvasion app) {
         this.app = app;

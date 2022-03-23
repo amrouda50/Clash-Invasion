@@ -8,19 +8,17 @@ import com.badlogic.gdx.maps.tiled.TiledMapRenderer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.IsometricTiledMapRenderer;
 import com.badlogic.gdx.utils.viewport.FitViewport;
-import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.mygdx.claninvasion.ClanInvasion;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.utils.viewport.FillViewport;
 import com.mygdx.claninvasion.model.Globals;
 import com.mygdx.claninvasion.view.utils.GameInputProcessor;
 import com.mygdx.claninvasion.view.actors.GameButton;
 
 
-public class MainGamePage implements GamePage {
+public class MainGamePage implements GamePage, UiUpdatable {
     private TiledMap map;
     private TiledMapRenderer renderer;
     private GameInputProcessor inputProcessor;
@@ -79,7 +77,8 @@ public class MainGamePage implements GamePage {
         app.getCamera().update();
         renderer.setView(app.getCamera());
         renderer.render();
-        stage.draw();
+
+        update(delta);
     }
 
     @Override
@@ -106,5 +105,11 @@ public class MainGamePage implements GamePage {
     @Override
     public void dispose() {
 
+    }
+
+    @Override
+    public void update(float delta) {
+        stage.act();
+        stage.draw();
     }
 }

@@ -17,7 +17,7 @@ import com.mygdx.claninvasion.view.actors.GameButton;
 
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.*;
 
-public class SplashScreen implements GamePage {
+public class SplashScreen implements GamePage, UiUpdatable {
     private final ClanInvasion app;
     private final Stage stage;
     private Image splash;
@@ -89,12 +89,11 @@ public class SplashScreen implements GamePage {
         Gdx.gl.glClearColor(255, 255, 255, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         update(delta);
-
-        stage.draw();
     }
 
     public void update(float delta) {
         stage.act(delta);
+        stage.draw();
     }
 
     @Override

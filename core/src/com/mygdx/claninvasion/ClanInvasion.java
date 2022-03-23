@@ -29,6 +29,7 @@ public class ClanInvasion extends Game {
 		this.gamePages = new ArrayList<>(
 				Arrays.asList(
 						new MainGamePage(this),
+						new ConfigureGameScreen(this),
 						new LoadingScreen(this),
 						new SplashScreen(this)
 				)
