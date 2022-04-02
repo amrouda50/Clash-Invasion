@@ -3,10 +3,15 @@ package com.mygdx.claninvasion.view.screens;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.maps.MapLayer;
+import com.badlogic.gdx.maps.MapObjects;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapRenderer;
+import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.IsometricTiledMapRenderer;
+import com.badlogic.gdx.scenes.scene2d.ui.Cell;
+import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.mygdx.claninvasion.ClanInvasion;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
@@ -16,6 +21,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.mygdx.claninvasion.model.Globals;
 import com.mygdx.claninvasion.view.utils.GameInputProcessor;
 import com.mygdx.claninvasion.view.actors.GameButton;
+import com.mygdx.claninvasion.view.TiledMap.TiledMapStage;
 
 
 public class MainGamePage implements GamePage, UiUpdatable {
@@ -23,7 +29,7 @@ public class MainGamePage implements GamePage, UiUpdatable {
     private TiledMapRenderer renderer;
     private GameInputProcessor inputProcessor;
     private final ClanInvasion app;
-    private final Stage stage;
+    private Stage stage;
     private final OrthographicCamera camera;
     private GameButton soldierButton;
     private GameButton towerButton;
@@ -33,7 +39,7 @@ public class MainGamePage implements GamePage, UiUpdatable {
     public MainGamePage(ClanInvasion app) {
         this.app = app;
         camera = new OrthographicCamera();
-        stage = new Stage(new FitViewport(Globals.V_WIDTH, Globals.V_HEIGHT, camera));
+        //stage = new Stage(new FitViewport(Globals.V_WIDTH, Globals.V_HEIGHT, camera));
 
     }
 
@@ -63,9 +69,29 @@ public class MainGamePage implements GamePage, UiUpdatable {
         inputProcessor = new GameInputProcessor(app.getCamera());
 
         map = new TmxMapLoader().load( Gdx.files.getLocalStoragePath() + "/TileMap/Tilemap.tmx");
-        renderer = new IsometricTiledMapRenderer(map);
-        Gdx.input.setInputProcessor(inputProcessor);
+        renderer = new IsometricTiledMapRenderer(map , 1);
+        stage = new TiledMapStage(map);
+       // stage.getViewport().setCamera(app.getCamera());
+        Gdx.input.setInputProcessor(stage);
+        //Gdx.input.setInputProcessor(inputProcessor);
         addButtons();
+
+       // TiledMapTileLayer layer = (TiledMapTileLayer) map.getLayers().get("Layer1");
+        TiledMapTileLayer layer2 = (TiledMapTileLayer) map.getLayers().get("Layer2");
+
+
+                    Timer.schedule(new Timer.Task() {
+                        int i = 7;
+                @Override
+                public void run() {
+                    TiledMapTileLayer.Cell cell = layer2.getCell(i, 4);
+                    layer2.setCell(i, 4, null);
+                    layer2.setCell(i+1, 4, cell);
+                    i++;
+
+                }
+            } , 2 , 1 , 20);
+
     }
 
     @Override
@@ -73,12 +99,13 @@ public class MainGamePage implements GamePage, UiUpdatable {
         Gdx.gl.glClearColor(255, 255, 255, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         inputProcessor.onRender();
-
         app.getCamera().update();
         renderer.setView(app.getCamera());
         renderer.render();
-
         update(delta);
+       // stage.getViewport().setCamera(app.getCamera());
+        stage.act(delta);
+
     }
 
     @Override
@@ -109,7 +136,7 @@ public class MainGamePage implements GamePage, UiUpdatable {
 
     @Override
     public void update(float delta) {
-        stage.act();
+        stage.act(delta);
         stage.draw();
     }
 }
