@@ -11,7 +11,7 @@ import java.util.Arrays;
 
 
 public class ClanInvasion extends Game {
-	//private final GameScreens screens;
+	private final GameScreens screens;
 	private BitmapFont font;
 	private OrthographicCamera camera;
 	private ArrayList<GamePage> gamePages;
