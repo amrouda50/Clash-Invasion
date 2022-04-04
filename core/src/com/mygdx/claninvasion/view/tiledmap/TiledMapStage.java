@@ -1,4 +1,4 @@
-package com.mygdx.claninvasion.view.TiledMap;
+package com.mygdx.claninvasion.view.tiledmap;
 
 import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.maps.tiled.TiledMap;
