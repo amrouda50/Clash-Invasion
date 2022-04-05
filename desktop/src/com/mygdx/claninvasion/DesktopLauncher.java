@@ -11,6 +11,5 @@ public class DesktopLauncher {
 		config.setForegroundFPS(60);
 		new Lwjgl3Application(new ClanInvasion(), config);
 		//config.setWindowedMode(GameScreen.WIDTH , GameScreen.HEIGHT);
-		// I am in different branch
 	}
 }
