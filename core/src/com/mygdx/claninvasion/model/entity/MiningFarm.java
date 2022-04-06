@@ -1,6 +1,5 @@
 package com.mygdx.claninvasion.model.entity;
 
-
 /**
  * Mining farm
  * @version 0.01
