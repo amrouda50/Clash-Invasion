@@ -7,9 +7,22 @@ import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Vector3;
 
+/**
+ * Represents an event handler for libgdx input
+ * @author andreicristea
+ * @author omarashour
+ * @version 0.1
+ * @see com.badlogic.gdx.InputProcessor
+ */
 public class GameInputProcessor implements InputProcessor {
+    /**
+     * camera of the application
+     */
     private final Camera camera;
 
+    /**
+     * @param camera - camera of the application
+     */
     public GameInputProcessor(Camera camera) {
         this.camera = camera;
     }
@@ -24,11 +37,10 @@ public class GameInputProcessor implements InputProcessor {
         return false;
     }
 
-    public void onRender(InputUpdateListener runnable) {
-        onRender();
-        runnable.run(Gdx.input);
-    }
-
+    /**
+     * Method which ought to be called inside render() or update() methods
+     * in parent class
+     */
     public void onRender() {
         Vector3 translate = new Vector3(0, 0, 0);
 

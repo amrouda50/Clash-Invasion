@@ -1,5 +1,13 @@
 package com.mygdx.claninvasion.model.entity;
 
+/**
+ * Represents classes that can mine gold
+ * @author Dinari
+ * @version 0.01
+ */
 public interface Mineable {
-    public void startMining();
+    /**
+     * Start mining process
+     */
+    default void startMining() {}
 }
