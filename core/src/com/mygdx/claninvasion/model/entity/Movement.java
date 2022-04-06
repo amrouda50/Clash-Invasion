@@ -1,6 +1,13 @@
 package com.mygdx.claninvasion.model.entity;
 
+/**
+ * Movement specifying
+ * @author Dinari
+ * @version 0.01
+ */
 public interface Movement {
-
-    public void move();
+    /**
+     * Move implementation
+     */
+    void move();
 }

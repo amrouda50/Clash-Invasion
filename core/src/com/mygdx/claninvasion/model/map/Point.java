@@ -1,7 +1,6 @@
 package com.mygdx.claninvasion.model.map;
 
 public class Point {
-
     private int x;
     private int y;
 

@@ -1,4 +1,3 @@
 package com.mygdx.claninvasion.model.level;
 
-public class Level {
-}
+public class Level {}

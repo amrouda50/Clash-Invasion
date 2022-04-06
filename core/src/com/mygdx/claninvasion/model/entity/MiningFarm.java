@@ -1,8 +1,9 @@
 package com.mygdx.claninvasion.model.entity;
 
+
 /**
- * Hill tower
+ * Mining farm
  * @version 0.01
  * TODO: Logic part is missing
  */
-public class HillTower extends Tower {}
+public class MiningFarm extends ArtificialEntity implements Mineable {}

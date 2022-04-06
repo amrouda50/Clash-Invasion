@@ -1,19 +1,8 @@
 package com.mygdx.claninvasion.model.entity;
 
-public class RomanFort extends Tower{
-
-    @Override
-    public void heal() {
-        super.heal();
-    }
-
-    @Override
-    public void damage(int amount) {
-        super.damage(amount);
-    }
-
-    @Override
-    public void defend(ArtificialEntity ae) {
-        super.defend(ae);
-    }
-}
+/**
+ * Roman fort tower
+ * @version 0.01
+ * TODO: Logic part is missing
+ */
+public class RomanFort extends Tower {}
