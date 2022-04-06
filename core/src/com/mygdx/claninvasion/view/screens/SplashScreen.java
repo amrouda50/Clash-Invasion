@@ -47,6 +47,7 @@ public class SplashScreen implements GamePage, UiUpdatable {
         addMusic();
         addButtons();
         addActionListeners();
+
     }
 
     private void addButtons(){
