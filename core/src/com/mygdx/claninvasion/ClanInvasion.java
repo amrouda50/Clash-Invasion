@@ -9,7 +9,15 @@ import com.mygdx.claninvasion.view.screens.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-
+/**
+ * Application entrance class.
+ * Has most important shared data abd methods
+ * @author andreicristea
+ * @author omarashour
+ * @author Dinari
+ * @see com.badlogic.gdx.Game
+ * @version 0.1
+ */
 public class ClanInvasion extends Game {
 	private final GameScreens screens;
 	private BitmapFont font;

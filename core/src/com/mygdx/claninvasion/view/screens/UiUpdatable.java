@@ -1,5 +1,12 @@
 package com.mygdx.claninvasion.view.screens;
 
+/**
+ * Represents classes which are updated with some delta timeframe
+ * @author andreicristea
+ */
 public interface UiUpdatable {
-    void update(float delta);
+    /**
+     * @param delta - time
+     */
+    default void update(float delta) {}
 }

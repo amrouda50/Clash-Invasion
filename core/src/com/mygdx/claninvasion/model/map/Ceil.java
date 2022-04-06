@@ -9,6 +9,7 @@ public class Ceil {
 
     public Ceil(Entity occupier) {
         this.occupier = occupier;
+        position = new Point(0, 0);
     }
 
     public Ceil(int x, int y) {
@@ -25,6 +26,4 @@ public class Ceil {
     public void changeOccupier(Entity newOccupier) {
         this.occupier = newOccupier;
     }
-
-
 }
