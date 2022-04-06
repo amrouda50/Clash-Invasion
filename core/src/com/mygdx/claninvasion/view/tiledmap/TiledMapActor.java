@@ -3,6 +3,7 @@ package com.mygdx.claninvasion.view.tiledmap;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Touchable;
 
 
 public class TiledMapActor extends Actor {
@@ -14,6 +15,7 @@ public class TiledMapActor extends Actor {
         this.tiledMap = tiledMap;
         this.tiledLayer = tiledLayer;
         this.cell = cell;
+        setTouchable(Touchable.enabled);
     }
 
     public TiledMap getTiledMap() {

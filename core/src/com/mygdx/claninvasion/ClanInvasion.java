@@ -1,8 +1,11 @@
 package com.mygdx.claninvasion;
 
 import com.badlogic.gdx.Game;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.utils.viewport.StretchViewport;
+import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mygdx.claninvasion.model.Globals;
 import com.mygdx.claninvasion.view.screens.*;
 
@@ -28,10 +31,10 @@ public class ClanInvasion extends Game {
 
 		this.gamePages = new ArrayList<>(
 				Arrays.asList(
-						new MainGamePage(this),
 						new ConfigureGameScreen(this),
 						new LoadingScreen(this),
-						new SplashScreen(this)
+						new SplashScreen(this),
+						new MainGamePage(this)
 				)
 		);
 
@@ -65,6 +68,11 @@ public class ClanInvasion extends Game {
 
 	public OrthographicCamera getCamera() {
 		return camera;
+	}
+
+	@Override
+	public void resize(int width, int height) {
+		super.resize(width, height);
 	}
 
 	@Override
