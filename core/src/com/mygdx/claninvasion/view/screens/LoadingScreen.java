@@ -14,6 +14,13 @@ import com.badlogic.gdx.audio.Sound;
 
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.*;
 
+/**
+ * One of the screens which implement GamePage interface, shows loading animation icon
+ * @author andreicristea
+ * @author omarashour
+ * @version 0.1
+ * @see GamePage, UiUpdatable
+ */
 public class LoadingScreen implements GamePage {
     private Image animated;
     private final Stage stage;
@@ -22,6 +29,9 @@ public class LoadingScreen implements GamePage {
     private float elapsedTime = 0f;
     private final RepeatAction loadingAction = forever(sequence(alpha(0f), fadeIn(0.6f)));
 
+    /**
+     * @param app - app instance
+     */
     public LoadingScreen(final ClanInvasion app) {
         this.app = app;
         stage = new Stage(new FillViewport(Globals.V_WIDTH, Globals.V_HEIGHT, app.getCamera()));
@@ -42,7 +52,10 @@ public class LoadingScreen implements GamePage {
         Sound.setLooping(id , false);
     }
 
-
+    /**
+     * Is fired once the page becomes active in application
+     * See GamePage interface
+     */
     @Override
     public void show() {
         this.initAnimation();
@@ -50,6 +63,10 @@ public class LoadingScreen implements GamePage {
         animated.addAction(loadingAction);
     }
 
+    /**
+     * Fired on every frame update
+     * See GamePage interface
+     */
     @Override
     public void render(float delta) {
         Gdx.gl.glClearColor(255, 255, 255, 1);
@@ -69,30 +86,54 @@ public class LoadingScreen implements GamePage {
         }
     }
 
+    /**
+     * Used inside render method
+     * See GamePage interface
+     * @param delta - difference between two render calls
+     */
     public void update(float delta) {
         stage.act(delta);
     }
 
+    /**
+     * Fired on every resize event by libgdx
+     * See GamePage interface
+     * @param width - resized width value
+     * @param height - resized height value
+     */
     @Override
     public void resize(int width, int height) {
 
     }
 
+    /**
+     * See GamePage interface
+     */
     @Override
     public void pause() {
 
     }
 
+    /**
+     * See GamePage interface
+     */
     @Override
     public void resume() {
 
     }
 
+    /**
+     * See GamePage interface
+     */
     @Override
     public void hide() {
 
     }
 
+    /**
+     * See GamePage interface
+     * Flushes state and fires cleanup
+     */
     @Override
     public void dispose() {
      Sound.dispose();

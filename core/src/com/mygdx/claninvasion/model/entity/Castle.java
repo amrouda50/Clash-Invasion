@@ -1,22 +1,40 @@
 package com.mygdx.claninvasion.model.entity;
 
-public class Castle extends ArtificialEntity implements SoldierCreatable{
+/**
+ * Castle entity
+ * TODO: Logic part is missing
+ */
+public class Castle extends ArtificialEntity {
 
+    /**
+     * Should heal the entity
+     * @see ArtificialEntity
+     */
     public void heal(Soldier soldier) {
         soldier.healSoldier();
     }
 
+    /**
+     * @see ArtificialEntity
+     * @param amount - percent of injury
+     */
     @Override
     public void damage(int amount) {
         Soldier s = new Soldier();
         s.damage(1);
     }
 
-    public void healSoldier(Soldier s) {
+    /**
+     * Heal attacked soldier
+     * @param soldier - soldier
+     * TODO Implement logic
+     */
+    public void healSoldier(Soldier soldier) {}
 
-    }
-
-    public void damageSoldier(Soldier s) {
-
-    }
+    /**
+     * Damage attacked soldier
+     * @param soldier - soldier
+     * TODO Implement logic
+     */
+    public void damageSoldier(Soldier soldier) {}
 }

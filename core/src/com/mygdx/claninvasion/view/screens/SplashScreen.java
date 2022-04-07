@@ -10,13 +10,19 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.viewport.FillViewport;
-import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.mygdx.claninvasion.ClanInvasion;
 import com.mygdx.claninvasion.model.Globals;
 import com.mygdx.claninvasion.view.actors.GameButton;
 
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.*;
 
+/**
+ * One of the screens which implement GamePage interface, shows splash info
+ * @author andreicristea
+ * @author omarashour
+ * @version 0.1
+ * @see GamePage, UiUpdatable
+ */
 public class SplashScreen implements GamePage, UiUpdatable {
     private final ClanInvasion app;
     private final Stage stage;
@@ -26,6 +32,9 @@ public class SplashScreen implements GamePage, UiUpdatable {
     private GameButton endGameButton;
     private Music music;
 
+    /**
+     * @param app - app instance
+     */
     public SplashScreen(final ClanInvasion app) {
         this.app = app;
         stage = new Stage(new FillViewport(Globals.V_WIDTH, Globals.V_HEIGHT, app.getCamera()));
@@ -78,6 +87,10 @@ public class SplashScreen implements GamePage, UiUpdatable {
         music.play();
     }
 
+    /**
+     * Is fired once the page becomes active in application
+     * See GamePage interface
+     */
     @Override
     public void show() {
         this.initSplash();
@@ -85,6 +98,10 @@ public class SplashScreen implements GamePage, UiUpdatable {
         splash.addAction( sequence(alpha(0f), fadeIn(2f)) );
     }
 
+    /**
+     * Fired on every frame update
+     * See GamePage interface
+     */
     @Override
     public void render(float delta) {
         Gdx.gl.glClearColor(255, 255, 255, 1);
@@ -92,30 +109,55 @@ public class SplashScreen implements GamePage, UiUpdatable {
         update(delta);
     }
 
+    /**
+     * Used inside render method
+     * See GamePage interface
+     * @param delta - difference between two render calls
+     */
+    @Override
     public void update(float delta) {
         stage.act(delta);
         stage.draw();
     }
 
+    /**
+     * Fired on every resize event by libgdx
+     * See GamePage interface
+     * @param width - resized width value
+     * @param height - resized height value
+     */
     @Override
     public void resize(int width, int height) {
     }
 
+    /**
+     * See GamePage interface
+     */
     @Override
     public void pause() {
 
     }
 
+    /**
+     * See GamePage interface
+     */
     @Override
     public void resume() {
 
     }
 
+    /**
+     * See GamePage interface
+     */
     @Override
     public void hide() {
 
     }
 
+    /**
+     * See GamePage interface
+     * Flushes state and fires cleanup
+     */
     @Override
     public void dispose() {
         stage.dispose();
