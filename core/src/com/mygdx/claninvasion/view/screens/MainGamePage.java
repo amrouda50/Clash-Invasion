@@ -27,6 +27,13 @@ import com.mygdx.claninvasion.view.utils.GameInputProcessor;
 import java.awt.*;
 
 
+/**
+ * One of the screens which implement GamePage interface, responsible for gameplay
+ * @author andreicristea
+ * @author omarashour
+ * @version 0.1
+ * @see GamePage, UiUpdatable
+ */
 public class MainGamePage implements GamePage, UiUpdatable {
     private TiledMap map;
     private IsometricTiledMapGameRendereder renderer;
@@ -40,6 +47,9 @@ public class MainGamePage implements GamePage, UiUpdatable {
     private GameButton mineButton;
 
 
+    /**
+     * @param app - app instance
+     */
     public MainGamePage(ClanInvasion app) {
         this.app = app;
         camera = new OrthographicCamera();
@@ -65,6 +75,10 @@ public class MainGamePage implements GamePage, UiUpdatable {
     }
 
 
+    /**
+     * Is fired once the page becomes active in application
+     * See GamePage interface
+     */
     @Override
     public void show() {
 //        app.getCamera().update();
@@ -98,6 +112,11 @@ public class MainGamePage implements GamePage, UiUpdatable {
 
     }
 
+    /**
+     * Fired on every frame update
+     * See GamePage interface
+     * @param delta - difference between two render calls
+     */
     @Override
     public void render(float delta) {
         Gdx.gl.glClearColor(255, 255, 255, 1);
@@ -121,6 +140,12 @@ public class MainGamePage implements GamePage, UiUpdatable {
 
     }
 
+    /**
+     * Fired on every resize event by libgdx
+     * See GamePage interface
+     * @param width - resized width value
+     * @param height - resized height value
+     */
     @Override
     public void resize(int width, int height) {
         app.getCamera().viewportHeight = height;
@@ -148,26 +173,43 @@ public class MainGamePage implements GamePage, UiUpdatable {
 //        System.out.println("Size: " + entitiesStage.getActors().size);
     }
 
+    /**
+     * See GamePage interface
+     */
     @Override
     public void pause() {
 
     }
 
+    /**
+     * See GamePage interface
+     */
     @Override
     public void resume() {
 
     }
 
+    /**
+     * See GamePage interface
+     */
     @Override
     public void hide() {
 
     }
 
+    /**
+     * See GamePage interface
+     * Flushes state and fires cleanup
+     */
     @Override
     public void dispose() {
 
     }
 
+    /**
+     * Used inside render method
+     * See GamePage interface
+     */
     @Override
     public void update(float delta) {
         entitiesStage.act(delta);

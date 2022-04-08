@@ -67,6 +67,7 @@ public class ConfigureGameScreen implements GamePage, UiUpdatable {
         update(delta);
     }
 
+    @Override
     public void update(float delta) {
         stage.act(delta);
         stage.draw();

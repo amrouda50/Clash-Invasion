@@ -5,14 +5,54 @@ import com.mygdx.claninvasion.model.gamestate.GameState;
 
 import java.util.UUID;
 
+/**
+ * This class is responsible for handling
+ * the workings of player
+ * @author andreicristea
+ * @author omarashour
+ * @author Dinari
+ * TODO: Logic part is missing
+ */
+
 public class Player {
+    /**
+     * Opponent of the active player
+     */
     private Player opponent;
+
+    /**
+     * All the towers of the player
+     */
     private Tower towers[];
+
+    /**
+     * Name of the player
+     */
     private String name;
+
+    /**
+     * All the mines of the player
+     */
     private Mineable[] miningFarms;
+
+    /**
+     * Status of player in the game
+     */
     private GameState winningState;
+
+    /**
+     * Amount of gold of the player
+     */
     private int wealth;
+
+    /**
+     * All the soldiers of the player
+     */
     private Soldier soldiers[];
+
+    /**
+     * Castle of the active player
+     */
     private Castle castle;
     private UUID id;
 
@@ -34,27 +74,46 @@ public class Player {
         this.castle = castle;
     }
 
+    /**
+     * This method resets all the resources for the player
+     */
     public void reset() {
 
     }
 
+    /**
+     * This method starts building towers for the active player
+     */
     public void buildTower()
     {
 
     }
 
+    /**
+     * This method starts the mining for the active player
+     */
     public void doMining() {
 
     }
 
+    /**
+     * This checks if the player has won
+     */
     public void checkWinningState() {
 
     }
 
+    /**
+     * This checks if the player has lost
+     */
     public void looseEntity() {
 
     }
 
+    /**
+     * This will add more soldiers
+     * to player's army
+     */
     public void addSoldiers() {
 
     }

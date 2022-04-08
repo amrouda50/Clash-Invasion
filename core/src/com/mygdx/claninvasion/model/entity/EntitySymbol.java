@@ -1,6 +1,11 @@
 package com.mygdx.claninvasion.model.entity;
 
-public enum EntitySymbol {
+/**
+ * TileMap Symbol bindings
+ * @author Dinari
+ * @version 0.01
+ */
+enum EntitySymbol {
     T,
     O,
     C
