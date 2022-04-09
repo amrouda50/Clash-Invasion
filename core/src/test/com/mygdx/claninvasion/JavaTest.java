@@ -6,11 +6,11 @@ import org.junit.Test;
 public class JavaTest {
 
     @org.junit.Test
-    public void oneEqualsOne() throws Exception {
+    public void oneEqualsOne()  {
         //throw new Exception("");
         //System.out.println(50000);
 
-        assertEquals(1, 1);
+        assertEquals(1, 0);
     }
 
 }
