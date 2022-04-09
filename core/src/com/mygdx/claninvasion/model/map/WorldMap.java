@@ -1,5 +1,8 @@
 package com.mygdx.claninvasion.model.map;
 
+
+import org.javatuples.Pair;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -38,6 +41,46 @@ public class WorldMap {
 
     public WorldCell getCell(int i) {
         return worldCells.get(i);
+    }
+
+    public WorldCell getCell(Pair<Integer, Integer> cellPlace) {
+        return (WorldCell) worldCells.stream().filter(cell -> cell.getMapPosition().equals(cellPlace)).toArray()[0];
+    }
+
+    public int maxCellRowPosition() {
+        return worldCells
+                .stream()
+                .max((c1, c2) -> c1.getMapPosition().getValue0() >= c2.getMapPosition().getValue0() ? 1 : -1)
+                .get()
+                .getMapPosition()
+                .getValue0();
+    }
+
+    public int minCellRowPosition() {
+        return worldCells
+                .stream()
+                .min((c1, c2) -> c1.getMapPosition().getValue0() >= c2.getMapPosition().getValue0() ? 1 : -1)
+                .get()
+                .getMapPosition()
+                .getValue0();
+    }
+
+    public int maxCellColumnPosition() {
+        return worldCells
+                .stream()
+                .max((c1, c2) -> c1.getMapPosition().getValue1() >= c2.getMapPosition().getValue1() ? 1 : -1)
+                .get()
+                .getMapPosition()
+                .getValue1();
+    }
+
+    public int minCellColumnPosition() {
+        return worldCells
+                .stream()
+                .min((c1, c2) -> c1.getMapPosition().getValue1() >= c2.getMapPosition().getValue1() ? 1 : -1)
+                .get()
+                .getMapPosition()
+                .getValue1();
     }
 
     public ArrayList<WorldCell> getCells() {

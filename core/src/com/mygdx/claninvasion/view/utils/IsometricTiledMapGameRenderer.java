@@ -19,6 +19,8 @@ import com.mygdx.claninvasion.model.map.WorldMap;
 import org.javatuples.Pair;
 import org.javatuples.Quartet;
 
+import java.util.ArrayList;
+
 import static com.badlogic.gdx.graphics.g2d.Batch.*;
 import static com.badlogic.gdx.graphics.g2d.Batch.U2;
 
@@ -31,6 +33,8 @@ public class IsometricTiledMapGameRenderer extends BatchTiledMapRenderer {
     protected Vector2 bottomLeft = new Vector2();
     protected Vector2 topLeft = new Vector2();
     protected Vector2 bottomRight = new Vector2();
+    protected ArrayList<Pair<TextureRegion, Float>> placeableObjects;
+    protected boolean firstRender = true;
 
     public IsometricTiledMapGameRenderer(TiledMap map) {
         super(map);
@@ -53,6 +57,7 @@ public class IsometricTiledMapGameRenderer extends BatchTiledMapRenderer {
     }
 
     private void init () {
+        placeableObjects = new ArrayList<>();
         // create the isometric transform
         isoTransform = new Matrix4();
         isoTransform.idt();
@@ -126,10 +131,10 @@ public class IsometricTiledMapGameRenderer extends BatchTiledMapRenderer {
      * @param map - world model map
      */
     public void renderTileLayer (TiledMapTileLayer layer, WorldMap map) {
-        // Render only the first layer (grass)
-        if (layer.getName().equals("Layer2")) {
+        if (layer.getName().equals("Layer2") && !firstRender) {
             return;
         }
+
         final Color batchColor = batch.getColor();
         final float color = Color.toFloatBits(batchColor.r, batchColor.g, batchColor.b, batchColor.a * layer.getOpacity());
 
@@ -177,114 +182,122 @@ public class IsometricTiledMapGameRenderer extends BatchTiledMapRenderer {
 
                     TextureRegion region = tile.getTextureRegion();
 
-                    float x1 = x + tile.getOffsetX() * unitScale + layerOffsetX;
-                    float y1 = y + tile.getOffsetY() * unitScale + layerOffsetY;
-                    float x2 = x1 + region.getRegionWidth() * unitScale;
-                    float y2 = y1 + region.getRegionHeight() * unitScale;
+                    if (layer.getName().equals("Layer2")) {
+                        placeableObjects.add(new Pair<>(region, color));
+                    } else {
+                        float x1 = x + tile.getOffsetX() * unitScale + layerOffsetX;
+                        float y1 = y + tile.getOffsetY() * unitScale + layerOffsetY;
+                        float x2 = x1 + region.getRegionWidth() * unitScale;
+                        float y2 = y1 + region.getRegionHeight() * unitScale;
 
-                    float u1 = region.getU();
-                    float v1 = region.getV2();
-                    float u2 = region.getU2();
-                    float v2 = region.getV();
+                        float u1 = region.getU();
+                        float v1 = region.getV2();
+                        float u2 = region.getU2();
+                        float v2 = region.getV();
 
-                    vertices[X1] = x1;
-                    vertices[Y1] = y1;
-                    vertices[C1] = color;
-                    vertices[U1] = u1;
-                    vertices[V1] = v1;
+                        vertices[X1] = x1;
+                        vertices[Y1] = y1;
+                        vertices[C1] = color;
+                        vertices[U1] = u1;
+                        vertices[V1] = v1;
 
-                    vertices[X2] = x1;
-                    vertices[Y2] = y2;
-                    vertices[C2] = color;
-                    vertices[U2] = u1;
-                    vertices[V2] = v2;
+                        vertices[X2] = x1;
+                        vertices[Y2] = y2;
+                        vertices[C2] = color;
+                        vertices[U2] = u1;
+                        vertices[V2] = v2;
 
-                    vertices[X3] = x2;
-                    vertices[Y3] = y2;
-                    vertices[C3] = color;
-                    vertices[U3] = u2;
-                    vertices[V3] = v2;
+                        vertices[X3] = x2;
+                        vertices[Y3] = y2;
+                        vertices[C3] = color;
+                        vertices[U3] = u2;
+                        vertices[V3] = v2;
 
-                    vertices[X4] = x2;
-                    vertices[Y4] = y1;
-                    vertices[C4] = color;
-                    vertices[U4] = u2;
-                    vertices[V4] = v1;
+                        vertices[X4] = x2;
+                        vertices[Y4] = y1;
+                        vertices[C4] = color;
+                        vertices[U4] = u2;
+                        vertices[V4] = v1;
 
-                    if (flipX) {
-                        float temp = vertices[U1];
-                        vertices[U1] = vertices[U3];
-                        vertices[U3] = temp;
-                        temp = vertices[U2];
-                        vertices[U2] = vertices[U4];
-                        vertices[U4] = temp;
-                    }
-                    if (flipY) {
-                        float temp = vertices[V1];
-                        vertices[V1] = vertices[V3];
-                        vertices[V3] = temp;
-                        temp = vertices[V2];
-                        vertices[V2] = vertices[V4];
-                        vertices[V4] = temp;
-                    }
-                    if (rotations != 0) {
-                        switch (rotations) {
-                            case TiledMapTileLayer.Cell.ROTATE_90: {
-                                float tempV = vertices[V1];
-                                vertices[V1] = vertices[V2];
-                                vertices[V2] = vertices[V3];
-                                vertices[V3] = vertices[V4];
-                                vertices[V4] = tempV;
-
-                                float tempU = vertices[U1];
-                                vertices[U1] = vertices[U2];
-                                vertices[U2] = vertices[U3];
-                                vertices[U3] = vertices[U4];
-                                vertices[U4] = tempU;
-                                break;
-                            }
-                            case TiledMapTileLayer.Cell.ROTATE_180: {
-                                float tempU = vertices[U1];
-                                vertices[U1] = vertices[U3];
-                                vertices[U3] = tempU;
-                                tempU = vertices[U2];
-                                vertices[U2] = vertices[U4];
-                                vertices[U4] = tempU;
-                                float tempV = vertices[V1];
-                                vertices[V1] = vertices[V3];
-                                vertices[V3] = tempV;
-                                tempV = vertices[V2];
-                                vertices[V2] = vertices[V4];
-                                vertices[V4] = tempV;
-                                break;
-                            }
-                            case TiledMapTileLayer.Cell.ROTATE_270: {
-                                float tempV = vertices[V1];
-                                vertices[V1] = vertices[V4];
-                                vertices[V4] = vertices[V3];
-                                vertices[V3] = vertices[V2];
-                                vertices[V2] = tempV;
-
-                                float tempU = vertices[U1];
-                                vertices[U1] = vertices[U4];
-                                vertices[U4] = vertices[U3];
-                                vertices[U3] = vertices[U2];
-                                vertices[U2] = tempU;
-                                break;
-                            }
-                            default:
-                                throw new IllegalStateException("Unexpected value: " + rotations);
+                        if (flipX) {
+                            float temp = vertices[U1];
+                            vertices[U1] = vertices[U3];
+                            vertices[U3] = temp;
+                            temp = vertices[U2];
+                            vertices[U2] = vertices[U4];
+                            vertices[U4] = temp;
                         }
-                    }
+                        if (flipY) {
+                            float temp = vertices[V1];
+                            vertices[V1] = vertices[V3];
+                            vertices[V3] = temp;
+                            temp = vertices[V2];
+                            vertices[V2] = vertices[V4];
+                            vertices[V4] = temp;
+                        }
+                        if (rotations != 0) {
+                            switch (rotations) {
+                                case TiledMapTileLayer.Cell.ROTATE_90: {
+                                    float tempV = vertices[V1];
+                                    vertices[V1] = vertices[V2];
+                                    vertices[V2] = vertices[V3];
+                                    vertices[V3] = vertices[V4];
+                                    vertices[V4] = tempV;
 
-                    batch.draw(region.getTexture(), vertices, 0, NUM_VERTICES);
-                    if (map != null) {
-                        WorldCell worldCell = new WorldCell(new Quartet<>(x1, y1, x2, y2), new Pair<>(row, col), region, x + "" + y);
-                        worldCell.setTileCell(cell);
-                        map.addCell(worldCell);
+                                    float tempU = vertices[U1];
+                                    vertices[U1] = vertices[U2];
+                                    vertices[U2] = vertices[U3];
+                                    vertices[U3] = vertices[U4];
+                                    vertices[U4] = tempU;
+                                    break;
+                                }
+                                case TiledMapTileLayer.Cell.ROTATE_180: {
+                                    float tempU = vertices[U1];
+                                    vertices[U1] = vertices[U3];
+                                    vertices[U3] = tempU;
+                                    tempU = vertices[U2];
+                                    vertices[U2] = vertices[U4];
+                                    vertices[U4] = tempU;
+                                    float tempV = vertices[V1];
+                                    vertices[V1] = vertices[V3];
+                                    vertices[V3] = tempV;
+                                    tempV = vertices[V2];
+                                    vertices[V2] = vertices[V4];
+                                    vertices[V4] = tempV;
+                                    break;
+                                }
+                                case TiledMapTileLayer.Cell.ROTATE_270: {
+                                    float tempV = vertices[V1];
+                                    vertices[V1] = vertices[V4];
+                                    vertices[V4] = vertices[V3];
+                                    vertices[V3] = vertices[V2];
+                                    vertices[V2] = tempV;
+
+                                    float tempU = vertices[U1];
+                                    vertices[U1] = vertices[U4];
+                                    vertices[U4] = vertices[U3];
+                                    vertices[U3] = vertices[U2];
+                                    vertices[U2] = tempU;
+                                    break;
+                                }
+                                default:
+                                    throw new IllegalStateException("Unexpected value: " + rotations);
+                            }
+                        }
+
+                        batch.draw(region.getTexture(), vertices, 0, NUM_VERTICES);
+                        if (map != null) {
+                            WorldCell worldCell = new WorldCell(new Quartet<>(x1, y1, x2, y2), new Pair<>(row, col), region, x + "" + y);
+                            worldCell.setTileCell(cell);
+                            map.addCell(worldCell);
+                        }
                     }
                 }
             }
+        }
+
+        if (getPlaceableObjects().size() > 0) {
+            firstRender = false;
         }
     }
 
@@ -296,5 +309,9 @@ public class IsometricTiledMapGameRenderer extends BatchTiledMapRenderer {
     @Override
     public void renderTileLayer(TiledMapTileLayer layer) {
         renderTileLayer (layer, null);
+    }
+
+    public ArrayList<Pair<TextureRegion, Float>> getPlaceableObjects() {
+        return placeableObjects;
     }
 }

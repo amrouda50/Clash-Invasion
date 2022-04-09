@@ -87,6 +87,12 @@ public class MainGamePage implements GamePage, UiUpdatable {
         });
         TiledMap map = new TmxMapLoader().load(Gdx.files.getLocalStoragePath() + "/TileMap/Tilemap.tmx");
         renderer = new IsometricTiledMapGameRenderer(map, 1);
+
+        // transform camera position ans scale to be in the center
+        app.getCamera().translate(new Vector2(280, -200));
+        app.getCamera().zoom -= -.7;
+        renderer.setView(app.getCamera());
+        renderer.render(app.getMap());
         entitiesStage = new TiledMapStage();
         Gdx.input.setInputProcessor(entitiesStage);
         addButtons();
