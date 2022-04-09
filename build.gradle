@@ -56,7 +56,7 @@ project(":desktop") {
 
 project(":core") {
     apply plugin: "java-library"
-
+    apply plugin: "jacoco"
 
     dependencies {
         api "com.badlogicgames.gdx:gdx:$gdxVersion"
@@ -81,6 +81,20 @@ project(":core") {
             events "passed", "skipped", "failed"
         }
         maxHeapSize = '1G'
+        finalizedBy jacocoTestReport // report is always generated after tests run
+    }
+
+    def jacocoExclusions = [
+        '**/model/*',
+    ]
+
+    jacocoTestReport {
+        dependsOn test // tests are required to run before generating the report
+        afterEvaluate {
+            classDirectories.setFrom(files(classDirectories.files.collect {
+                fileTree(dir: it, exclude: jacocoExclusions)
+            }))
+        }
     }
 }
 
