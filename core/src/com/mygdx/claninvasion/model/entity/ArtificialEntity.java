@@ -13,7 +13,10 @@ import java.awt.*;
 public class ArtificialEntity extends Entity {
     protected int health;
     private LevelIterator level;
-    private Point position;
+
+    ArtificialEntity() {
+        super();
+    }
 
     /**
      * Should heal the entity

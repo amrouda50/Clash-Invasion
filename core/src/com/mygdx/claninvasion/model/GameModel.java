@@ -3,7 +3,7 @@ package com.mygdx.claninvasion.model;
 import com.mygdx.claninvasion.model.gamestate.GamePhase;
 import com.mygdx.claninvasion.model.gamestate.GameState;
 import com.mygdx.claninvasion.model.gamestate.StartGameState;
-import com.mygdx.claninvasion.model.map.Map;
+import com.mygdx.claninvasion.model.map.WorldMap;
 
 /**
  * This class is responsible for handling
@@ -26,9 +26,9 @@ public class GameModel {
      */
     private Player activePlayer;
     /**
-     * This is for naviagating through the map
+     * This is for navigating through the map
      */
-    private Map map;
+    private WorldMap worldMap;
 
     /**
      * Goes through the phase of the game
@@ -58,6 +58,7 @@ public class GameModel {
         playerOne = new Player();
         playerTwo = new Player();
         gameState = new StartGameState(this);
+        worldMap = new WorldMap();
     }
 
 
@@ -131,5 +132,13 @@ public class GameModel {
 
     public void setGameState(GameState gameState) {
         this.gameState = gameState;
+    }
+
+    /**
+     * @return - map getter
+     * @see WorldMap
+     */
+    public WorldMap getWorldMap() {
+        return worldMap;
     }
 }

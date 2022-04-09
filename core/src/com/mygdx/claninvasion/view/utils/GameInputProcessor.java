@@ -5,7 +5,11 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import com.mygdx.claninvasion.model.adapters.IsometricToOrthogonalAdapt;
+import com.mygdx.claninvasion.model.map.WorldCell;
+import com.mygdx.claninvasion.model.map.WorldMap;
 
 /**
  * Represents an event handler for libgdx input
@@ -20,11 +24,15 @@ public class GameInputProcessor implements InputProcessor {
      */
     private final Camera camera;
 
+    private RunnableTouchEvent onTouchEvent;
+
     /**
      * @param camera - camera of the application
+     * @param event - event for click listeners
      */
-    public GameInputProcessor(Camera camera) {
+    public GameInputProcessor(Camera camera, RunnableTouchEvent event) {
         this.camera = camera;
+        onTouchEvent = event;
     }
 
     @Override
@@ -35,6 +43,23 @@ public class GameInputProcessor implements InputProcessor {
     @Override
     public boolean keyUp(int keycode) {
         return false;
+    }
+
+    /**
+     * method responsible for handling game clicks
+     */
+    private void onTouch() {
+        Vector3 mousePosition = getMousePosition();
+        camera.unproject(mousePosition); // get the world position from camera
+        onTouchEvent.run(mousePosition);
+    }
+
+
+    /**
+     * @return vector of the current mouse position
+     */
+    public Vector3 getMousePosition() {
+        return new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
     }
 
     /**
@@ -58,6 +83,10 @@ public class GameInputProcessor implements InputProcessor {
             translate.y -= 1;
         } else if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
             translate.y += 1;
+        }
+
+        if (Gdx.input.justTouched()) {
+            this.onTouch();
         }
 
         camera.translate(translate);
