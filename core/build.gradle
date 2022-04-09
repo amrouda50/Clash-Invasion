@@ -2,7 +2,6 @@ sourceCompatibility = 1.8
 [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
 
 sourceSets.main.java.srcDirs = [ "src/main" ]
-//sourceSets.test.resources.srcDirs = [ "src/test" ]
 sourceSets.test.java.srcDirs = [ "src/test" ]
 
 

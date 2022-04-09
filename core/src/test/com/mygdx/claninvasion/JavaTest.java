@@ -5,7 +5,7 @@ import org.junit.Test;
 
 public class JavaTest {
 
-    @org.junit.Test
+    @Test
     public void oneEqualsOne()  {
         //throw new Exception("");
         //System.out.println(50000);
