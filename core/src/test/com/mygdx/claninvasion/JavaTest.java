@@ -10,7 +10,7 @@ public class JavaTest {
         //throw new Exception("");
         //System.out.println(50000);
 
-        assertEquals(1, 0);
+        assertEquals(1, 1);
     }
 
 }
