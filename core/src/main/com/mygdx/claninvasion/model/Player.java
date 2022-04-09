@@ -23,7 +23,7 @@ public class Player {
     /**
      * All the towers of the player
      */
-    private Tower towers[];
+    private Tower[] towers;
 
     /**
      * Name of the player
@@ -48,7 +48,7 @@ public class Player {
     /**
      * All the soldiers of the player
      */
-    private Soldier soldiers[];
+    private Soldier[] soldiers;
 
     /**
      * Castle of the active player

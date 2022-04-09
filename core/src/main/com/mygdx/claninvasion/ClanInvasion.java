@@ -29,7 +29,7 @@ public class ClanInvasion extends Game {
 	 * GameModel responsible for the model handling
 	 * and is working as a bridge between UI/Logic
 	 */
-	private GameModel gameModel;
+	private final GameModel gameModel;
 
 	/** Creates a Clan Invasion object.
 	 */
