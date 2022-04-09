@@ -1,6 +1,11 @@
 package com.mygdx.claninvasion.model.entity;
 
+/**
+ * Specifies the type of entity/soldier attack
+ */
 public interface AttackType {
-
-    public void attack();
+    /**
+     * Should represent the way of attacking of certain entity
+     */
+    void attack();
 }

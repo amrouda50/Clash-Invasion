@@ -1,8 +1,10 @@
 package com.mygdx.claninvasion.model.entity;
-
-public class GroundMovement implements Movement{
+/**
+ * Ground type movement
+ * @author Dinari
+ * @version 0.01
+ */
+public class GroundMovement implements Movement {
     @Override
-    public void move() {
-
-    }
+    public void move() {}
 }

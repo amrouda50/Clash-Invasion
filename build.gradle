@@ -4,16 +4,15 @@ buildscript {
     repositories {
         mavenLocal()
         mavenCentral()
+        maven{url "https://oss.sonatype.org/content/repositories/snapshots/"}
+        maven { url "https://plugins.gradle.org/m2/"}
         gradlePluginPortal()
-        maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
         google()
     }
     dependencies {
         classpath 'org.wisepersist:gwt-gradle-plugin:1.1.16'
         classpath 'org.gretty:gretty:3.0.7'
         classpath 'com.mobidevelop.robovm:robovm-gradle-plugin:2.3.15'
-        
-
     }
 }
 
@@ -51,30 +50,9 @@ project(":desktop") {
         api "com.badlogicgames.gdx:gdx-backend-lwjgl3:$gdxVersion"
         api "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
         api "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-desktop"
-        
     }
 }
 
-project(":html") {
-    apply plugin: "java-library"
-    apply plugin: "gwt"
-    apply plugin: "war"
-    apply plugin: "org.gretty"
-
-
-    dependencies {
-        implementation project(":core")
-        api "com.badlogicgames.gdx:gdx-backend-gwt:$gdxVersion"
-        api "com.badlogicgames.gdx:gdx:$gdxVersion:sources"
-        api "com.badlogicgames.gdx:gdx-backend-gwt:$gdxVersion:sources"
-        api "com.badlogicgames.gdx:gdx-box2d:$gdxVersion:sources"
-        api "com.badlogicgames.gdx:gdx-box2d-gwt:$gdxVersion:sources"
-        api "com.badlogicgames.box2dlights:box2dlights:$box2DLightsVersion:sources"
-        api "com.badlogicgames.gdx:gdx-ai:$aiVersion:sources"
-        api "com.badlogicgames.ashley:ashley:$ashleyVersion:sources"
-        
-    }
-}
 
 project(":core") {
     apply plugin: "java-library"
@@ -86,7 +64,7 @@ project(":core") {
         api "com.badlogicgames.box2dlights:box2dlights:$box2DLightsVersion"
         api "com.badlogicgames.gdx:gdx-ai:$aiVersion"
         api "com.badlogicgames.ashley:ashley:$ashleyVersion"
-        
+        implementation 'org.javatuples:javatuples:1.2'
     }
 }
 

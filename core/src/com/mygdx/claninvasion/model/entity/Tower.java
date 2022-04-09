@@ -1,7 +1,6 @@
 package com.mygdx.claninvasion.model.entity;
 
-public class Tower extends ArtificialEntity implements Defensable {
-
+public class Tower extends ArtificialEntity implements Defensible {
     @Override
     public void damage(int amount) {
         super.damage(amount);

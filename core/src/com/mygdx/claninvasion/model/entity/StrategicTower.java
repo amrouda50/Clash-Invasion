@@ -1,19 +1,8 @@
 package com.mygdx.claninvasion.model.entity;
 
-public class StrategicTower extends Tower {
-
-    @Override
-    public void heal() {
-        super.heal();
-    }
-
-    @Override
-    public void damage(int amount) {
-        super.damage(amount);
-    }
-
-    @Override
-    public void defend(ArtificialEntity ae) {
-        super.defend(ae);
-    }
-}
+/**
+ * Type of tower
+ * @version 0.01
+ * TODO: Logic part is missing
+ */
+public class StrategicTower extends Tower {}
