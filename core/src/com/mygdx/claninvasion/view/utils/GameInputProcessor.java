@@ -23,19 +23,16 @@ public class GameInputProcessor implements InputProcessor {
      * camera of the application
      */
     private final Camera camera;
-    /**
-     * application mop
-     * @see WorldMap
-     */
-    private final WorldMap map;
+
+    private RunnableTouchEvent onTouchEvent;
 
     /**
      * @param camera - camera of the application
-     * @param map - application model mop
+     * @param event - event for click listeners
      */
-    public GameInputProcessor(Camera camera, WorldMap map) {
+    public GameInputProcessor(Camera camera, RunnableTouchEvent event) {
         this.camera = camera;
-        this.map = map;
+        onTouchEvent = event;
     }
 
     @Override
@@ -54,16 +51,7 @@ public class GameInputProcessor implements InputProcessor {
     private void onTouch() {
         Vector3 mousePosition = getMousePosition();
         camera.unproject(mousePosition); // get the world position from camera
-
-        Vector2 mouseOrtho = new IsometricToOrthogonalAdapt(new Vector2(mousePosition.x, mousePosition.y)).getPoint();
-        Vector3 mouseOrtho3 = new Vector3(mouseOrtho.x + WorldCell.getTransformWidth(), mouseOrtho.y - WorldCell.getTransformWidth(), 0);
-
-        for (WorldCell worldCell : map.getCells()) {
-            if (worldCell.contains(mouseOrtho3)) {
-                System.out.println(worldCell.getId());
-                worldCell.getTileCell().setTile(null);
-            }
-        }
+        onTouchEvent.run(mousePosition);
     }
 
 

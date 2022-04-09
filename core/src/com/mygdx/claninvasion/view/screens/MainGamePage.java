@@ -6,10 +6,14 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.mygdx.claninvasion.ClanInvasion;
+import com.mygdx.claninvasion.model.adapters.IsometricToOrthogonalAdapt;
+import com.mygdx.claninvasion.model.map.WorldCell;
 import com.mygdx.claninvasion.view.actors.GameButton;
 import com.mygdx.claninvasion.view.utils.IsometricTiledMapGameRenderer;
 import com.mygdx.claninvasion.view.tiledmap.TiledMapStage;
@@ -70,7 +74,17 @@ public class MainGamePage implements GamePage, UiUpdatable {
     @Override
     public void show() {
         app.getCamera().update();
-        inputProcessor = new GameInputProcessor(app.getCamera(), app.getMap());
+        inputProcessor = new GameInputProcessor(app.getCamera(), (mousePosition) -> {
+            Vector2 mouseOrtho = new IsometricToOrthogonalAdapt(new Vector2(mousePosition.x, mousePosition.y)).getPoint();
+            Vector3 mouseOrtho3 = new Vector3(mouseOrtho.x + WorldCell.getTransformWidth(), mouseOrtho.y - WorldCell.getTransformWidth(), 0);
+
+            for (WorldCell worldCell : app.getMap().getCells()) {
+                if (worldCell.contains(mouseOrtho3)) {
+                    System.out.println(worldCell.getId());
+                    worldCell.getTileCell().setTile(null);
+                }
+            }
+        });
         TiledMap map = new TmxMapLoader().load(Gdx.files.getLocalStoragePath() + "/TileMap/Tilemap.tmx");
         renderer = new IsometricTiledMapGameRenderer(map, 1);
         entitiesStage = new TiledMapStage();
