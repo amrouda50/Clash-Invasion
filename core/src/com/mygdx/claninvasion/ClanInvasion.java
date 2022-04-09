@@ -3,7 +3,9 @@ package com.mygdx.claninvasion;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.mygdx.claninvasion.model.GameModel;
 import com.mygdx.claninvasion.model.Globals;
+import com.mygdx.claninvasion.model.map.WorldMap;
 import com.mygdx.claninvasion.view.screens.*;
 
 import java.util.ArrayList;
@@ -23,11 +25,17 @@ public class ClanInvasion extends Game {
 	private BitmapFont font;
 	private OrthographicCamera camera;
 	private ArrayList<GamePage> gamePages;
+	/**
+	 * GameModel responsible for the model handling
+	 * and is working as a bridge between UI/Logic
+	 */
+	private GameModel gameModel;
 
 	/** Creates a Clan Invasion object.
 	 */
 	public ClanInvasion() {
 		screens = new GameScreens();
+		gameModel = new GameModel();
 	}
 
 	/** Called when the application is first created.
@@ -41,10 +49,10 @@ public class ClanInvasion extends Game {
 
 		this.gamePages = new ArrayList<>(
 				Arrays.asList(
-						new MainGamePage(this),
 						new ConfigureGameScreen(this),
 						new LoadingScreen(this),
-						new SplashScreen(this)
+						new SplashScreen(this),
+						new MainGamePage(this)
 				)
 		);
 
@@ -94,8 +102,21 @@ public class ClanInvasion extends Game {
 		return camera;
 	}
 
+	/**
+	 * @return - WorldMap class, which handles map interactions
+	 * and contains virtual map representation
+	 */
+	public WorldMap getMap() {
+		return gameModel.getWorldMap();
+	}
+
 	/** Called to destroy the application
 	 */
+	@Override
+	public void resize(int width, int height) {
+		super.resize(width, height);
+	}
+
 	@Override
 	public void dispose() {
 		this.getScreen().dispose();

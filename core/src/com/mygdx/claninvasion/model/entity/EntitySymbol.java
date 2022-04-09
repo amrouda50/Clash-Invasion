@@ -5,8 +5,16 @@ package com.mygdx.claninvasion.model.entity;
  * @author Dinari
  * @version 0.01
  */
-enum EntitySymbol {
-    T,
-    O,
-    C
+public enum EntitySymbol {
+    BARBARIAN("barbarian"),
+    CASTEL("castel"),
+    STONE("Stone"),
+    DRAGON("Dragon"),
+    TREE("tree");
+
+    public final String sourcePart;
+
+    EntitySymbol(String sourcePart) {
+        this.sourcePart = sourcePart;
+    }
 }
