@@ -5,7 +5,11 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import com.mygdx.claninvasion.model.adapters.IsometricToOrthogonalAdapt;
+import com.mygdx.claninvasion.model.map.WorldCell;
+import com.mygdx.claninvasion.model.map.WorldMap;
 
 /**
  * Represents an event handler for libgdx input
@@ -19,12 +23,19 @@ public class GameInputProcessor implements InputProcessor {
      * camera of the application
      */
     private final Camera camera;
+    /**
+     * application mop
+     * @see WorldMap
+     */
+    private final WorldMap map;
 
     /**
      * @param camera - camera of the application
+     * @param map - application model mop
      */
-    public GameInputProcessor(Camera camera) {
+    public GameInputProcessor(Camera camera, WorldMap map) {
         this.camera = camera;
+        this.map = map;
     }
 
     @Override
@@ -35,6 +46,32 @@ public class GameInputProcessor implements InputProcessor {
     @Override
     public boolean keyUp(int keycode) {
         return false;
+    }
+
+    /**
+     * method responsible for handling game clicks
+     */
+    private void onTouch() {
+        Vector3 mousePosition = getMousePosition();
+        camera.unproject(mousePosition); // get the world position from camera
+
+        Vector2 mouseOrtho = new IsometricToOrthogonalAdapt(new Vector2(mousePosition.x, mousePosition.y)).getPoint();
+        Vector3 mouseOrtho3 = new Vector3(mouseOrtho.x + WorldCell.getTransformWidth(), mouseOrtho.y - WorldCell.getTransformWidth(), 0);
+
+        for (WorldCell worldCell : map.getCells()) {
+            if (worldCell.contains(mouseOrtho3)) {
+                System.out.println(worldCell.getId());
+                worldCell.getTileCell().setTile(null);
+            }
+        }
+    }
+
+
+    /**
+     * @return vector of the current mouse position
+     */
+    public Vector3 getMousePosition() {
+        return new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
     }
 
     /**
@@ -58,6 +95,10 @@ public class GameInputProcessor implements InputProcessor {
             translate.y -= 1;
         } else if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
             translate.y += 1;
+        }
+
+        if (Gdx.input.justTouched()) {
+            this.onTouch();
         }
 
         camera.translate(translate);

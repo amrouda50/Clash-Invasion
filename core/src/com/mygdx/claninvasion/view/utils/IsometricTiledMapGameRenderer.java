@@ -1,33 +1,28 @@
-package com.mygdx.claninvasion.view.renderer;
+package com.mygdx.claninvasion.view.utils;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.maps.MapGroupLayer;
 import com.badlogic.gdx.maps.MapLayer;
-import com.badlogic.gdx.maps.MapProperties;
+import com.badlogic.gdx.maps.MapLayers;
 import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.maps.tiled.TiledMapImageLayer;
 import com.badlogic.gdx.maps.tiled.TiledMapTile;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.renderers.BatchTiledMapRenderer;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.utils.Align;
-import com.mygdx.claninvasion.model.Globals;
-import com.mygdx.claninvasion.view.tiledmap.TiledMapActor;
-
-import javax.swing.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.concurrent.atomic.AtomicBoolean;
+import com.mygdx.claninvasion.model.map.WorldCell;
+import com.mygdx.claninvasion.model.map.WorldMap;
+import org.javatuples.Pair;
+import org.javatuples.Quartet;
 
 import static com.badlogic.gdx.graphics.g2d.Batch.*;
 import static com.badlogic.gdx.graphics.g2d.Batch.U2;
 
-public class IsometricTiledMapGameRendereder extends BatchTiledMapRenderer {
+public class IsometricTiledMapGameRenderer extends BatchTiledMapRenderer {
     protected Matrix4 isoTransform;
     protected Matrix4 invIsotransform;
     protected Vector3 screenPos = new Vector3();
@@ -36,26 +31,23 @@ public class IsometricTiledMapGameRendereder extends BatchTiledMapRenderer {
     protected Vector2 bottomLeft = new Vector2();
     protected Vector2 topLeft = new Vector2();
     protected Vector2 bottomRight = new Vector2();
-    protected boolean updateActors = false;
 
-    protected HashMap<String, ArrayList<Actor>> actors;
-
-    public IsometricTiledMapGameRendereder(TiledMap map) {
+    public IsometricTiledMapGameRenderer(TiledMap map) {
         super(map);
         init();
     }
 
-    public IsometricTiledMapGameRendereder(TiledMap map, Batch batch) {
+    public IsometricTiledMapGameRenderer(TiledMap map, Batch batch) {
         super(map, batch);
         init();
     }
 
-    public IsometricTiledMapGameRendereder(TiledMap map, float unitScale) {
+    public IsometricTiledMapGameRenderer(TiledMap map, float unitScale) {
         super(map, unitScale);
         init();
     }
 
-    public IsometricTiledMapGameRendereder(TiledMap map, float unitScale, Batch batch) {
+    public IsometricTiledMapGameRenderer(TiledMap map, float unitScale, Batch batch) {
         super(map, unitScale, batch);
         init();
     }
@@ -72,7 +64,6 @@ public class IsometricTiledMapGameRendereder extends BatchTiledMapRenderer {
         // ... and the inverse matrix
         invIsotransform = new Matrix4(isoTransform);
         invIsotransform.inv();
-        actors = new HashMap<>();
     }
 
     private Vector3 translateScreenToIso (Vector2 vec) {
@@ -89,17 +80,53 @@ public class IsometricTiledMapGameRendereder extends BatchTiledMapRenderer {
         return screenPos;
     }
 
-    public void render(boolean updateActors) {
-        this.updateActors = updateActors;
+    /**
+     * Rewritten render with special value supplied
+     * @param worldMap - map of the application
+     */
+    public void render (WorldMap worldMap) {
         beginRender();
         for (MapLayer layer : map.getLayers()) {
-            renderMapLayer(layer);
+            renderMapLayer(layer, worldMap);
         }
         endRender();
     }
 
-    @Override
-    public void renderTileLayer (TiledMapTileLayer layer) {
+    /**
+     * Method used inside render(mop)
+     * @param layer - tile layer
+     * @param map - world model map
+     */
+    protected void renderMapLayer (MapLayer layer, WorldMap map) {
+        if (!layer.isVisible()) return;
+        if (layer instanceof MapGroupLayer) {
+            MapLayers childLayers = ((MapGroupLayer)layer).getLayers();
+            for (int i = 0; i < childLayers.size(); i++) {
+                MapLayer childLayer = childLayers.get(i);
+                if (!childLayer.isVisible()) continue;
+                renderMapLayer(childLayer);
+            }
+        } else {
+            if (layer instanceof TiledMapTileLayer) {
+                renderTileLayer((TiledMapTileLayer)layer, map);
+            } else if (layer instanceof TiledMapImageLayer) {
+                renderImageLayer((TiledMapImageLayer)layer);
+            } else {
+                renderObjects(layer);
+            }
+        }
+    }
+
+    /**
+     * Most of application rendering logic lies here
+     * Goes though every cell, gets though magic its coordinates
+     * Then creates a vertices array for feeding it up to the draw method
+     * Also uploads newly updated cells to the map
+     * @param layer - tile layer
+     * @param map - world model map
+     */
+    public void renderTileLayer (TiledMapTileLayer layer, WorldMap map) {
+        // Render only the first layer (grass)
         if (layer.getName().equals("Layer2")) {
             return;
         }
@@ -134,11 +161,6 @@ public class IsometricTiledMapGameRendereder extends BatchTiledMapRenderer {
         int col1 = (int)(translateScreenToIso(bottomLeft).x / tileWidth) - toIso ;
         int col2 = (int)(translateScreenToIso(topRight).x / tileWidth) + toIso ;
 
-        if (actors.containsKey(layer.getName())) {
-            actors.remove(layer.getName());
-        }
-
-        ArrayList<Actor> actors = new ArrayList<>();
         for (int row = row2; row >= row1; row--) {
             for (int col = col1; col <= col2; col++) {
                 float x = (col * halfTileWidth) + (row * halfTileWidth);
@@ -255,26 +277,24 @@ public class IsometricTiledMapGameRendereder extends BatchTiledMapRenderer {
                         }
                     }
 
-                    float widthRat = viewBounds.width - Globals.V_WIDTH;
-                    float heightRat = viewBounds.height - Globals.V_HEIGHT;
-
                     batch.draw(region.getTexture(), vertices, 0, NUM_VERTICES);
-                    Actor actor = new TiledMapActor(this.map, layer, cell);
-                    actor.setX( -viewBounds.x + x2 -  tileWidth  );
-                    actor.setY( -viewBounds.y + y2 -   tileHeight  );
-                    actor.setSize(tileWidth, tileHeight);
-                    actors.add(actor);
+                    if (map != null) {
+                        WorldCell worldCell = new WorldCell(new Quartet<>(x1, y1, x2, y2), new Pair<>(row, col), region, x + "" + y);
+                        worldCell.setTileCell(cell);
+                        map.addCell(worldCell);
+                    }
                 }
-
-//                System.out.println(Arrays.toString(vertices));
             }
-
-//            System.out.println((viewBounds.height -  Globals.V_HEIGHT ));
-            this.actors.put(layer.getName(), actors);
         }
     }
 
-    public HashMap<String, ArrayList<Actor>> getActors() {
-        return actors;
+    /**
+     * Overridden method to yse local
+     * renderTileLayer method
+     * @param layer - tile layer
+     */
+    @Override
+    public void renderTileLayer(TiledMapTileLayer layer) {
+        renderTileLayer (layer, null);
     }
 }
