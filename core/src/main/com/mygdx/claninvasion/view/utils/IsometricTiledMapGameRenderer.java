@@ -18,9 +18,12 @@ import com.mygdx.claninvasion.model.entity.Entity;
 import com.mygdx.claninvasion.model.entity.EntitySymbol;
 import com.mygdx.claninvasion.model.map.WorldCell;
 import com.mygdx.claninvasion.model.map.WorldMap;
+import org.graalvm.compiler.nodes.NodeView;
 import org.javatuples.Pair;
 import org.javatuples.Quartet;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 
 import static com.badlogic.gdx.graphics.g2d.Batch.*;
@@ -283,22 +286,69 @@ public class IsometricTiledMapGameRenderer extends BatchTiledMapRenderer {
 
                         batch.draw(region.getTexture(), vertices, 0, NUM_VERTICES);
                         if (map != null) {
-                            if (layer.getName().equals("Layer2")) {
-                                System.out.println(row + ", " + col);
+                            if (layer.getName().equals("Layer1")) {
+                                WorldCell worldCell = new WorldCell(new Quartet<>(x1, y1, x2, y2), new Pair<>(row, col), region, x + "" + y);
+                                worldCell.setTileCell(cell);
+                                map.addCell(worldCell);
                             }
-                            WorldCell worldCell = new WorldCell(new Quartet<>(x1, y1, x2, y2), new Pair<>(row, col), region, x + "" + y);
-                            worldCell.setTileCell(cell);
-                            TiledMapTileLayer.Cell a = map.getLayer2().getCell(0, 31);
-                            System.out.println(a.getTile().getTextureRegion().getTexture());
-                            worldCell.addEntity(new Entity( EntitySymbol.BARBARIAN, new Pair<Integer, Integer>(row , col)));
-                            map.addCell(worldCell);
+                            else {
+                                try {
+                                    WorldCell worldCell = map.getCell(new Pair<Integer, Integer>(row, col));
+                                    EntitySymbol currentSymbol = ChooseEntitySymbol(cell);
+                                    worldCell.addEntity(new Entity(currentSymbol, new Pair<Integer, Integer>(row, col)));
+                                } catch (Exception ignored) {}
+                            }
                         }
 
                 }
             }
-            System.out.println("=======================================");
+
         }
 
+    }
+
+    /**
+     * This function takes in a cell and return the EntitySymbol of the Entity in the cell , if there is no Entity then it return null
+     * @return EntitySymbol
+     */
+    public EntitySymbol ChooseEntitySymbol(TiledMapTileLayer.Cell x ){
+        String Path = x.getTile().getTextureRegion().getTexture().toString();
+        String entityName =  Paths.get(Path).getFileName().toString();
+        String trimmedEntityName  = entityName.substring(0, entityName.lastIndexOf('.'));
+
+        EntitySymbol FinalResult ;
+        switch(trimmedEntityName){
+            case "Stone":
+            FinalResult = EntitySymbol.STONE;
+            break;
+
+            case "tree":
+                FinalResult = EntitySymbol.TREE;
+                break;
+
+            case "Dragon":
+                FinalResult = EntitySymbol.DRAGON;
+                break;
+
+            case "Dragon-Flipped":
+                FinalResult = EntitySymbol.DRAGON;
+                break;
+
+            case "barbarian-fliped":
+                FinalResult = EntitySymbol.BARBARIAN;
+                break;
+
+            case "barbarian":
+                FinalResult = EntitySymbol.BARBARIAN;
+                break;
+            default:
+                FinalResult = null;
+                break;
+
+
+        }
+
+        return FinalResult;
     }
 
     /**

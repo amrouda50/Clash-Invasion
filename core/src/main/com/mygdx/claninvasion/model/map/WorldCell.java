@@ -156,7 +156,13 @@ public class WorldCell {
      *
      * */
     public void addEntity(Entity x){
-        this.occupier = x;
+        if(x.getEntitySymbol() == null){
+            removeEnitiy();
+        }
+        else{
+            this.occupier = x;
+        }
+      //  System.out.println(x.getEntitySymbol());
     }
 
     /**

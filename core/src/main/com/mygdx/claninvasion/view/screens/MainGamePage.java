@@ -22,6 +22,8 @@ import com.mygdx.claninvasion.view.tiledmap.TiledMapStage;
 import com.mygdx.claninvasion.view.utils.GameInputProcessor;
 import org.javatuples.Pair;
 
+import java.util.ArrayList;
+
 
 /**
  * One of the screens which implement GamePage interface, responsible for gameplay
@@ -83,8 +85,12 @@ public class MainGamePage implements GamePage, UiUpdatable {
 
             for (WorldCell worldCell : app.getMap().getCells()) {
                 if (worldCell.contains(mouseOrtho3)) {
-                    System.out.println(worldCell.getId());
-                    worldCell.getTileCell().setTile(null);
+                    System.out.println(worldCell.getMapPosition().getValue0() + " " + worldCell.getMapPosition().getValue1());
+                    if (worldCell.getOccupier() == null) {
+                        return;
+                    }
+                    System.out.println(worldCell.getOccupier().getEntitySymbol());
+                    //worldCell.getTileCell().setTile(null);
                 }
             }
         });
@@ -120,10 +126,16 @@ public class MainGamePage implements GamePage, UiUpdatable {
         renderer.setView(app.getCamera());
         app.getMap().clear();
         renderer.render(app.getMap());
-
         update(delta);
         entitiesStage.act(delta);
         entitiesStage.draw();
+        ArrayList<WorldCell> a = app.getMap().getCells();
+        for(WorldCell x : a){
+            if(x.getOccupier() != null){
+
+            }
+                    }
+
     }
 
     /**
