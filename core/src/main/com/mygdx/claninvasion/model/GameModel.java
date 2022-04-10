@@ -65,28 +65,28 @@ public class GameModel {
     /**
      * Responsible for stopping the game
      */
-    public void stopGame(){
+    public void stopGame() {
         gameState.stopGame();
     }
 
     /**
      * Responsible for starting the game
      */
-    public void startGame(){
+    public void startGame() {
         gameState.startGame();
     }
 
     /**
      * changes the phase of the game
      */
-    public void changePhase(){
+    public void changePhase() {
         gameState.changePhase();
     }
 
     /**
      * Changes the turn of the player
      */
-    public void changeTurn(){
+    public void changeTurn() {
         gameState.changeTurn();
     }
 

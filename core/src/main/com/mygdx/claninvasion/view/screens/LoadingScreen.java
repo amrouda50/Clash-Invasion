@@ -48,8 +48,8 @@ public class LoadingScreen implements GamePage {
         stage.addActor(animated);
         Sound = Gdx.audio.newSound(Gdx.files.internal("SoundEffects/LoadingScreen.ogg"));
         long id = Sound.play(1.0f);
-        Sound.setPitch(id , 2);
-        Sound.setLooping(id , false);
+        Sound.setPitch(id, 2);
+        Sound.setLooping(id, false);
     }
 
     /**

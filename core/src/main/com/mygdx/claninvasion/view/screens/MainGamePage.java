@@ -74,7 +74,7 @@ public class MainGamePage implements GamePage, UiUpdatable {
     @Override
     public void show() {
         app.getCamera().update();
-        inputProcessor = new GameInputProcessor(app.getCamera(), (mousePosition) -> {
+        inputProcessor = new GameInputProcessor(app.getCamera(), (Vector3 mousePosition) -> {
             Vector2 mouseOrtho = new IsometricToOrthogonalAdapt(new Vector2(mousePosition.x, mousePosition.y)).getPoint();
             Vector3 mouseOrtho3 = new Vector3(mouseOrtho.x + WorldCell.getTransformWidth(), mouseOrtho.y - WorldCell.getTransformWidth(), 0);
 
@@ -134,8 +134,8 @@ public class MainGamePage implements GamePage, UiUpdatable {
         renderer.render();
 
         entitiesStage.getViewport().setScreenBounds(
-                (int)renderer.getViewBounds().x,
-                (int)renderer.getViewBounds().y,
+                (int) renderer.getViewBounds().x,
+                (int) renderer.getViewBounds().y,
                 width,
                 height
                 );

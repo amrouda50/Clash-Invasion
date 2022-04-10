@@ -14,4 +14,7 @@ public class Globals {
      * Initial virtual height of the screen
      */
     public static final int V_HEIGHT = 420;
+
+    private Globals() {
+    }
 }

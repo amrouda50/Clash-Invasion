@@ -50,7 +50,7 @@ public class SplashScreen implements GamePage, UiUpdatable {
         background.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
         splash.setScale(2f);
-        splash.setPosition((stage.getWidth() / 1000) - 170 , (stage.getHeight() /1000) - 100 );
+        splash.setPosition((stage.getWidth() / 1000) - 170, (stage.getHeight() / 1000) - 100);
         stage.addActor(background);
         stage.addActor(splash);
         addMusic();
@@ -59,11 +59,11 @@ public class SplashScreen implements GamePage, UiUpdatable {
 
     }
 
-    private void addButtons(){
+    private void addButtons() {
         TextureAtlas atlas = new TextureAtlas("skin/skin/uiskin.atlas");
         Skin skin = new Skin(atlas);
         Table table = new Table(skin);
-        table.setBounds(-85 , -50 , Gdx.graphics.getWidth() , Gdx.graphics.getHeight());
+        table.setBounds(-85, -50, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
         startGameButton = new GameButton(skin, "Start Game");
         endGameButton = new GameButton(skin, "End Game" );
@@ -80,7 +80,7 @@ public class SplashScreen implements GamePage, UiUpdatable {
     }
 
 
-    private void addMusic(){
+    private void addMusic() {
         music = Gdx.audio.newMusic(Gdx.files.internal("music/SplashScreenMusic.mp3"));
         music.setVolume(1.0f);
         music.setLooping(true);
@@ -95,7 +95,7 @@ public class SplashScreen implements GamePage, UiUpdatable {
     public void show() {
         this.initSplash();
 
-        splash.addAction( sequence(alpha(0f), fadeIn(2f)) );
+        splash.addAction(sequence(alpha(0f), fadeIn(2f)));
     }
 
     /**

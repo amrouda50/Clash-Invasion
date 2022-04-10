@@ -11,7 +11,7 @@ public class TiledMapClickListener extends ClickListener {
     }
 
     @Override
-    public void clicked (InputEvent event, float x, float y)  {
+    public void clicked(InputEvent event, float x, float y)  {
 //        System.out.printf("Clicked on the coordinates: %f %f", );
         System.out.printf("Actor coordinates %f %f", actor.getX(), actor.getY());
         actor.getCell().setTile(null);
