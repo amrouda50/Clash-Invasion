@@ -1,6 +1,7 @@
 package com.mygdx.claninvasion.model.entity;
 
 import com.badlogic.gdx.math.Vector2;
+import org.javatuples.Pair;
 
 /**
  * Basic Entity of application, will be used in the view part for the Sprites
@@ -9,7 +10,7 @@ import com.badlogic.gdx.math.Vector2;
  */
 public class Entity {
     private final EntitySymbol entitySymbol;
-    private Vector2 position;
+    private Pair<Integer , Integer> position;
 
     /**
      * Creates new Entity
@@ -18,7 +19,7 @@ public class Entity {
         entitySymbol = EntitySymbol.TREE;
     }
 
-    public Entity(EntitySymbol entitySymbol, Vector2 position) {
+    public Entity(EntitySymbol entitySymbol, Pair<Integer, Integer> position) {
         this.entitySymbol = entitySymbol;
         this.position = position;
     }
@@ -34,10 +35,18 @@ public class Entity {
 
     /**
      * Returns map symbol
-     * @return - position on the map
-     * @see Vector2
+     * @return - position on the map Of x
+     *
      */
-    public Vector2 getPosition() {
-        return position;
+    public Integer getValueX() {
+        return position.getValue0();
+    }
+    /**
+     * Returns map symbol
+     * @return - position on the map of Y
+     *
+     */
+    public Integer getValueY() {
+        return position.getValue1();
     }
 }
