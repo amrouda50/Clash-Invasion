@@ -18,11 +18,10 @@ import com.mygdx.claninvasion.model.map.WorldCell;
 import com.mygdx.claninvasion.model.map.WorldMap;
 import org.javatuples.Pair;
 import org.javatuples.Quartet;
-
 import java.util.ArrayList;
 
 import static com.badlogic.gdx.graphics.g2d.Batch.*;
-import static com.badlogic.gdx.graphics.g2d.Batch.U2;
+
 
 public class IsometricTiledMapGameRenderer extends BatchTiledMapRenderer {
     protected Matrix4 isoTransform;
@@ -56,14 +55,14 @@ public class IsometricTiledMapGameRenderer extends BatchTiledMapRenderer {
         init();
     }
 
-    private void init () {
+    private void init() {
         placeableObjects = new ArrayList<>();
         // create the isometric transform
         isoTransform = new Matrix4();
         isoTransform.idt();
 
         // isoTransform.translate(0, 32, 0);
-        isoTransform.scale((float)(Math.sqrt(2.0) / 2.0), (float)(Math.sqrt(2.0) / 4.0), 1.0f);
+        isoTransform.scale((float) (Math.sqrt(2.0) / 2.0), (float) (Math.sqrt(2.0) / 4.0), 1.0f);
         isoTransform.rotate(0.0f, 0.0f, 1.0f, -45);
 
         // ... and the inverse matrix
@@ -71,7 +70,7 @@ public class IsometricTiledMapGameRenderer extends BatchTiledMapRenderer {
         invIsotransform.inv();
     }
 
-    private Vector3 translateScreenToIso (Vector2 vec) {
+    private Vector3 translateScreenToIso(Vector2 vec) {
         screenPos.set(vec.x, vec.y, 0);
         screenPos.mul(invIsotransform);
 
@@ -89,7 +88,7 @@ public class IsometricTiledMapGameRenderer extends BatchTiledMapRenderer {
      * Rewritten render with special value supplied
      * @param worldMap - map of the application
      */
-    public void render (WorldMap worldMap) {
+    public void render(WorldMap worldMap) {
         beginRender();
         for (MapLayer layer : map.getLayers()) {
             renderMapLayer(layer, worldMap);
@@ -102,20 +101,24 @@ public class IsometricTiledMapGameRenderer extends BatchTiledMapRenderer {
      * @param layer - tile layer
      * @param map - world model map
      */
-    protected void renderMapLayer (MapLayer layer, WorldMap map) {
-        if (!layer.isVisible()) return;
+    protected void renderMapLayer(MapLayer layer, WorldMap map) {
+        if (!layer.isVisible()) {
+            return;
+        }
         if (layer instanceof MapGroupLayer) {
-            MapLayers childLayers = ((MapGroupLayer)layer).getLayers();
+            MapLayers childLayers = ((MapGroupLayer) layer).getLayers();
             for (int i = 0; i < childLayers.size(); i++) {
                 MapLayer childLayer = childLayers.get(i);
-                if (!childLayer.isVisible()) continue;
+                if (!childLayer.isVisible()) {
+                    continue;
+                }
                 renderMapLayer(childLayer);
             }
         } else {
             if (layer instanceof TiledMapTileLayer) {
-                renderTileLayer((TiledMapTileLayer)layer, map);
+                renderTileLayer((TiledMapTileLayer) layer, map);
             } else if (layer instanceof TiledMapImageLayer) {
-                renderImageLayer((TiledMapImageLayer)layer);
+                renderImageLayer((TiledMapImageLayer) layer);
             } else {
                 renderObjects(layer);
             }
@@ -130,8 +133,8 @@ public class IsometricTiledMapGameRenderer extends BatchTiledMapRenderer {
      * @param layer - tile layer
      * @param map - world model map
      */
-    public void renderTileLayer (TiledMapTileLayer layer, WorldMap map) {
-        if (layer.getName().equals("Layer2") && !firstRender) {
+    public void renderTileLayer(TiledMapTileLayer layer, WorldMap map) {
+        if ("Layer2".equals(layer.getName()) && !firstRender) {
             return;
         }
 
@@ -160,11 +163,11 @@ public class IsometricTiledMapGameRenderer extends BatchTiledMapRenderer {
 
         int toIso = 0;
         // transforming screen coordinates to iso coordinates
-        int row1 = (int)(translateScreenToIso(topLeft).y / tileWidth) + toIso;
-        int row2 = (int)(translateScreenToIso(bottomRight).y / tileWidth) - toIso ;
+        int row1 = (int) (translateScreenToIso(topLeft).y / tileWidth) + toIso;
+        int row2 = (int) (translateScreenToIso(bottomRight).y / tileWidth) - toIso ;
 
-        int col1 = (int)(translateScreenToIso(bottomLeft).x / tileWidth) - toIso ;
-        int col2 = (int)(translateScreenToIso(topRight).x / tileWidth) + toIso ;
+        int col1 = (int) (translateScreenToIso(bottomLeft).x / tileWidth) - toIso ;
+        int col2 = (int) (translateScreenToIso(topRight).x / tileWidth) + toIso ;
 
         for (int row = row2; row >= row1; row--) {
             for (int col = col1; col <= col2; col++) {
@@ -172,7 +175,9 @@ public class IsometricTiledMapGameRenderer extends BatchTiledMapRenderer {
                 float y = (row * halfTileHeight) - (col * halfTileHeight);
 
                 final TiledMapTileLayer.Cell cell = layer.getCell(col, row);
-                if (cell == null) continue;
+                if (cell == null) {
+                    continue;
+                }
                 final TiledMapTile tile = cell.getTile();
 
                 if (tile != null) {
@@ -182,7 +187,7 @@ public class IsometricTiledMapGameRenderer extends BatchTiledMapRenderer {
 
                     TextureRegion region = tile.getTextureRegion();
 
-                    if (layer.getName().equals("Layer2")) {
+                    if ("Layer2".equals(layer.getName())) {
                         placeableObjects.add(new Pair<>(region, color));
                     } else {
                         float x1 = x + tile.getOffsetX() * unitScale + layerOffsetX;
@@ -287,7 +292,11 @@ public class IsometricTiledMapGameRenderer extends BatchTiledMapRenderer {
 
                         batch.draw(region.getTexture(), vertices, 0, NUM_VERTICES);
                         if (map != null) {
-                            WorldCell worldCell = new WorldCell(new Quartet<>(x1, y1, x2, y2), new Pair<>(row, col), region, x + "" + y);
+                            WorldCell worldCell =
+                                    new WorldCell(
+                                            new Quartet<>(x1, y1, x2, y2),
+                                            new Pair<>(row, col), region, x + "" + y
+                                    );
                             worldCell.setTileCell(cell);
                             map.addCell(worldCell);
                         }
@@ -308,7 +317,7 @@ public class IsometricTiledMapGameRenderer extends BatchTiledMapRenderer {
      */
     @Override
     public void renderTileLayer(TiledMapTileLayer layer) {
-        renderTileLayer (layer, null);
+        renderTileLayer(layer, null);
     }
 
     public ArrayList<Pair<TextureRegion, Float>> getPlaceableObjects() {

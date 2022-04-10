@@ -38,7 +38,7 @@ public class IsometricToOrthogonalAdapt {
         });
 
         isoMatrix.inv();
-        float[] result =pointMatrix.mul(isoMatrix).getValues();
+        float[] result = pointMatrix.mul(isoMatrix).getValues();
         return new Vector2(result[M00], result[M01]);
     }
 }

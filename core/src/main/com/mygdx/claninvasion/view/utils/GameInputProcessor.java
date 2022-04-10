@@ -24,7 +24,7 @@ public class GameInputProcessor implements InputProcessor {
      */
     private final Camera camera;
 
-    private RunnableTouchEvent onTouchEvent;
+    private final RunnableTouchEvent onTouchEvent;
 
     /**
      * @param camera - camera of the application
@@ -70,9 +70,9 @@ public class GameInputProcessor implements InputProcessor {
         Vector3 translate = new Vector3(0, 0, 0);
 
         if (Gdx.input.isKeyPressed(Input.Keys.Z) && camera instanceof OrthographicCamera) {
-            ((OrthographicCamera)camera).zoom -= 0.01;
+            ((OrthographicCamera) camera).zoom -= 0.01;
         } else if (Gdx.input.isKeyPressed(Input.Keys.X) && camera instanceof OrthographicCamera) {
-            ((OrthographicCamera)camera).zoom += 0.01;
+            ((OrthographicCamera) camera).zoom += 0.01;
         }
 
         if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {

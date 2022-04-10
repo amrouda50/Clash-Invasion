@@ -148,6 +148,6 @@ public class WorldCell {
      * @return - magic value used for correct click detector (for now)
      */
     public static int getTransformWidth() {
-        return WorldCell.WIDTH + (WorldCell.WIDTH  /2);
+        return WorldCell.WIDTH + (WorldCell.WIDTH  / 2);
     }
 }
