@@ -40,6 +40,7 @@ public class GameScreensTest {
         GameScreensManager gameScreens = new GameScreens();
         gameScreens.push(page1);
         Assert.assertSame("Pages should be the same", gameScreens.get(), page1);
+        Assert.assertFalse("Pages should not be empty", gameScreens.isEmpty());
     }
 
     @Test
