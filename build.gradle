@@ -57,6 +57,7 @@ project(":desktop") {
 project(":core") {
     apply plugin: "java-library"
     apply plugin: "jacoco"
+    apply plugin: "checkstyle"
 
     dependencies {
         api "com.badlogicgames.gdx:gdx:$gdxVersion"
@@ -90,6 +91,9 @@ project(":core") {
 
     jacocoTestReport {
         reports {
+            html.enabled = true
+            xml.enabled = true
+            csv.enabled = true
             html.outputLocation = layout.buildDirectory.dir('jacocoHtml')
         }
         dependsOn test // tests are required to run before generating the report
@@ -98,6 +102,11 @@ project(":core") {
                 fileTree(dir: it, exclude: jacocoExclusions)
             }))
         }
+    }
+
+    checkstyle {
+        toolVersion = '6.16.1'
+        config = rootProject.resources.text.fromFile('core/etc/checkstyle/rules.xml')
     }
 }
 
@@ -113,6 +122,5 @@ project(":ios") {
         api "com.badlogicgames.gdx:gdx-backend-robovm:$gdxVersion"
         api "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-ios"
         api "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-ios"
-        
     }
 }

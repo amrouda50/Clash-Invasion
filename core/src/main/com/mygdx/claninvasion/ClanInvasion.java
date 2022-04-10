@@ -63,7 +63,7 @@ public class ClanInvasion extends Game {
 
 
 	/** Used to add the screen one after the other.
-	 * It goes through the array list and pushes the screens.
+    * It goes through the array list and pushes the screens.
 	 */
 	private void initScreens() {
 		for (GamePage gamePage : gamePages) {
