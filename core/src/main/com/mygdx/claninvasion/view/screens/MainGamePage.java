@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
@@ -14,10 +15,12 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.mygdx.claninvasion.ClanInvasion;
 import com.mygdx.claninvasion.model.adapters.IsometricToOrthogonalAdapt;
 import com.mygdx.claninvasion.model.map.WorldCell;
+import com.mygdx.claninvasion.model.map.WorldMap;
 import com.mygdx.claninvasion.view.actors.GameButton;
 import com.mygdx.claninvasion.view.utils.IsometricTiledMapGameRenderer;
 import com.mygdx.claninvasion.view.tiledmap.TiledMapStage;
 import com.mygdx.claninvasion.view.utils.GameInputProcessor;
+import org.javatuples.Pair;
 
 
 /**
@@ -96,6 +99,10 @@ public class MainGamePage implements GamePage, UiUpdatable {
         entitiesStage = new TiledMapStage();
         Gdx.input.setInputProcessor(entitiesStage);
         addButtons();
+        WorldCell c1 = app.getMap().getCell(new Pair<>(7 , 4));
+        app.getMap().mutate(c1);
+        //System.out.println(app.getMap().getlayer1.getcell());
+       // app.getMap().mutate(currentx  + 3 ,currenty + 5);
     }
 
     /**

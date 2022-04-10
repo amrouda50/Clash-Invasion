@@ -14,6 +14,8 @@ import com.badlogic.gdx.maps.tiled.renderers.BatchTiledMapRenderer;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import com.mygdx.claninvasion.model.entity.Entity;
+import com.mygdx.claninvasion.model.entity.EntitySymbol;
 import com.mygdx.claninvasion.model.map.WorldCell;
 import com.mygdx.claninvasion.model.map.WorldMap;
 import org.javatuples.Pair;
@@ -32,9 +34,7 @@ public class IsometricTiledMapGameRenderer extends BatchTiledMapRenderer {
     protected Vector2 topRight = new Vector2();
     protected Vector2 bottomLeft = new Vector2();
     protected Vector2 topLeft = new Vector2();
-    protected Vector2 bottomRight = new Vector2();
-    protected ArrayList<Pair<TextureRegion, Float>> placeableObjects;
-    protected boolean firstRender = true;
+    protected Vector2 bottomRight = new Vector2();protected boolean firstRender = true;
 
     public IsometricTiledMapGameRenderer(TiledMap map) {
         super(map);
@@ -57,7 +57,6 @@ public class IsometricTiledMapGameRenderer extends BatchTiledMapRenderer {
     }
 
     private void init () {
-        placeableObjects = new ArrayList<>();
         // create the isometric transform
         isoTransform = new Matrix4();
         isoTransform.idt();
@@ -91,9 +90,11 @@ public class IsometricTiledMapGameRenderer extends BatchTiledMapRenderer {
      */
     public void render (WorldMap worldMap) {
         beginRender();
+        worldMap.setLayer2((TiledMapTileLayer) map.getLayers().get("Layer2"));
         for (MapLayer layer : map.getLayers()) {
             renderMapLayer(layer, worldMap);
         }
+
         endRender();
     }
 
@@ -131,9 +132,6 @@ public class IsometricTiledMapGameRenderer extends BatchTiledMapRenderer {
      * @param map - world model map
      */
     public void renderTileLayer (TiledMapTileLayer layer, WorldMap map) {
-        if (layer.getName().equals("Layer2") && !firstRender) {
-            return;
-        }
 
         final Color batchColor = batch.getColor();
         final float color = Color.toFloatBits(batchColor.r, batchColor.g, batchColor.b, batchColor.a * layer.getOpacity());
@@ -182,9 +180,7 @@ public class IsometricTiledMapGameRenderer extends BatchTiledMapRenderer {
 
                     TextureRegion region = tile.getTextureRegion();
 
-                    if (layer.getName().equals("Layer2")) {
-                        placeableObjects.add(new Pair<>(region, color));
-                    } else {
+
                         float x1 = x + tile.getOffsetX() * unitScale + layerOffsetX;
                         float y1 = y + tile.getOffsetY() * unitScale + layerOffsetY;
                         float x2 = x1 + region.getRegionWidth() * unitScale;
@@ -287,18 +283,22 @@ public class IsometricTiledMapGameRenderer extends BatchTiledMapRenderer {
 
                         batch.draw(region.getTexture(), vertices, 0, NUM_VERTICES);
                         if (map != null) {
+                            if (layer.getName().equals("Layer2")) {
+                                System.out.println(row + ", " + col);
+                            }
                             WorldCell worldCell = new WorldCell(new Quartet<>(x1, y1, x2, y2), new Pair<>(row, col), region, x + "" + y);
                             worldCell.setTileCell(cell);
+                            TiledMapTileLayer.Cell a = map.getLayer2().getCell(0, 31);
+                            System.out.println(a.getTile().getTextureRegion().getTexture());
+                            worldCell.addEntity(new Entity( EntitySymbol.BARBARIAN, new Pair<Integer, Integer>(row , col)));
                             map.addCell(worldCell);
                         }
-                    }
+
                 }
             }
+            System.out.println("=======================================");
         }
 
-        if (getPlaceableObjects().size() > 0) {
-            firstRender = false;
-        }
     }
 
     /**
@@ -311,7 +311,4 @@ public class IsometricTiledMapGameRenderer extends BatchTiledMapRenderer {
         renderTileLayer (layer, null);
     }
 
-    public ArrayList<Pair<TextureRegion, Float>> getPlaceableObjects() {
-        return placeableObjects;
-    }
 }

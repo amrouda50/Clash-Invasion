@@ -1,6 +1,9 @@
 package com.mygdx.claninvasion.model.map;
 
 
+import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
+import com.badlogic.gdx.utils.Timer;
+import com.mygdx.claninvasion.model.entity.Entity;
 import org.javatuples.Pair;
 
 import java.util.ArrayList;
@@ -14,11 +17,12 @@ import java.util.Arrays;
  */
 public class WorldMap {
     private final ArrayList<WorldCell> worldCells;
+    private TiledMapTileLayer Layer2;
 
     /**
      * @param worldCells - array of worldCells
      */
-    public WorldMap(WorldCell[] worldCells) {
+    public WorldMap(WorldCell[] worldCells ) {
         this.worldCells = new ArrayList<>();
         this.worldCells.addAll(Arrays.asList(worldCells));
     }
@@ -45,6 +49,12 @@ public class WorldMap {
 
     public WorldCell getCell(Pair<Integer, Integer> cellPlace) {
         return (WorldCell) worldCells.stream().filter(cell -> cell.getMapPosition().equals(cellPlace)).toArray()[0];
+    }
+    public void setLayer2(TiledMapTileLayer Layer2){
+        this.Layer2 = Layer2;
+    }
+    public TiledMapTileLayer getLayer2(){
+       return  this.Layer2 ;
     }
 
     public int maxCellRowPosition() {
@@ -99,5 +109,21 @@ public class WorldMap {
      * of the entity which populated it)
      * @param c1 - cell to remove the entity
      */
-    public void mutate(WorldCell c1) {}
+    public void mutate(WorldCell c1) {
+        Pair<Integer , Integer> Coordinates = c1.getMapPosition();
+        Timer.schedule(new Timer.Task() {
+            int i = 7;
+            @Override
+
+            public void run() {
+                TiledMapTileLayer.Cell cell = Layer2.getCell(Coordinates.getValue0(), Coordinates.getValue1());
+                Layer2.setCell(i, 4, null);
+                Layer2.setCell(i+1, 4, cell);
+                i++;
+
+
+            }
+        } , 2 , 1 , 20);
+
+    }
 }

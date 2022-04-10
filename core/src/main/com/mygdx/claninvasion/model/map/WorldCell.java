@@ -150,4 +150,21 @@ public class WorldCell {
     public static int getTransformWidth() {
         return WorldCell.WIDTH + (WorldCell.WIDTH  /2);
     }
+
+    /**
+     * @param x - Adds an Enitity to the Occupier variable of the worldCell
+     *
+     * */
+    public void addEntity(Entity x){
+        this.occupier = x;
+    }
+
+    /**
+     * Sets the occupier to null
+     */
+    public void removeEnitiy(){
+        occupier = null;
+    }
+
+
 }
