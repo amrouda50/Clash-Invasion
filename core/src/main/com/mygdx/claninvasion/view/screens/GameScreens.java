@@ -1,5 +1,7 @@
 package com.mygdx.claninvasion.view.screens;
 
+import java.util.EmptyStackException;
+import java.util.NoSuchElementException;
 import java.util.Stack;
 
 /**
@@ -31,9 +33,10 @@ public class GameScreens implements GameScreensManager {
     /**
      * See GameScreensManager interface
      * Removes and returns last item in stack
+     * @throws EmptyStackException  if this stack is empty.
      */
     @Override
-    public GamePage pop() {
+    public GamePage pop() throws EmptyStackException {
         return pages.pop();
     }
 
@@ -42,9 +45,10 @@ public class GameScreens implements GameScreensManager {
      * See GameScreensManager interface
      * Replaces last item with the one passed
      * in the arguments
+     * @throws EmptyStackException  if this stack is empty.
      */
     @Override
-    public GamePage replace(GamePage page) {
+    public GamePage replace(GamePage page) throws EmptyStackException {
         GamePage last = pop();
         push(page);
         return last;
@@ -53,9 +57,10 @@ public class GameScreens implements GameScreensManager {
     /**
      * See GameScreensManager interface
      * Gets last state page without removing it
+     * @throws  NoSuchElementException if the element does not exist
      */
     @Override
-    public GamePage get() {
+    public GamePage get() throws NoSuchElementException {
         return pages.lastElement();
     }
 
