@@ -7,6 +7,7 @@ import org.javatuples.Pair;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Map modal of the application
@@ -16,7 +17,7 @@ import java.util.Arrays;
  */
 public class WorldMap {
     private final ArrayList<WorldCell> worldCells;
-    private TiledMapTileLayer Layer2;
+    private TiledMapTileLayer entitiesLayer;
 
     /**
      * @param worldCells - array of worldCells
@@ -49,11 +50,11 @@ public class WorldMap {
     public WorldCell getCell(Pair<Integer, Integer> cellPlace) {
         return (WorldCell) worldCells.stream().filter(cell -> cell.getMapPosition().equals(cellPlace)).toArray()[0];
     }
-    public void setLayer2(TiledMapTileLayer Layer2) {
-        this.Layer2 = Layer2;
+    public void setEntitiesLayer(TiledMapTileLayer entitiesLayer) {
+        this.entitiesLayer = entitiesLayer;
     }
     public TiledMapTileLayer getLayer2() {
-       return  this.Layer2 ;
+       return  this.entitiesLayer ;
     }
 
     public int maxCellRowPosition() {
@@ -112,15 +113,13 @@ public class WorldMap {
         Pair<Integer , Integer> Coordinates = c1.getMapPosition();
         Timer.schedule(new Timer.Task() {
             int i = 7;
+            int count = 0;
             @Override
-
             public void run() {
-                TiledMapTileLayer.Cell cell = Layer2.getCell(Coordinates.getValue0(), Coordinates.getValue1());
-                Layer2.setCell(i, 4, null);
-                Layer2.setCell(i + 1, 4, cell);
-                i++;
-
-
+                TiledMapTileLayer.Cell cell = entitiesLayer.getCell(Coordinates.getValue0() + count, Coordinates.getValue1());
+                entitiesLayer.setCell(i + count, 4, null);
+                entitiesLayer.setCell(i + 1 + count, 4, cell);
+                count++;
             }
         }, 2, 1, 20);
 

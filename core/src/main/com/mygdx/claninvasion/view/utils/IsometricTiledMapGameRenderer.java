@@ -70,7 +70,7 @@ public class IsometricTiledMapGameRenderer extends BatchTiledMapRenderer {
      */
     public void render(WorldMap worldMap) {
         beginRender();
-        worldMap.setLayer2((TiledMapTileLayer) map.getLayers().get("Layer2"));
+        worldMap.setEntitiesLayer((TiledMapTileLayer) map.getLayers().get(ENTITIES_LAYER));
         for (MapLayer layer : map.getLayers()) {
             renderMapLayer(layer, worldMap);
         }
