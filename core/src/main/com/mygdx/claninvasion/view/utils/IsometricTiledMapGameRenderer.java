@@ -237,7 +237,7 @@ public class IsometricTiledMapGameRenderer extends BatchTiledMapRenderer {
                 } catch (Exception ignored) {
 
                 }
-            } else {
+            } else if (map != null) {
                 throw new UnknownTiledMapLayerException(layer);
             }
         }
