@@ -2,6 +2,7 @@ package com.mygdx.claninvasion.view.utils;
 
 import java.nio.file.Paths;
 
+import com.mygdx.claninvasion.view.exceptions.UnknownTiledMapLayerException;
 import org.javatuples.Pair;
 import org.javatuples.Quartet;
 
@@ -33,6 +34,9 @@ public class IsometricTiledMapGameRenderer extends BatchTiledMapRenderer {
     protected Vector2 bottomLeft = new Vector2();
     protected Vector2 topLeft = new Vector2();
     protected Vector2 bottomRight = new Vector2();
+
+    protected static String BACKGROUND_LAYER = "Layer1";
+    protected static String ENTITIES_LAYER = "Layer2";
 
     public IsometricTiledMapGameRenderer(TiledMap map, float unitScale) {
         super(map, unitScale);
@@ -103,7 +107,7 @@ public class IsometricTiledMapGameRenderer extends BatchTiledMapRenderer {
         }
     }
 
-    private void setScreenPoints(final float layerOffsetX, final float layerOffsetY) {
+    protected void setScreenPoints(final float layerOffsetX, final float layerOffsetY) {
         // setting up the screen points
         // COL1
         topRight.set(viewBounds.x + viewBounds.width - layerOffsetX, viewBounds.y - layerOffsetY);
@@ -115,7 +119,7 @@ public class IsometricTiledMapGameRenderer extends BatchTiledMapRenderer {
         bottomRight.set(viewBounds.x + viewBounds.width - layerOffsetX, viewBounds.y + viewBounds.height - layerOffsetY);
     }
 
-    private float getColorForLayer(TiledMapTileLayer layer) {
+    protected float getColorForLayer(TiledMapTileLayer layer) {
         final Color batchColor = batch.getColor();
         return Color
                 .toFloatBits(
@@ -126,14 +130,14 @@ public class IsometricTiledMapGameRenderer extends BatchTiledMapRenderer {
                 );
     }
 
-    private Pair<Float, Float> getLayerOffset(TiledMapTileLayer layer) {
+    protected Pair<Float, Float> getLayerOffset(TiledMapTileLayer layer) {
         final float layerOffsetX = layer.getRenderOffsetX() * unitScale;
         // offset in tiled is y down, so we flip it
         final float layerOffsetY = -layer.getRenderOffsetY() * unitScale;
         return new Pair<>(layerOffsetX, layerOffsetY);
     }
 
-    private Quartet<Float, Float, Float, Float> getLayerXY(
+    protected Quartet<Float, Float, Float, Float> getLayerXY(
             Pair<Float, Float> xy, TextureRegion region, TiledMapTile tile, Pair<Float, Float> offset
     ) {
         float x1 = xy.getValue0() + tile.getOffsetX() * unitScale + offset.getValue0();
@@ -143,7 +147,7 @@ public class IsometricTiledMapGameRenderer extends BatchTiledMapRenderer {
         return new Quartet<>(x1, y1, x2, y2);
     }
 
-    private Quartet<Float, Float, Float, Float> getLayerUV(TextureRegion region) {
+    protected Quartet<Float, Float, Float, Float> getLayerUV(TextureRegion region) {
         float u1 = region.getU();
         float v1 = region.getV2();
         float u2 = region.getU2();
@@ -161,10 +165,8 @@ public class IsometricTiledMapGameRenderer extends BatchTiledMapRenderer {
      */
     public void renderTileLayer(TiledMapTileLayer layer, WorldMap map) {
         final float color = getColorForLayer(layer);
-
         float tileWidth = layer.getTileWidth() * unitScale;
         float tileHeight = layer.getTileHeight() * unitScale;
-
         Pair<Float, Float> offset = getLayerOffset(layer);
 
         float halfTileWidth = tileWidth * 0.5f;
@@ -182,93 +184,88 @@ public class IsometricTiledMapGameRenderer extends BatchTiledMapRenderer {
 
         for (int row = row2; row >= row1; row--) {
             for (int col = col1; col <= col2; col++) {
-                float x = (col * halfTileWidth) + (row * halfTileWidth);
-                float y = (row * halfTileHeight) - (col * halfTileHeight);
-
-                final TiledMapTileLayer.Cell cell = layer.getCell(col, row);
-                if (cell == null) {
-                    continue;
-                }
-                final TiledMapTile tile = cell.getTile();
-
-                if (tile != null) {
-                    final boolean flipX = cell.getFlipHorizontally();
-                    final boolean flipY = cell.getFlipVertically();
-                    final int rotations = cell.getRotation();
-                    TextureRegion region = tile.getTextureRegion();
-                    Quartet<Float, Float, Float, Float> xy = getLayerXY(new Pair<>(x, y), region, tile, offset);
-                    Quartet<Float, Float, Float, Float> uv = getLayerUV(region);
-
-                    CreateVerticesCommand command = new CreateVerticesCommand(new Pair<>(flipX, flipY), xy, uv, color);
-
-                    float[] vertices = command.createVertices(rotations);
-                    batch.draw(region.getTexture(), vertices, 0, CreateVerticesCommand.NUM_VERTICES);
-
-                    if (map != null) {
-                        if ("Layer1".equals(layer.getName())) {
-                            WorldCell worldCell = new WorldCell(xy, new Pair<>(row, col), region, x + "" + y);
-                            worldCell.setTileCell(cell);
-                            map.addCell(worldCell);
-                        } else {
-                            try {
-                                WorldCell worldCell = map.getCell(new Pair<>(row, col));
-                                EntitySymbol currentSymbol = ChooseEntitySymbol(cell);
-                                worldCell.addEntity(new Entity(currentSymbol, new Pair<>(row, col)));
-                            } catch (Exception ignored) {
-
-                            }
-                        }
-                    }
-
-                }
+                float positionX = (col * halfTileWidth) + (row * halfTileWidth);
+                float positionY = (row * halfTileHeight) - (col * halfTileHeight);
+                renderTileCell(layer, new Pair<>(row, col), new Pair<>(positionX, positionY), offset, color, map);
             }
 
         }
+    }
+
+    protected void renderTileCell(
+            TiledMapTileLayer layer,
+            Pair<Integer, Integer> position,
+            Pair<Float, Float> calculatedXY,
+            Pair<Float, Float> offset,
+            float color,
+            WorldMap map
+    ) {
+        final TiledMapTileLayer.Cell cell = layer.getCell(position.getValue1(), position.getValue0());
+        if (cell == null) {
+            return;
+        }
+
+        final TiledMapTile tile = cell.getTile();
+        if (tile != null) {
+            final boolean flipX = cell.getFlipHorizontally();
+            final boolean flipY = cell.getFlipVertically();
+            final int rotations = cell.getRotation();
+            TextureRegion region = tile.getTextureRegion();
+            Quartet<Float, Float, Float, Float> xy = getLayerXY(calculatedXY, region, tile, offset);
+            Quartet<Float, Float, Float, Float> uv = getLayerUV(region);
+
+            CreateVerticesCommand command = new CreateVerticesCommand(new Pair<>(flipX, flipY), xy, uv, color);
+
+            float[] vertices = command.createVertices(rotations);
+            batch.draw(region.getTexture(), vertices, 0, CreateVerticesCommand.NUM_VERTICES);
 
 
+            if ( map != null && layer.getName().equals(BACKGROUND_LAYER)) {
+                WorldCell worldCell = new WorldCell(
+                        xy,
+                        position,
+                        region,
+                        calculatedXY.getValue0() + "" + calculatedXY.getValue1()
+                );
+                worldCell.setTileCell(cell);
+                map.addCell(worldCell);
+            } else if (map != null && layer.getName().equals(ENTITIES_LAYER)) {
+                try {
+                    WorldCell worldCell = map.getCell(position);
+                    EntitySymbol currentSymbol = chooseEntitySymbol(region);
+                    worldCell.addEntity(new Entity(currentSymbol, position));
+                } catch (Exception ignored) {
+
+                }
+            } else {
+                throw new UnknownTiledMapLayerException(layer);
+            }
+        }
     }
 
     /**
      * This function takes in a cell and return the EntitySymbol of the Entity in the cell , if there is no Entity then it return null
      * @return EntitySymbol
      */
-    public EntitySymbol ChooseEntitySymbol(TiledMapTileLayer.Cell x) {
-        String Path = x.getTile().getTextureRegion().getTexture().toString();
-        String entityName =  Paths.get(Path).getFileName().toString();
+    protected EntitySymbol chooseEntitySymbol(TextureRegion region) {
+        String path = region.getTexture().toString();
+        String entityName =  Paths.get(path).getFileName().toString();
         String trimmedEntityName  = entityName.substring(0, entityName.lastIndexOf('.'));
 
-        EntitySymbol FinalResult ;
         switch (trimmedEntityName) {
             case "Stone":
-                FinalResult = EntitySymbol.STONE;
-                break;
-
+                return EntitySymbol.STONE;
             case "tree":
-                FinalResult = EntitySymbol.TREE;
-                break;
-
+                return EntitySymbol.TREE;
             case "Dragon":
-                FinalResult = EntitySymbol.DRAGON;
-                break;
-
             case "Dragon-Flipped":
-                FinalResult = EntitySymbol.DRAGON;
-                break;
-
+                return EntitySymbol.DRAGON;
             case "barbarian-fliped":
-                FinalResult = EntitySymbol.BARBARIAN;
-                break;
-
             case "barbarian":
-                FinalResult = EntitySymbol.BARBARIAN;
-                break;
+                return EntitySymbol.BARBARIAN;
             default:
-                FinalResult = null;
-                break;
+                return null;
         }
-
-
-        return FinalResult;
     }
 
     /**

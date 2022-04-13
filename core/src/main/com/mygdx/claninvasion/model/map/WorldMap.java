@@ -3,7 +3,6 @@ package com.mygdx.claninvasion.model.map;
 
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.utils.Timer;
-import com.mygdx.claninvasion.model.entity.Entity;
 import org.javatuples.Pair;
 
 import java.util.ArrayList;
