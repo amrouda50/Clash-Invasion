@@ -1,6 +1,5 @@
 package com.mygdx.claninvasion.model.entity;
 
-import com.badlogic.gdx.math.Vector2;
 import org.javatuples.Pair;
 
 /**
@@ -24,8 +23,7 @@ public class Entity {
         this.position = position;
     }
 
-    /**
-     * Returns map symbol
+    /** Returns map symbol
      * @return - symbol synced with map representation
      * @see EntitySymbol
      */
