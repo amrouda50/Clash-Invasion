@@ -4,7 +4,9 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
 import com.mygdx.claninvasion.model.helpers.Direction;
+import com.mygdx.claninvasion.model.level.Level;
 import com.mygdx.claninvasion.model.level.LevelIterator;
+import com.mygdx.claninvasion.model.level.Levels;
 import org.javatuples.Pair;
 
 /**
@@ -15,18 +17,15 @@ import org.javatuples.Pair;
  */
 public class ArtificialEntity extends Entity {
     protected AtomicInteger health;
-    protected LevelIterator level;
+    protected LevelIterator<Level> level;
     protected AtomicInteger reactionTime;
     protected Direction direction;
-    protected static int MAX_HEALTH = 10000;
-    protected static int MIN_HEALTH = 0;
-    protected static int STANDARD_REACTION_TIME = 1000;
-    protected static int HEAL_HEALTH_INCREASE = 10;
 
     ArtificialEntity() {
         super();
-        health = new AtomicInteger(MAX_HEALTH);
-        reactionTime = new AtomicInteger(STANDARD_REACTION_TIME);
+        level = Levels.createLevelIterator();
+        health = new AtomicInteger(level.current().getMaxHealth());
+        reactionTime = new AtomicInteger(level.current().getReactionTime());
         direction = Direction.DOWN;
     }
 
@@ -39,10 +38,10 @@ public class ArtificialEntity extends Entity {
         }
 
          Thread thread = new Thread(() -> {
-            while (getPercentage().get() < 30) {
+            while (getPercentage().get() < level.current().getHealGoalPoint()) {
                 try {
-                    health.set(HEAL_HEALTH_INCREASE);
-                    Thread.sleep(STANDARD_REACTION_TIME);
+                    health.set(level.current().getHealHealthIncrease() + health.get());
+                    Thread.sleep(level.current().getReactionTime());
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -75,28 +74,28 @@ public class ArtificialEntity extends Entity {
     }
 
     public float getHealthPercentage() {
-        return (health.get() / (float)MAX_HEALTH) * 100;
+        return (health.get() / (float)level.current().getMaxHealth()) * 100;
     }
 
     public AtomicLong getPercentage() {
-        return new AtomicLong((health.get() / (long)MAX_HEALTH) * 100);
+        return new AtomicLong((health.get() / (long)level.current().getMaxHealth()) * 100);
     }
 
     public boolean isAlive() {
-        return health.get() > MIN_HEALTH;
+        return health.get() > level.current().getMinHealth();
     }
 
     /**
      * Level getter
      */
-    public LevelIterator getLevel() {
+    public LevelIterator<Level> getLevel() {
         return level;
     }
 
     /**
      * Change level
      */
-    public void setLevel(LevelIterator level) {
+    public void setLevel(LevelIterator<Level> level) {
         this.level = level;
     }
 }

@@ -1,4 +1,4 @@
-package com.mygdx.claninvasion.model.entity;
+package com.mygdx.claninvasion.model.entity.attacktype;
 
 /**
  * Specifies the type of entity/soldier attack

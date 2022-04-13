@@ -1,4 +1,4 @@
-package com.mygdx.claninvasion.model.entity;
+package com.mygdx.claninvasion.model.entity.attacktype;
 
 public class AttackTypeArcher extends AttackTypeTower {
     @Override

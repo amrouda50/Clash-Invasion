@@ -1,5 +1,8 @@
 package com.mygdx.claninvasion.model.level;
 
+import org.javatuples.Septet;
+import org.javatuples.Sextet;
+
 /**
  * This class is responsible for determining the
  * mining level in the game
@@ -9,6 +12,14 @@ package com.mygdx.claninvasion.model.level;
  * TODO: Logic part is missing
  */
 public class GameMiningLevel extends Level {
-    public int reactionTime;
     public int goldBonus;
+
+    public GameMiningLevel(Septet<Integer, Integer, Integer, Integer, Integer, Integer, Integer> values, int goldBonus) {
+        super(values);
+        this.goldBonus = goldBonus;
+    }
+
+    public int getGoldBonus() {
+        return goldBonus;
+    }
 }

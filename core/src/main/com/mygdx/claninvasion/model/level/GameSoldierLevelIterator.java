@@ -1,5 +1,7 @@
 package com.mygdx.claninvasion.model.level;
 
+import java.util.ArrayList;
+
 /**
  * This class is responsible for iterating through the
  * soldier level in the game
@@ -8,20 +10,8 @@ package com.mygdx.claninvasion.model.level;
  * @author Dinari
  * TODO: Logic part is missing
  */
-public class GameSoldierLevelIterator extends LevelIterator{
-
-    @Override
-    public void getNext() {
-        super.getNext();
-    }
-
-    @Override
-    public void hasNext() {
-        super.hasNext();
-    }
-
-    @Override
-    public void reset() {
-        super.reset();
+public class GameSoldierLevelIterator extends LevelIterator<GameSoldierLevel> {
+    public GameSoldierLevelIterator(ArrayList<GameSoldierLevel> arrayList) {
+        super(arrayList);
     }
 }
