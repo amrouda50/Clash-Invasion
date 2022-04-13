@@ -5,15 +5,6 @@ package com.mygdx.claninvasion.model.entity;
  * TODO: Logic part is missing
  */
 public class Castle extends ArtificialEntity {
-
-    /**
-     * Should heal the entity
-     * @see ArtificialEntity
-     */
-    public void heal(Soldier soldier) {
-        soldier.healSoldier();
-    }
-
     /**
      * @see ArtificialEntity
      * @param amount - percent of injury
