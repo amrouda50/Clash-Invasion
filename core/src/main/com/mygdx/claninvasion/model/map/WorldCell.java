@@ -1,5 +1,8 @@
 package com.mygdx.claninvasion.model.map;
 
+import org.javatuples.Pair;
+import org.javatuples.Quartet;
+
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.math.Rectangle;
@@ -7,19 +10,14 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.mygdx.claninvasion.model.adapters.IsometricToOrthogonalAdapt;
 import com.mygdx.claninvasion.model.entity.Entity;
-import org.javatuples.Pair;
-import org.javatuples.Quartet;
 
-/**
- * World Cell represents the entity position at the current time
+/** World Cell represents the entity position at the current time.
  */
 public class WorldCell {
-    /**
-     * orthogonal (virtual) position of the cell
+    /** orthogonal (virtual) position of the cell.
      */
     private Vector2 worldPosition;
-    /**
-     * tiled map position
+    /** tiled map position.
      */
     private Pair<Integer, Integer> mapPosition;
     /**
@@ -152,14 +150,13 @@ public class WorldCell {
     }
 
     /**
-     * @param x - Adds an Enitity to the Occupier variable of the worldCell
+     * @param x - Adds an Entity to the Occupier variable of the worldCell
      * 
      **/
     public void addEntity(Entity x) {
-        if (x.getEntitySymbol() == null) {
-            removeEnitiy();
-        }
-        else {
+        if (x.getSymbol() == null) {
+            removeEntity();
+        } else {
             this.occupier = x;
         }
       //  System.out.println(x.getEntitySymbol());
@@ -168,7 +165,7 @@ public class WorldCell {
     /**
      * Sets the occupier to null
      */
-    public void removeEnitiy() {
+    public void removeEntity() {
         occupier = null;
     }
 

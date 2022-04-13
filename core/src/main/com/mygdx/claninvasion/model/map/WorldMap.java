@@ -7,7 +7,7 @@ import org.javatuples.Pair;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * Map modal of the application
@@ -107,16 +107,16 @@ public class WorldMap {
     /**
      * Change the containment of the c1 (possible decease
      * of the entity which populated it)
-     * @param c1 - cell to remove the entity
+     * @param cell - cell to remove the entity
      */
-    public void mutate(WorldCell c1) {
-        Pair<Integer , Integer> Coordinates = c1.getMapPosition();
+    public void mutate(WorldCell cell) {
+        AtomicReference<Pair<Integer, Integer>> coordinates = new AtomicReference<>(cell.getMapPosition());
         Timer.schedule(new Timer.Task() {
             int i = 7;
             int count = 0;
             @Override
             public void run() {
-                TiledMapTileLayer.Cell cell = entitiesLayer.getCell(Coordinates.getValue0() + count, Coordinates.getValue1());
+                TiledMapTileLayer.Cell cell = entitiesLayer.getCell(coordinates.get().getValue0() + count, coordinates.get().getValue1());
                 entitiesLayer.setCell(i + count, 4, null);
                 entitiesLayer.setCell(i + 1 + count, 4, cell);
                 count++;

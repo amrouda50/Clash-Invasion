@@ -5,8 +5,13 @@ package com.mygdx.claninvasion.model.entity;
  * @version 0.01
  * TODO: Logic part is missing
  */
-public class NaturalEntity extends Entity{
-    private boolean isPassed;
+public class NaturalEntity extends Entity {
+    private final boolean isPassed;
+
+    public NaturalEntity() {
+        super();
+        this.isPassed = false;
+    }
 
     /**
      * Getter for passed state

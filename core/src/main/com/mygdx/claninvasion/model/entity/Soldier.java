@@ -22,11 +22,4 @@ public class Soldier extends ArtificialEntity {
      * Train soldier algorithm
      */
     public void train() {}
-
-    /**
-     * Heal soldier
-     */
-    public void healSoldier() {
-        health++;
-    }
 }

@@ -8,13 +8,11 @@ import org.javatuples.Pair;
  * @version 0.01
  */
 public class Entity {
-    private final EntitySymbol entitySymbol;
-    private Pair<Integer , Integer> position;
+    protected final EntitySymbol entitySymbol;
+    protected Pair<Integer , Integer> position;
 
-    /**
-     * Creates new Entity
-     */
-    Entity() {
+    /** Creates new Entity. */
+    public Entity() {
         entitySymbol = EntitySymbol.TREE;
     }
 
@@ -27,7 +25,7 @@ public class Entity {
      * @return - symbol synced with map representation
      * @see EntitySymbol
      */
-    public EntitySymbol getEntitySymbol() {
+    public EntitySymbol getSymbol() {
         return entitySymbol;
     }
 
@@ -36,7 +34,7 @@ public class Entity {
      * @return - position on the map Of x
      *
      */
-    public Integer getValueX() {
+    public Integer getPositionX() {
         return position.getValue0();
     }
     /**
@@ -44,7 +42,7 @@ public class Entity {
      * @return - position on the map of Y
      *
      */
-    public Integer getValueY() {
+    public Integer getPositionY() {
         return position.getValue1();
     }
 }

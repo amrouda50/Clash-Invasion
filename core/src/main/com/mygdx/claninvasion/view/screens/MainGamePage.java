@@ -89,7 +89,7 @@ public class MainGamePage implements GamePage, UiUpdatable {
                     if (worldCell.getOccupier() == null) {
                         return;
                     }
-                    System.out.println(worldCell.getOccupier().getEntitySymbol());
+                    System.out.println(worldCell.getOccupier().getSymbol());
                     //worldCell.getTileCell().setTile(null);
                 }
             }
