@@ -136,6 +136,7 @@ public class WorldMap {
 
 
     }
+
     public Graph getGraph(){
         return this.G;
     }
