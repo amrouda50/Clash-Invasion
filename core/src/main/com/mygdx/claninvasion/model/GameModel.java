@@ -28,7 +28,7 @@ public class GameModel {
     /**
      * This is for navigating through the map
      */
-    private WorldMap worldMap;
+    private final WorldMap worldMap;
 
     /**
      * Goes through the phase of the game
@@ -57,8 +57,16 @@ public class GameModel {
         this.gamePause = false;
         playerOne = new Player();
         playerTwo = new Player();
+
+        playerOne.setOpponent(playerTwo);
+        playerTwo.setOpponent(playerOne);
+
+        activePlayer = playerOne;
+
         gameState = new StartGameState(this);
         worldMap = new WorldMap();
+
+        playerOne.addSoldiers();
     }
 
 

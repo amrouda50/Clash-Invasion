@@ -1,10 +1,10 @@
-package com.mygdx.claninvasion.model.entity;
+package com.mygdx.claninvasion.model.entity.attacktype;
 
 /**
- * Sword attack type
+ * Spear attack type
  * TODO: Logic part is missing
  */
-public class AttackTypeSword extends AttackTypeSoldier{
+public class AttackTypeSpear extends AttackTypeSoldier{
     /**
      * Overrides base attack implementation
      * @see AttackType

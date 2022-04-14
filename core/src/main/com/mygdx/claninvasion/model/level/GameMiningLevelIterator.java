@@ -1,5 +1,7 @@
 package com.mygdx.claninvasion.model.level;
 
+import java.util.ArrayList;
+
 /**
  * This class is responsible for iterating through the
  * mining level in the game
@@ -8,20 +10,8 @@ package com.mygdx.claninvasion.model.level;
  * @author Dinari
  * TODO: Logic part is missing
  */
-public class GameMiningLevelIterator extends LevelIterator{
-
-    @Override
-    public void hasNext() {
-        super.hasNext();
-    }
-
-    @Override
-    public void getNext() {
-        super.getNext();
-    }
-
-    @Override
-    public void reset() {
-        super.reset();
+public class GameMiningLevelIterator extends LevelIterator<GameMiningLevel> {
+    public GameMiningLevelIterator(ArrayList<GameMiningLevel> levels) {
+        super(levels);
     }
 }

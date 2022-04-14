@@ -1,5 +1,9 @@
 package com.mygdx.claninvasion.model.level;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.function.Consumer;
+
 /**
  * This class iterates through the levels of tower,
  * soldiers and mining
@@ -8,26 +12,44 @@ package com.mygdx.claninvasion.model.level;
  * @author Dinari
  * @version 0.1
  */
-public class LevelIterator {
+public class LevelIterator<L extends Level> implements Iterator<L> {
+    private final ArrayList<L> levels;
+    private int currentLevelNumber = 0;
 
-    /**
-     * Checks if next level is possible
-     */
-    public void hasNext() {
-
+    public LevelIterator(ArrayList<L> levels) {
+        this.levels = levels;
+        if (this.levels.size() == 0) {
+            throw new IllegalArgumentException("Please provide a collection with at least one level in it.");
+        }
     }
 
-    /**
-     * Iterates to the next level if possible
-     */
-    public void getNext() {
-
+    @Override
+    public boolean hasNext() {
+        return currentLevelNumber >= levels.size();
     }
 
-    /**
-     * Resets all the levels of the chosen entity
-     */
+    public L current() {
+        return levels.get(currentLevelNumber);
+    }
+
+    @Override
+    public L next() {
+        return levels.get(currentLevelNumber++);
+    }
+
+    @Override
+    public void remove() {
+        levels.remove(currentLevelNumber);
+    }
+
+    @Override
+    public void forEachRemaining(Consumer<? super L> action) {
+        while (hasNext()) {
+            action.accept(next());
+        }
+    }
+
     public void reset() {
-
+        currentLevelNumber = 0;
     }
 }

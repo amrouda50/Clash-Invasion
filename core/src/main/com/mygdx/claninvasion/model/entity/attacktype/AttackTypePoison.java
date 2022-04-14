@@ -1,10 +1,10 @@
-package com.mygdx.claninvasion.model.entity;
+package com.mygdx.claninvasion.model.entity.attacktype;
 
 /**
- * Tower attack type
+ * Poison attack type
  * TODO: Logic part is missing
  */
-public class AttackTypeTower implements AttackType{
+public class AttackTypePoison extends AttackTypeTower{
     /**
      * Overrides base attack implementation
      * @see AttackType

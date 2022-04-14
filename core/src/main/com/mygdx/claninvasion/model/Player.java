@@ -3,6 +3,7 @@ package com.mygdx.claninvasion.model;
 import com.mygdx.claninvasion.model.entity.*;
 import com.mygdx.claninvasion.model.gamestate.GameState;
 
+import java.util.ArrayList;
 import java.util.UUID;
 
 /**
@@ -23,7 +24,7 @@ public class Player {
     /**
      * All the towers of the player
      */
-    private Tower[] towers;
+    private ArrayList<Tower> towers;
 
     /**
      * Name of the player
@@ -33,7 +34,7 @@ public class Player {
     /**
      * All the mines of the player
      */
-    private Mineable[] miningFarms;
+    private ArrayList<Mineable> miningFarms;
 
     /**
      * Status of player in the game
@@ -48,37 +49,34 @@ public class Player {
     /**
      * All the soldiers of the player
      */
-    private Soldier[] soldiers;
+    private final ArrayList<Soldier> soldiers;
 
     /**
      * Castle of the active player
      */
-    private Castle castle;
-    private UUID id;
+    private final Castle castle;
+    private final UUID id;
 
     public Player() {
         this.id = UUID.randomUUID();
-    }
-
-    public Player(Soldier[] soldiers, Castle castle) {
-        this.soldiers = soldiers;
-        this.castle = castle;
-        this.id = UUID.randomUUID();
+        this.castle = new Castle(this);
+        miningFarms = new ArrayList<>();
+        soldiers = new ArrayList<>();
+        towers = new ArrayList<>();
     }
 
     public Castle getCastle() {
         return castle;
     }
 
-    public void setCastle(Castle castle) {
-        this.castle = castle;
+    public void setOpponent(Player player) {
+        opponent = player;
     }
 
     /**
      * This method resets all the resources for the player
      */
     public void reset() {
-
     }
 
     /**
@@ -114,67 +112,15 @@ public class Player {
      * This will add more soldiers
      * to player's army
      */
-    public void addSoldiers() {
+    public void addSoldiers()  {
+        castle
+            .trainSoldiers()
+            .thenRun(() -> soldiers.addAll(castle.getSoldiers()))
+            .thenRunAsync(() -> System.out.println("New soldiers were successfully added"));
 
-    }
-
-    public void setOpponent(Player opponent) {
-        this.opponent = opponent;
-    }
-
-    public void setTowers(Tower[] towers) {
-        this.towers = towers;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setMiningFarms(Mineable[] miningFarms) {
-        this.miningFarms = miningFarms;
-    }
-
-    public void setWinningState(GameState winningState) {
-        this.winningState = winningState;
     }
 
     public UUID getId() {
         return id;
-    }
-
-    public void setWealth(int wealth) {
-        this.wealth = wealth;
-    }
-
-    public void setSoldiers(Soldier[] soldiers) {
-        this.soldiers = soldiers;
-    }
-
-    public Player getOpponent() {
-        return opponent;
-    }
-
-    public Tower[] getTowers() {
-        return towers;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public Mineable[] getMiningFarms() {
-        return miningFarms;
-    }
-
-    public GameState getWinningState() {
-        return winningState;
-    }
-
-    public int getWealth() {
-        return wealth;
-    }
-
-    public Soldier[] getSoldiers() {
-        return soldiers;
     }
 }

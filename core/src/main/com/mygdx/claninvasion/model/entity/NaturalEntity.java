@@ -1,12 +1,19 @@
 package com.mygdx.claninvasion.model.entity;
 
+import org.javatuples.Pair;
+
 /**
  * Natural entity formations
  * @version 0.01
  * TODO: Logic part is missing
  */
-public class NaturalEntity extends Entity{
-    private boolean isPassed;
+public class NaturalEntity extends Entity {
+    private final boolean isPassed;
+
+    public NaturalEntity(EntitySymbol entitySymbol, Pair<Integer, Integer> position) {
+        super(entitySymbol, position);
+        this.isPassed = false;
+    }
 
     /**
      * Getter for passed state

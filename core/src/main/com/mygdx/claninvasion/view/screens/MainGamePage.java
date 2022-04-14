@@ -12,8 +12,11 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.utils.Timer;
 import com.mygdx.claninvasion.ClanInvasion;
 import com.mygdx.claninvasion.model.adapters.IsometricToOrthogonalAdapt;
+import com.mygdx.claninvasion.model.entity.Tower;
+import com.mygdx.claninvasion.model.map.Graph;
 import com.mygdx.claninvasion.model.map.WorldCell;
 import com.mygdx.claninvasion.model.map.WorldMap;
 import com.mygdx.claninvasion.view.actors.GameButton;
@@ -23,6 +26,10 @@ import com.mygdx.claninvasion.view.utils.GameInputProcessor;
 import org.javatuples.Pair;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 
 /**
@@ -89,7 +96,7 @@ public class MainGamePage implements GamePage, UiUpdatable {
                     if (worldCell.getOccupier() == null) {
                         return;
                     }
-                    System.out.println(worldCell.getOccupier().getEntitySymbol());
+                    System.out.println(worldCell.getOccupier().getSymbol());
                     //worldCell.getTileCell().setTile(null);
                 }
             }
@@ -105,11 +112,44 @@ public class MainGamePage implements GamePage, UiUpdatable {
         entitiesStage = new TiledMapStage();
         Gdx.input.setInputProcessor(entitiesStage);
         addButtons();
-        WorldCell c1 = app.getMap().getCell(new Pair<>(7, 4));
-        app.getMap().mutate(c1);
-        //System.out.println(app.getMap().getlayer1.getcell());
-       // app.getMap().mutate(currentx  + 3 ,currenty + 5);
+        System.out.println(app.getMap().getCells());
+        app.getMap().setGraph(32 , app.getMap().getCells());
+        app.getMap().getGraph().printGraph();
+        LinkedList<Integer> paths = app.getMap().getGraph().GetShortestDistance(886, 873 , 32*32);
+       //app.getMap().getCell(paths.get(paths.size() - 2)).setOccupier();
+        new Thread(() -> {
+            for(int i = paths.size() - 1; i > 0; i--) {
+                app.getMap().mutate(paths.get(i), paths.get(i - 1));
+                try {
+                    Thread.sleep(500);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+            
+        }).start();
     }
+       /* new Thread(() -> {
+            for(int i =  0  ; i < paths.size() - 1 ; i++) {
+                app.getMap().mutate(paths.get(i), paths.get(i + 1));
+                try {
+                    Thread.sleep(500);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();*/
+       /* new Thread(() -> {
+            for(int i = paths.size() - 1; i > 0; i--) {
+                app.getMap().mutate(paths.get(i), paths.get(i - 1));
+                try {
+                    Thread.sleep(500);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+    }*/
 
     /**
      * Fired on every frame update
