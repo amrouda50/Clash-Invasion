@@ -7,12 +7,11 @@ package com.mygdx.claninvasion.model.entity;
 public class Castle extends ArtificialEntity {
     /**
      * @see ArtificialEntity
-     * @param amount - percent of injury
+     * @param amount - amount of injury
      */
     @Override
     public void damage(int amount) {
-        Soldier s = new Soldier();
-        s.damage(1);
+        this.health.set(this.health.get() - amount);
     }
 
     /**

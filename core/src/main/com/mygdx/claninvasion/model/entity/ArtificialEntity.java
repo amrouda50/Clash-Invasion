@@ -17,13 +17,23 @@ import org.javatuples.Pair;
  */
 public class ArtificialEntity extends Entity {
     protected AtomicInteger health;
-    protected LevelIterator<Level> level;
+    protected LevelIterator<? extends Level> level;
     protected AtomicInteger reactionTime;
     protected Direction direction;
 
     ArtificialEntity() {
         super();
         level = Levels.createLevelIterator();
+        init();
+    }
+
+    ArtificialEntity(LevelIterator<Level> levelIterator) {
+        super();
+        level = levelIterator;
+        init();
+    }
+
+    private void init() {
         health = new AtomicInteger(level.current().getMaxHealth());
         reactionTime = new AtomicInteger(level.current().getReactionTime());
         direction = Direction.DOWN;
@@ -88,7 +98,7 @@ public class ArtificialEntity extends Entity {
     /**
      * Level getter
      */
-    public LevelIterator<Level> getLevel() {
+    public LevelIterator<? extends Level> getLevel() {
         return level;
     }
 

@@ -14,12 +14,14 @@ import org.javatuples.Sextet;
 public class GameSoldierLevel extends GameTowerLevel {
     protected int movementSpeed;
     protected int attackIncrease;
+    protected int visibleArea;
 
     public GameSoldierLevel(Septet<Integer, Integer, Integer, Integer, Integer, Integer, Integer> values, int hitsPointBonus,
-                            int movementSpeed, int attackIncrease) {
+                            int movementSpeed, int attackIncrease, int visibleArea) {
         super(values, hitsPointBonus);
         this.movementSpeed = movementSpeed;
         this.attackIncrease = attackIncrease;
+        this.visibleArea = visibleArea;
     }
 
     public int getMovementSpeed() {
@@ -28,5 +30,9 @@ public class GameSoldierLevel extends GameTowerLevel {
 
     public int getAttackIncrease() {
         return attackIncrease;
+    }
+
+    public int getVisibleArea() {
+        return visibleArea;
     }
 }

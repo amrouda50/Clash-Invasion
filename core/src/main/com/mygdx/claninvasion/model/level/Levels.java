@@ -43,9 +43,9 @@ public class Levels {
 
     private static final ArrayList<GameSoldierLevel> soldierLevels = new ArrayList<>(
             Arrays.asList(
-                    new GameSoldierLevel(level0, 30, 100, 10),
-                    new GameSoldierLevel(level1, 40, 170, 20),
-                    new GameSoldierLevel(level2, 44, 190, 35)
+                    new GameSoldierLevel(level0, 30, 100, 10, 2),
+                    new GameSoldierLevel(level1, 40, 170, 20, 2),
+                    new GameSoldierLevel(level2, 44, 190, 35, 3)
             )
     );
 

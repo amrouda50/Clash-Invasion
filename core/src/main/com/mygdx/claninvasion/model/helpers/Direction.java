@@ -21,7 +21,7 @@ public enum Direction {
     }
 
 
-    public Boolean equals(Direction direction1, Direction direction2) {
+    public static Boolean equals(Direction direction1, Direction direction2) {
         return direction1.index == direction2.index;
     }
 }

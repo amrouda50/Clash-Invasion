@@ -12,11 +12,11 @@ import java.util.function.Consumer;
  * @author Dinari
  * @version 0.1
  */
-public class LevelIterator<Level> implements Iterator<Level> {
-    private final ArrayList<Level> levels;
+public class LevelIterator<L extends Level> implements Iterator<L> {
+    private final ArrayList<L> levels;
     private int currentLevelNumber = 0;
 
-    public LevelIterator(ArrayList<Level> levels) {
+    public LevelIterator(ArrayList<L> levels) {
         this.levels = levels;
         if (this.levels.size() == 0) {
             throw new IllegalArgumentException("Please provide a collection with at least one level in it.");
@@ -28,12 +28,12 @@ public class LevelIterator<Level> implements Iterator<Level> {
         return currentLevelNumber >= levels.size();
     }
 
-    public Level current() {
+    public L current() {
         return levels.get(currentLevelNumber);
     }
 
     @Override
-    public Level next() {
+    public L next() {
         return levels.get(currentLevelNumber++);
     }
 
@@ -43,7 +43,7 @@ public class LevelIterator<Level> implements Iterator<Level> {
     }
 
     @Override
-    public void forEachRemaining(Consumer<? super Level> action) {
+    public void forEachRemaining(Consumer<? super L> action) {
         while (hasNext()) {
             action.accept(next());
         }
