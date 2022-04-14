@@ -1,5 +1,6 @@
 package com.mygdx.claninvasion.model.entity;
 
+import com.badlogic.gdx.math.Vector2;
 import org.javatuples.Pair;
 
 /**
@@ -44,5 +45,9 @@ public class Entity {
      */
     public Integer getPositionY() {
         return position.getValue1();
+    }
+
+    public Vector2 getVec2Position() {
+        return new Vector2(position.getValue0(), position.getValue1());
     }
 }

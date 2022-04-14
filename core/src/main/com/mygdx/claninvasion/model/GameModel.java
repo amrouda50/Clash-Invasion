@@ -28,7 +28,7 @@ public class GameModel {
     /**
      * This is for navigating through the map
      */
-    private WorldMap worldMap;
+    private final WorldMap worldMap;
 
     /**
      * Goes through the phase of the game
