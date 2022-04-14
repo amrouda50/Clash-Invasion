@@ -1,10 +1,24 @@
 package com.mygdx.claninvasion.model.entity;
 
+import com.mygdx.claninvasion.model.Player;
+
+import java.util.ArrayList;
+import java.util.concurrent.*;
+import static java.util.concurrent.Executors.newFixedThreadPool;
+
 /**
  * Castle entity
  * TODO: Logic part is missing
  */
 public class Castle extends ArtificialEntity {
+    private final Player player;
+    private final ArrayList<Soldier> soldiers;
+
+    public Castle(Player player) {
+        super();
+        this.player = player;
+        soldiers = new ArrayList<>();
+    }
     /**
      * @see ArtificialEntity
      * @param amount - amount of injury
@@ -14,17 +28,37 @@ public class Castle extends ArtificialEntity {
         this.health.set(this.health.get() - amount);
     }
 
-    /**
-     * Heal attacked soldier
-     * @param soldier - soldier
-     * TODO Implement logic
-     */
-    public void healSoldier(Soldier soldier) {}
+    public CompletionStage<Boolean> trainSoldiers() {
+        ExecutorService executor = newFixedThreadPool(2);
+        soldiers.clear();
+        for (int i = 0; i < 10; i++) {
+            soldiers.add(new Soldier());
+        }
+
+        CompletableFuture<Boolean> supply = CompletableFuture.supplyAsync(() -> {
+            for (Soldier soldier : soldiers) {
+                try {
+                    soldier.train(executor).get();
+                } catch (InterruptedException | ExecutionException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            return true;
+        }, executor);
+
+        supply.whenComplete((a, b) -> executor.shutdownNow());
+
+        return supply;
+    }
 
     /**
      * Damage attacked soldier
-     * @param soldier - soldier
      * TODO Implement logic
      */
-    public void damageSoldier(Soldier soldier) {}
+    public void damageOpponents() {}
+
+    public ArrayList<Soldier> getSoldiers() {
+        return soldiers;
+    }
 }

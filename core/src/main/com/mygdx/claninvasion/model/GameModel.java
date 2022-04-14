@@ -57,8 +57,16 @@ public class GameModel {
         this.gamePause = false;
         playerOne = new Player();
         playerTwo = new Player();
+
+        playerOne.setOpponent(playerTwo);
+        playerTwo.setOpponent(playerOne);
+
+        activePlayer = playerOne;
+
         gameState = new StartGameState(this);
         worldMap = new WorldMap();
+
+        playerOne.addSoldiers();
     }
 
 

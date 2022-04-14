@@ -101,6 +101,21 @@ public class WorldMap {
         return worldCells;
     }
 
+    public void printEntitiesLayer() {
+        for (int i = minCellRowPosition(); i <= maxCellRowPosition(); i++) {
+            System.out.print("{");
+            for (int j = minCellColumnPosition(); j <= maxCellColumnPosition(); j++) {
+                WorldCell cell = getCell(new Pair<>(i, j));
+                if (cell.getOccupier() != null) {
+                    System.out.print(" " + cell.getOccupier().getSymbol().letter + ", ");
+                } else {
+                    System.out.print(" -, ");
+                }
+            }
+            System.out.print("}\n");
+        }
+    }
+
     public void mutate(WorldCell cell1, WorldCell cell2) {
         Pair<Integer, Integer> coordinates = new Pair<>(cell1.getMapPosition().getValue1(), cell1.getMapPosition().getValue0());
         Pair<Integer, Integer> coordinatedDist = new Pair<>(cell2.getMapPosition().getValue1(), cell2.getMapPosition().getValue0());
