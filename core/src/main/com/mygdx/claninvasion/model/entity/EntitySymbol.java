@@ -6,15 +6,17 @@ package com.mygdx.claninvasion.model.entity;
  * @version 0.01
  */
 public enum EntitySymbol {
-    BARBARIAN("barbarian"),
-    CASTEL("castel"),
-    STONE("Stone"),
-    DRAGON("Dragon"),
-    TREE("tree");
+    BARBARIAN("barbarian", 'B'),
+    CASTEL("castel", 'C'),
+    STONE("Stone", 'S'),
+    DRAGON("Dragon", 'D'),
+    TREE("tree", 'T');
 
     public final String sourcePart;
+    public final char letter;
 
-    EntitySymbol(String sourcePart) {
+    EntitySymbol(String sourcePart, char letter) {
         this.sourcePart = sourcePart;
+        this.letter = letter;
     }
 }

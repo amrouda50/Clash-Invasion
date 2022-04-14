@@ -97,6 +97,21 @@ public class WorldMap {
         return worldCells;
     }
 
+    public void printEntitiesLayer() {
+        for (int i = minCellRowPosition(); i <= maxCellRowPosition(); i++) {
+            System.out.print("{");
+            for (int j = minCellColumnPosition(); j <= maxCellColumnPosition(); j++) {
+                WorldCell cell = getCell(new Pair<>(i, j));
+                if (cell.getOccupier() != null) {
+                    System.out.print(" " + cell.getOccupier().getSymbol().letter + ", ");
+                } else {
+                    System.out.print(" -, ");
+                }
+            }
+            System.out.print("}\n");
+        }
+    }
+
     /**
      * Change the containment of the c1 cell with c2
      * @param c1 - cell to replace the entity

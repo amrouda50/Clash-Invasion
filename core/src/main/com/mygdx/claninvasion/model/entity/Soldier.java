@@ -1,13 +1,12 @@
 package com.mygdx.claninvasion.model.entity;
 
-import com.mygdx.claninvasion.model.gamestate.GamePhase;
-import com.mygdx.claninvasion.model.gamestate.GameState;
 import com.mygdx.claninvasion.model.helpers.Direction;
 import com.mygdx.claninvasion.model.level.GameSoldierLevelIterator;
 import com.mygdx.claninvasion.model.level.Levels;
 
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.Supplier;
 
 /**
  * Soldier class implementation
@@ -16,7 +15,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class Soldier extends ArtificialEntity {
     private static final int ATTACK = 100;
     private static final int STEP = 1;
-    private AtomicBoolean isTrained = new AtomicBoolean(false);
+    private AtomicBoolean hasTrained = new AtomicBoolean(false);
     public Soldier() {
         super();
         level = Levels.createSoldierLevelIterator();
@@ -58,21 +57,26 @@ public class Soldier extends ArtificialEntity {
         }
     }
 
-    /**
-     * Train soldier algorithm
-     */
-    public boolean train(GamePhase phase) {
-        if (phase == GamePhase.ATTACK) {
-            return false;
-        }
-
+    private boolean trainCall() {
         try {
-            CompletableFuture.supplyAsync(() -> this.isTrained.getAndSet(true))
-                    .get(level.current().getReactionTime(), TimeUnit.MILLISECONDS);
-        } catch (InterruptedException | ExecutionException | TimeoutException e) {
+            Thread.sleep(500);
+        } catch (InterruptedException e) {
             e.printStackTrace();
         }
+        return hasTrained.getAndSet(true);
+    }
 
-        return true;
+    /**
+     * Train soldier algorithm
+     * @return - boolean promise
+     * @see CompletableFuture
+     */
+    public CompletableFuture<Boolean> train() {
+        return CompletableFuture.supplyAsync(this::trainCall);
+    }
+
+
+    public CompletableFuture<Boolean> train(ExecutorService service) {
+        return CompletableFuture.supplyAsync(this::trainCall, service);
     }
 }
