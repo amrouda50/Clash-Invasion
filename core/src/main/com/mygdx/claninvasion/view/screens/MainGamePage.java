@@ -114,32 +114,18 @@ public class MainGamePage implements GamePage, UiUpdatable {
         app.getMap().setGraph(32);
         app.getMap().getGraph().printGraph();
         LinkedList<Integer> paths = app.getMap().getGraph().GetShortestDistance(871 , 886, 32*32);
-      /*  for(int i = paths.size() - 1; i > 0; i--) {
 
 
-
-        }*/
-
-
-
-        for(int i = paths.size() - 1; i > 0; i--) {
-            app.getMap().mutate(paths.get(i), paths.get(i - 1));
-        }
-
-        Timer.schedule(new Timer.Task() {
-            @Override
-            public void run() {
-
-
+        new Thread(() -> {
+            for(int i = paths.size() - 1; i > 0; i--) {
+                app.getMap().mutate(paths.get(i), paths.get(i - 1));
+                try {
+                    Thread.sleep(500);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
-        }, 2, 1);
-
-
-
-
-        // app.getMap().mutate();
-        //System.out.println(app.getMap().getlayer1.getcell());
-       // app.getMap().mutate(currentx  + 3 ,currenty + 5);
+        }).start();
     }
 
     /**
