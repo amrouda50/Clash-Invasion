@@ -2,8 +2,7 @@ package com.mygdx.claninvasion.view.utils;
 
 import java.nio.file.Paths;
 
-import com.mygdx.claninvasion.model.entity.NaturalEntity;
-import com.mygdx.claninvasion.model.entity.Soldier;
+import com.mygdx.claninvasion.model.entity.*;
 import com.mygdx.claninvasion.view.exceptions.UnknownTiledMapLayerException;
 import org.javatuples.Pair;
 import org.javatuples.Quartet;
@@ -21,8 +20,6 @@ import com.badlogic.gdx.maps.tiled.renderers.BatchTiledMapRenderer;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
-import com.mygdx.claninvasion.model.entity.Entity;
-import com.mygdx.claninvasion.model.entity.EntitySymbol;
 import com.mygdx.claninvasion.model.map.WorldCell;
 import com.mygdx.claninvasion.model.map.WorldMap;
 
@@ -265,6 +262,8 @@ public class IsometricTiledMapGameRenderer extends BatchTiledMapRenderer {
             case "barbarian-fliped":
             case "barbarian":
                 return new Soldier(EntitySymbol.BARBARIAN, position);
+            case "tower":
+                return new NaturalEntity(EntitySymbol.Tower, position);
             default:
                 return null;
         }
