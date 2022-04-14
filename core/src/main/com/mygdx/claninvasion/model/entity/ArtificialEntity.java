@@ -21,8 +21,8 @@ public class ArtificialEntity extends Entity {
     protected AtomicInteger reactionTime;
     protected Direction direction;
 
-    ArtificialEntity() {
-        super();
+    ArtificialEntity(EntitySymbol entitySymbol, Pair<Integer, Integer> position) {
+        super(entitySymbol, position);
         level = Levels.createLevelIterator();
         init();
     }

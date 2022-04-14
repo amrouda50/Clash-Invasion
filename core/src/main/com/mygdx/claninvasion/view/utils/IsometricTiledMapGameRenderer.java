@@ -2,6 +2,8 @@ package com.mygdx.claninvasion.view.utils;
 
 import java.nio.file.Paths;
 
+import com.mygdx.claninvasion.model.entity.NaturalEntity;
+import com.mygdx.claninvasion.model.entity.Soldier;
 import com.mygdx.claninvasion.view.exceptions.UnknownTiledMapLayerException;
 import org.javatuples.Pair;
 import org.javatuples.Quartet;
@@ -232,8 +234,8 @@ public class IsometricTiledMapGameRenderer extends BatchTiledMapRenderer {
             } else if (map != null && layer.getName().equals(ENTITIES_LAYER)) {
                 try {
                     WorldCell worldCell = map.getCell(position);
-                    EntitySymbol currentSymbol = chooseEntitySymbol(region);
-                    worldCell.addEntity(new Entity(currentSymbol, position));
+                    Entity entity = chooseEntitySymbol(region, position);
+                    worldCell.addEntity(entity);
                 } catch (Exception ignored) {
 
                 }
@@ -247,22 +249,22 @@ public class IsometricTiledMapGameRenderer extends BatchTiledMapRenderer {
      * This function takes in a cell and return the EntitySymbol of the Entity in the cell , if there is no Entity then it return null
      * @return EntitySymbol
      */
-    protected EntitySymbol chooseEntitySymbol(TextureRegion region) {
+    protected Entity chooseEntitySymbol(TextureRegion region, Pair<Integer, Integer> position) {
         String path = region.getTexture().toString();
         String entityName =  Paths.get(path).getFileName().toString();
         String trimmedEntityName  = entityName.substring(0, entityName.lastIndexOf('.'));
 
         switch (trimmedEntityName) {
             case "Stone":
-                return EntitySymbol.STONE;
+                return new NaturalEntity(EntitySymbol.STONE, position);
             case "tree":
-                return EntitySymbol.TREE;
+                return new NaturalEntity(EntitySymbol.TREE, position);
             case "Dragon":
             case "Dragon-Flipped":
-                return EntitySymbol.DRAGON;
+                return new Soldier(EntitySymbol.DRAGON, position);
             case "barbarian-fliped":
             case "barbarian":
-                return EntitySymbol.BARBARIAN;
+                return new Soldier(EntitySymbol.BARBARIAN, position);
             default:
                 return null;
         }

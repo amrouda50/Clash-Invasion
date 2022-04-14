@@ -1,5 +1,7 @@
 package com.mygdx.claninvasion.model.entity;
 
+import org.javatuples.Pair;
+
 /**
  * Natural entity formations
  * @version 0.01
@@ -8,8 +10,8 @@ package com.mygdx.claninvasion.model.entity;
 public class NaturalEntity extends Entity {
     private final boolean isPassed;
 
-    public NaturalEntity() {
-        super();
+    public NaturalEntity(EntitySymbol entitySymbol, Pair<Integer, Integer> position) {
+        super(entitySymbol, position);
         this.isPassed = false;
     }
 

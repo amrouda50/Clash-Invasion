@@ -3,6 +3,8 @@ package com.mygdx.claninvasion.model.entity;
 import com.mygdx.claninvasion.model.helpers.Direction;
 import com.mygdx.claninvasion.model.level.GameSoldierLevelIterator;
 import com.mygdx.claninvasion.model.level.Levels;
+import com.mygdx.claninvasion.model.map.WorldCell;
+import org.javatuples.Pair;
 
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -16,8 +18,9 @@ public class Soldier extends ArtificialEntity {
     private static final int ATTACK = 100;
     private static final int STEP = 1;
     private AtomicBoolean hasTrained = new AtomicBoolean(false);
-    public Soldier() {
-        super();
+
+    public Soldier(EntitySymbol entitySymbol, Pair<Integer, Integer> position) {
+        super(entitySymbol, position);
         level = Levels.createSoldierLevelIterator();
     }
 
@@ -55,6 +58,12 @@ public class Soldier extends ArtificialEntity {
                     "Such direction not found. Expected \"up\", \"down\", \"left\", or \"right\", got" + direction.alias
             );
         }
+    }
+
+    public void move(WorldCell cell) {
+        position = position.setAt0(cell.getMapPosition().getValue0());
+        position = position.setAt1(cell.getMapPosition().getValue1());
+        cell.setOccupier(this);
     }
 
     private boolean trainCall() {
