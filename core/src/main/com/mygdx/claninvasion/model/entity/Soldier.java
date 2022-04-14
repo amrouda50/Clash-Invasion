@@ -5,6 +5,7 @@ import com.mygdx.claninvasion.model.gamestate.GameState;
 import com.mygdx.claninvasion.model.helpers.Direction;
 import com.mygdx.claninvasion.model.level.GameSoldierLevelIterator;
 import com.mygdx.claninvasion.model.level.Levels;
+import com.mygdx.claninvasion.model.map.WorldCell;
 
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -37,6 +38,11 @@ public class Soldier extends ArtificialEntity {
         }
 
         return false;
+    }
+    public void move(WorldCell cell) {
+        position = position.setAt0(cell.getMapPosition().getValue0());
+        position = position.setAt1(cell.getMapPosition().getValue1());
+        cell.setOccupier(this);
     }
 
     /**
