@@ -105,6 +105,7 @@ public class MainGamePage implements GamePage, UiUpdatable {
         entitiesStage = new TiledMapStage();
         Gdx.input.setInputProcessor(entitiesStage);
         addButtons();
+        System.out.println(app.getMap().getCells());
         WorldCell c1 = app.getMap().getCell(new Pair<>(7, 4));
         app.getMap().mutate(c1);
         //System.out.println(app.getMap().getlayer1.getcell());

@@ -3,8 +3,9 @@ package com.mygdx.claninvasion.model.map;
 
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.utils.Timer;
+import org.graalvm.compiler.core.common.type.ArithmeticOpTable;
 import org.javatuples.Pair;
-
+import java.lang.Math;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicReference;
@@ -18,12 +19,14 @@ import java.util.concurrent.atomic.AtomicReference;
 public class WorldMap {
     private final ArrayList<WorldCell> worldCells;
     private TiledMapTileLayer entitiesLayer;
+    private Graph G;
 
     /**
      * @param worldCells - array of worldCells
      */
     public WorldMap(WorldCell[] worldCells) {
         this.worldCells = new ArrayList<>();
+        this.G = new Graph((int)Math.sqrt(worldCells.length));
         this.worldCells.addAll(Arrays.asList(worldCells));
     }
 
