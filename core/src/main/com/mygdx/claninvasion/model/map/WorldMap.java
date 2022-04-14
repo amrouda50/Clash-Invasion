@@ -2,13 +2,9 @@ package com.mygdx.claninvasion.model.map;
 
 
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
-import com.badlogic.gdx.utils.Timer;
-import org.graalvm.compiler.core.common.type.ArithmeticOpTable;
 import org.javatuples.Pair;
-import java.lang.Math;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * Map modal of the application
@@ -26,7 +22,6 @@ public class WorldMap {
      */
     public WorldMap(WorldCell[] worldCells) {
         this.worldCells = new ArrayList<>();
-        this.G = new Graph((int)Math.sqrt(worldCells.length));
         this.worldCells.addAll(Arrays.asList(worldCells));
     }
 
@@ -115,19 +110,45 @@ public class WorldMap {
         }
     }
 
-    /**
-     * Change the containment of the c1 cell with c2
-     * @param c1 - cell to replace the entity
-     * @param c2 - cell to replace the entity
-     */
-    public void mutate(WorldCell c1, WorldCell c2) {}
+    public void mutate(WorldCell cell1, WorldCell cell2) {
+        Pair<Integer, Integer> coordinates = new Pair<>(cell1.getMapPosition().getValue1(), cell1.getMapPosition().getValue0());
+        Pair<Integer, Integer> coordinatedDist = new Pair<>(cell2.getMapPosition().getValue1(), cell2.getMapPosition().getValue0());
+        TiledMapTileLayer.Cell cell = entitiesLayer.getCell(coordinates.getValue0(), coordinates.getValue1());
+        entitiesLayer.setCell(coordinates.getValue0(), coordinates.getValue1(), null);
+        entitiesLayer.setCell(coordinatedDist.getValue0(), coordinatedDist.getValue1(), cell);
+    }
 
+    public void mutate(int index1, int index2) {
+
+        if (index1 < 0 || index1 >= getSize()) {
+            throw new IllegalArgumentException("First argument has index out of bounds");
+        }
+
+        if (index2 < 0 || index2 >= getSize()) {
+            throw new IllegalArgumentException("Second argument has index out of bounds");
+        }
+
+        WorldCell cell1 = getCell(index1);
+        WorldCell cell2 = getCell(index2);
+
+        mutate(cell1, cell2);
+
+
+    }
+    public Graph getGraph(){
+        return this.G;
+    }
+    public void setGraph(int size){
+        System.out.println(size);
+        this.G = new Graph(size);
+
+    }
     /**
      * Change the containment of the c1 (possible decease
      * of the entity which populated it)
      * @param cell - cell to remove the entity
      */
-    public void mutate(WorldCell cell) {
+   /* public void mutate(WorldCell cell) {
         AtomicReference<Pair<Integer, Integer>> coordinates = new AtomicReference<>(cell.getMapPosition());
         Timer.schedule(new Timer.Task() {
             int i = 7;
@@ -141,5 +162,5 @@ public class WorldMap {
             }
         }, 2, 1, 20);
 
-    }
+    }*/
 }

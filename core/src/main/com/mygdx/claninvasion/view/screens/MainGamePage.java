@@ -12,8 +12,10 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.utils.Timer;
 import com.mygdx.claninvasion.ClanInvasion;
 import com.mygdx.claninvasion.model.adapters.IsometricToOrthogonalAdapt;
+import com.mygdx.claninvasion.model.map.Graph;
 import com.mygdx.claninvasion.model.map.WorldCell;
 import com.mygdx.claninvasion.model.map.WorldMap;
 import com.mygdx.claninvasion.view.actors.GameButton;
@@ -23,6 +25,10 @@ import com.mygdx.claninvasion.view.utils.GameInputProcessor;
 import org.javatuples.Pair;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 
 /**
@@ -105,9 +111,33 @@ public class MainGamePage implements GamePage, UiUpdatable {
         entitiesStage = new TiledMapStage();
         Gdx.input.setInputProcessor(entitiesStage);
         addButtons();
-        System.out.println(app.getMap().getCells());
-        WorldCell c1 = app.getMap().getCell(new Pair<>(7, 4));
-        app.getMap().mutate(c1);
+        app.getMap().setGraph(32);
+        app.getMap().getGraph().printGraph();
+        LinkedList<Integer> paths = app.getMap().getGraph().GetShortestDistance(871 , 886, 32*32);
+      /*  for(int i = paths.size() - 1; i > 0; i--) {
+
+
+
+        }*/
+
+
+
+        for(int i = paths.size() - 1; i > 0; i--) {
+            app.getMap().mutate(paths.get(i), paths.get(i - 1));
+        }
+
+        Timer.schedule(new Timer.Task() {
+            @Override
+            public void run() {
+
+
+            }
+        }, 2, 1);
+
+
+
+
+        // app.getMap().mutate();
         //System.out.println(app.getMap().getlayer1.getcell());
        // app.getMap().mutate(currentx  + 3 ,currenty + 5);
     }

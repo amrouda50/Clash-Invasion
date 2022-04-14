@@ -10,13 +10,13 @@ public class Graph {
     public Graph(int size){
         this.size = size*size;
         this.arraysize = size;
-        adj = new ArrayList<ArrayList<Integer> >(this.size);
+        adj = new ArrayList<>(this.size);
         for (int i = 0; i < this.size; i++){
-            adj.add(new ArrayList<Integer>(this.size));
+            adj.add(new ArrayList<>(this.size));
         }
 
 
-        for(int i = 0 ; i < 4*4 ; i ++){
+        for(int i = 0 ; i < this.size ; i ++){
             this.addEdgesToSurroundingBlock(i);
         }
     }
@@ -87,18 +87,18 @@ public class Graph {
 
     // function to print the shortest distance and path
     // between source vertex and destination vertex
-    public void printShortestDistance(int s, int dest, int v)
+    public LinkedList<Integer> GetShortestDistance(int s, int dest, int v)
     {
         // predecessor[i] array stores predecessor of
         // i and distance array stores distance of i
         // from s
-        int pred[] = new int[v];
-        int dist[] = new int[v];
+        int[] pred = new int[v];
+        int[] dist = new int[v];
 
-        if (BFS(adj, s, dest, v, pred, dist) == false) {
+        if (!BFS(adj, s, dest, v, pred, dist)) {
             System.out.println("Given source and destination" +
                     "are not connected");
-            return;
+            return null;
         }
 
         // LinkedList to store path
@@ -113,11 +113,8 @@ public class Graph {
         // Print distance
         System.out.println("Shortest path length is: " + dist[dest]);
 
-        // Print path
-        System.out.println("Path is ::");
-        for (int i = path.size() - 1; i >= 0; i--) {
-            System.out.print(path.get(i) + " ");
-        }
+        return path;
+
     }
 
     // a modified version of BFS that stores predecessor
