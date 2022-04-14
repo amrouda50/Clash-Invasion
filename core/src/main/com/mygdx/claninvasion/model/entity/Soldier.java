@@ -1,8 +1,13 @@
 package com.mygdx.claninvasion.model.entity;
 
+import com.mygdx.claninvasion.model.gamestate.GamePhase;
+import com.mygdx.claninvasion.model.gamestate.GameState;
 import com.mygdx.claninvasion.model.helpers.Direction;
 import com.mygdx.claninvasion.model.level.GameSoldierLevelIterator;
 import com.mygdx.claninvasion.model.level.Levels;
+
+import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * Soldier class implementation
@@ -11,6 +16,7 @@ import com.mygdx.claninvasion.model.level.Levels;
 public class Soldier extends ArtificialEntity {
     private static final int ATTACK = 100;
     private static final int STEP = 1;
+    private AtomicBoolean isTrained = new AtomicBoolean(false);
     public Soldier() {
         super();
         level = Levels.createSoldierLevelIterator();
@@ -55,5 +61,18 @@ public class Soldier extends ArtificialEntity {
     /**
      * Train soldier algorithm
      */
-    public void train() {}
+    public boolean train(GamePhase phase) {
+        if (phase == GamePhase.ATTACK) {
+            return false;
+        }
+
+        try {
+            CompletableFuture.supplyAsync(() -> this.isTrained.getAndSet(true))
+                    .get(level.current().getReactionTime(), TimeUnit.MILLISECONDS);
+        } catch (InterruptedException | ExecutionException | TimeoutException e) {
+            e.printStackTrace();
+        }
+
+        return true;
+    }
 }
