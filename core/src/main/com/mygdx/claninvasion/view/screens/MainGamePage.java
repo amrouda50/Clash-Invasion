@@ -126,6 +126,7 @@ public class MainGamePage implements GamePage, UiUpdatable {
                     e.printStackTrace();
                 }
             }
+            
         }).start();
     }
        /* new Thread(() -> {
