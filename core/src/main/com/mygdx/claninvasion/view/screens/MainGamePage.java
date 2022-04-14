@@ -111,7 +111,7 @@ public class MainGamePage implements GamePage, UiUpdatable {
         entitiesStage = new TiledMapStage();
         Gdx.input.setInputProcessor(entitiesStage);
         addButtons();
-        app.getMap().setGraph(32);
+        app.getMap().setGraph(32 , app.getMap().getCells());
         app.getMap().getGraph().printGraph();
         LinkedList<Integer> paths = app.getMap().getGraph().GetShortestDistance(871 , 886, 32*32);
 

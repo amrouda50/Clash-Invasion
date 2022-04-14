@@ -5,6 +5,7 @@ import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import org.javatuples.Pair;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Map modal of the application
@@ -138,9 +139,9 @@ public class WorldMap {
     public Graph getGraph(){
         return this.G;
     }
-    public void setGraph(int size){
+    public void setGraph(int size, ArrayList<WorldCell> worldCells){
         System.out.println(size);
-        this.G = new Graph(size);
+        this.G = new Graph(size , worldCells);
 
     }
     /**

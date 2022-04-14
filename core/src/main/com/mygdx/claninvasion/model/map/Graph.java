@@ -5,16 +5,17 @@ import java.util.LinkedList;
 
 public class Graph {
     ArrayList<ArrayList<Integer> > adj ;
+    ArrayList<WorldCell> worldCells;
     int size;
     int arraysize ;
-    public Graph(int size){
+    public Graph(int size , ArrayList<WorldCell> worldCells){
         this.size = size*size;
         this.arraysize = size;
         adj = new ArrayList<>(this.size);
         for (int i = 0; i < this.size; i++){
             adj.add(new ArrayList<>(this.size));
         }
-
+        this.worldCells = worldCells;
 
         for(int i = 0 ; i < this.size ; i ++){
             this.addEdgesToSurroundingBlock(i);
@@ -23,18 +24,18 @@ public class Graph {
     public void addEdgesToSurroundingBlock(int coordinate){
         int x = convertCoordinateToX(coordinate);
         int y = convertCoordinateToY(coordinate);
-        if(y -  1 >= 0){
+        if(y -  1 >= 0 && this.worldCells.get(((x * arraysize) + y) -  1).getOccupier() == null  ){
             AddLeftBlockCoordinate(coordinate ,((x * arraysize) + y) -  1 );
         }
 
-        if( y +  1 < arraysize){
+        if( y +  1 < arraysize && this.worldCells.get(((x * arraysize) + y) +  1).getOccupier() == null){
             AddRightBlockCoordinate(coordinate , ((x * arraysize) + y) +  1);
         }
-        if(((x * arraysize) + y) +  arraysize < adj.size() ){
+        if(((x * arraysize) + y) +  arraysize < adj.size() && this.worldCells.get(((x * arraysize) + y) +  arraysize).getOccupier() == null){
             AddLowerBlockCoordinate(  coordinate , ((x * arraysize) + y) +  arraysize );
         }
 
-        if( ((x * arraysize ) + y) - arraysize >= 0){
+        if( ((x * arraysize ) + y) - arraysize >= 0 && this.worldCells.get(((x * arraysize) + y) -  arraysize).getOccupier() == null){
             AddUpperBlockCoordinate(coordinate ,  ((x * arraysize ) + y) - arraysize);
         }
 
@@ -47,10 +48,7 @@ public class Graph {
     public void AddLowerBlockCoordinate(int coordinate , int addedElement){
         adj.get(coordinate).add(addedElement );
     }
-    public void AddLeftBlockCoordinate(int coordinate , int addedElement){
-
-        adj.get(coordinate).add(addedElement);
-    }
+    public void AddLeftBlockCoordinate(int coordinate , int addedElement){ adj.get(coordinate).add(addedElement); }
     public void AddRightBlockCoordinate(int coordinate , int addedElement){
         adj.get(coordinate).add(addedElement );
     }
