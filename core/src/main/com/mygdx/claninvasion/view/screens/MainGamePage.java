@@ -112,11 +112,10 @@ public class MainGamePage implements GamePage, UiUpdatable {
         entitiesStage = new TiledMapStage();
         Gdx.input.setInputProcessor(entitiesStage);
         addButtons();
-        System.out.println(app.getMap().getCells());
         app.getMap().setGraph(32 , app.getMap().getCells());
+       /* System.out.println(app.getMap().getCells());
         app.getMap().getGraph().printGraph();
         LinkedList<Integer> paths = app.getMap().getGraph().GetShortestDistance(886, 873 , 32*32);
-       //app.getMap().getCell(paths.get(paths.size() - 2)).setOccupier();
         new Thread(() -> {
             for(int i = paths.size() - 1; i > 0; i--) {
                 app.getMap().mutate(paths.get(i), paths.get(i - 1));
@@ -127,29 +126,9 @@ public class MainGamePage implements GamePage, UiUpdatable {
                 }
             }
 
-        }).start();
-    }
-       /* new Thread(() -> {
-            for(int i =  0  ; i < paths.size() - 1 ; i++) {
-                app.getMap().mutate(paths.get(i), paths.get(i + 1));
-                try {
-                    Thread.sleep(500);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
         }).start();*/
-       /* new Thread(() -> {
-            for(int i = paths.size() - 1; i > 0; i--) {
-                app.getMap().mutate(paths.get(i), paths.get(i - 1));
-                try {
-                    Thread.sleep(500);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-        }).start();
-    }*/
+    }
+
 
     /**
      * Fired on every frame update
