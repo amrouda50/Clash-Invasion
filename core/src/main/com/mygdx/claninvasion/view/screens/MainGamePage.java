@@ -3,10 +3,10 @@ package com.mygdx.claninvasion.view.screens;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.maps.tiled.TiledMap;
-import com.badlogic.gdx.maps.tiled.TmxMapLoader;
+import com.badlogic.gdx.maps.tiled.*;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -14,6 +14,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.mygdx.claninvasion.ClanInvasion;
 import com.mygdx.claninvasion.model.adapters.IsometricToOrthogonalAdapt;
+import com.mygdx.claninvasion.model.entity.Entity;
+import com.mygdx.claninvasion.model.entity.EntitySymbol;
 import com.mygdx.claninvasion.model.entity.Soldier;
 import com.mygdx.claninvasion.model.entity.Tower;
 import com.mygdx.claninvasion.model.map.WorldCell;
@@ -22,6 +24,7 @@ import com.mygdx.claninvasion.view.animated.FireAnimated;
 import com.mygdx.claninvasion.view.utils.IsometricTiledMapGameRenderer;
 import com.mygdx.claninvasion.view.tiledmap.TiledMapStage;
 import com.mygdx.claninvasion.view.utils.GameInputProcessor;
+import org.javatuples.Pair;
 
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
@@ -46,6 +49,7 @@ public class MainGamePage implements GamePage, UiUpdatable {
     private GameButton soldierButton;
     private GameButton towerButton;
     private GameButton mineButton;
+    private TiledMap map;
     private final List<FireAnimated> fireballs = Collections.synchronizedList(new CopyOnWriteArrayList<>());
 
 
@@ -90,17 +94,25 @@ public class MainGamePage implements GamePage, UiUpdatable {
 
             for (WorldCell worldCell : app.getMap().getCells()) {
                 if (worldCell.contains(mouseOrtho3)) {
-                    System.out.println(worldCell.getMapPosition().getValue0() + " " + worldCell.getMapPosition().getValue1());
+
                     if (worldCell.getOccupier() == null) {
-                        return;
+                        Pair<Integer ,Integer> p  = new Pair(worldCell.getMapPosition().getValue0() ,worldCell.getMapPosition().getValue1() );
+                        TiledMapTileLayer l2 =  app.getMap().getLayer2();
+                        TiledMapTileLayer.Cell cell = new TiledMapTileLayer.Cell();
+                        TiledMapTileSet tileSet = map.getTileSets().getTileSet("tower");
+                        cell.setTile(tileSet.getTile(20));
+                        l2.setCell(p.getValue1()  , p.getValue0(), cell);
+                        worldCell.setOccupier(new Tower(EntitySymbol.TOWER , p ));
                     }
                     System.out.println(worldCell.getOccupier().getSymbol());
+                    System.out.println(worldCell.getMapPosition().getValue0() + " " + worldCell.getMapPosition().getValue1());
+
 
                     //worldCell.getTileCell().setTile(null);
                 }
             }
         });
-        TiledMap map = new TmxMapLoader().load(Gdx.files.getLocalStoragePath() + "/TileMap/Tilemap.tmx");
+        map = new TmxMapLoader().load(Gdx.files.getLocalStoragePath() + "/TileMap/Tilemap.tmx");
         renderer = new IsometricTiledMapGameRenderer(map, 1);
 
         // transform camera position ans scale to be in the center
@@ -112,7 +124,8 @@ public class MainGamePage implements GamePage, UiUpdatable {
         Gdx.input.setInputProcessor(entitiesStage);
         addButtons();
         app.getMap().setGraph(32, app.getMap().getCells());
-        fireTower();
+        //fireTower();
+
     }
 
     private void fireTower() {
