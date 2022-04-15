@@ -16,7 +16,7 @@ public class Castle extends ArtificialEntity {
     private final ArrayList<Soldier> soldiers;
 
     public Castle(Player player) {
-        super(EntitySymbol.CASTEL,  new Pair<>(0,0));
+        super(EntitySymbol.CASTEL,  new Pair<>(0, 0));
         this.player = player;
         soldiers = new ArrayList<>();
     }

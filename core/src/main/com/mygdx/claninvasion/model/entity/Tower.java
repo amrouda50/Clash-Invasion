@@ -4,8 +4,13 @@ import com.mygdx.claninvasion.model.level.Level;
 import com.mygdx.claninvasion.model.level.LevelIterator;
 import org.javatuples.Pair;
 
+import java.util.concurrent.CompletableFuture;
+
+import static java.util.concurrent.TimeUnit.SECONDS;
+
 public class Tower extends ArtificialEntity implements Defensible {
-    Tower(EntitySymbol entitySymbol, Pair<Integer, Integer> position) {
+
+    public Tower(EntitySymbol entitySymbol, Pair<Integer, Integer> position) {
         super(entitySymbol, position);
     }
 
@@ -25,7 +30,18 @@ public class Tower extends ArtificialEntity implements Defensible {
 
 
     @Override
-    public void defend(ArtificialEntity ae) {
+    public CompletableFuture<Boolean> attack(ArtificialEntity artificialEntity, Fireable fire) {
+        if (!artificialEntity.isAlive()) {
+            return CompletableFuture.supplyAsync(() -> false);
+        }
 
+        CompletableFuture<Boolean> future = CompletableFuture
+                .supplyAsync(() -> fire.fire(position, artificialEntity.position).join());
+        future
+                .orTimeout(3, SECONDS)
+                .thenAccept(a -> artificialEntity.damage(100))
+                .thenAccept(a -> System.out.println("Attack by tower was completed"))
+                .completeExceptionally(new RuntimeException("Could not finish the defend method"));
+        return future;
     }
 }

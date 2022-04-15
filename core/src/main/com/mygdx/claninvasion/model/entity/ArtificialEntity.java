@@ -84,11 +84,11 @@ public class ArtificialEntity extends Entity {
     }
 
     public float getHealthPercentage() {
-        return (health.get() / (float)level.current().getMaxHealth()) * 100;
+        return (health.get() / (float) level.current().getMaxHealth()) * 100;
     }
 
     public AtomicLong getPercentage() {
-        return new AtomicLong((health.get() / (long)level.current().getMaxHealth()) * 100);
+        return new AtomicLong((health.get() / (long) level.current().getMaxHealth()) * 100);
     }
 
     public boolean isAlive() {
