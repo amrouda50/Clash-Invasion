@@ -219,7 +219,7 @@ public class IsometricTiledMapGameRenderer extends BatchTiledMapRenderer {
             batch.draw(region.getTexture(), vertices, 0, CreateVerticesCommand.NUM_VERTICES);
 
 
-            if ( map != null && layer.getName().equals(BACKGROUND_LAYER)) {
+            if (map != null && layer.getName().equals(BACKGROUND_LAYER)) {
                 WorldCell worldCell = new WorldCell(
                         xy,
                         position,
@@ -263,7 +263,7 @@ public class IsometricTiledMapGameRenderer extends BatchTiledMapRenderer {
             case "barbarian":
                 return new Soldier(EntitySymbol.BARBARIAN, position);
             case "tower":
-                return new NaturalEntity(EntitySymbol.Tower, position);
+                return new Tower(EntitySymbol.TOWER, position);
             default:
                 return null;
         }
