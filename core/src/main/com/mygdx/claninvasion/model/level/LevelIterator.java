@@ -14,10 +14,11 @@ import java.util.function.Consumer;
  */
 public class LevelIterator<L extends Level> implements Iterator<L> {
     private final ArrayList<L> levels;
-    private int currentLevelNumber = 0;
+    private int currentLevelNumber;
 
     public LevelIterator(ArrayList<L> levels) {
         this.levels = levels;
+        currentLevelNumber = 0;
         if (this.levels.size() == 0) {
             throw new IllegalArgumentException("Please provide a collection with at least one level in it.");
         }

@@ -66,7 +66,7 @@ public class GameModel {
         gameState = new StartGameState(this);
         worldMap = new WorldMap();
 
-        playerOne.addSoldiers();
+//        playerOne.addSoldiers();
     }
 
 

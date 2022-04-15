@@ -2,10 +2,12 @@ package com.mygdx.claninvasion.model.map;
 
 
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
+import com.badlogic.gdx.math.Vector2;
+import com.mygdx.claninvasion.model.entity.Soldier;
+import com.mygdx.claninvasion.model.entity.Tower;
 import org.javatuples.Pair;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Map modal of the application
@@ -42,8 +44,18 @@ public class WorldMap {
         return this.worldCells.size();
     }
 
-    public WorldCell getCell(int i) {
-        return worldCells.get(i);
+    public WorldCell getCell(int index) {
+        return worldCells.get(index);
+    }
+
+    public int transformMapPositionToIndex(Pair<Integer, Integer> cellPlace) {
+        WorldCell cell = getCell(cellPlace);
+        return worldCells.indexOf(cell);
+    }
+
+    public Vector2 tranformMapPositionToIso(Pair<Integer, Integer> cellPlace) {
+        WorldCell cell = getCell(cellPlace);
+        return cell.getworldIsoPoint();
     }
 
     public WorldCell getCell(Pair<Integer, Integer> cellPlace) {
@@ -111,6 +123,28 @@ public class WorldMap {
         }
     }
 
+    public ArrayList<Tower> getTowers() {
+        ArrayList<Tower> towers = new ArrayList<>();
+        for (WorldCell cell : worldCells) {
+            if (cell.hasOccupier() && cell.getOccupier() instanceof Tower) {
+                towers.add((Tower) cell.getOccupier());
+            }
+        }
+
+        return towers;
+    }
+
+    public ArrayList<Soldier> getSoldiers() {
+        ArrayList<Soldier> soldiers = new ArrayList<>();
+        for (WorldCell cell : worldCells) {
+            if (cell.hasOccupier() && cell.getOccupier() instanceof Soldier) {
+                soldiers.add((Soldier) cell.getOccupier());
+            }
+        }
+
+        return soldiers;
+    }
+
     public void mutate(WorldCell cell1, WorldCell cell2) {
         Pair<Integer, Integer> coordinates = new Pair<>(cell1.getMapPosition().getValue1(), cell1.getMapPosition().getValue0());
         Pair<Integer, Integer> coordinatedDist = new Pair<>(cell2.getMapPosition().getValue1(), cell2.getMapPosition().getValue0());
@@ -137,19 +171,19 @@ public class WorldMap {
 
     }
 
-    public Graph getGraph(){
+    public Graph getGraph() {
         return this.G;
     }
-    public void setGraph(int size, ArrayList<WorldCell> worldCells){
-        System.out.println(size);
-        this.G = new Graph(size , worldCells);
 
+    public void setGraph(int size, ArrayList<WorldCell> worldCells) {
+        System.out.println(size);
+        this.G = new Graph(size, worldCells);
     }
-    /**
-     * Change the containment of the c1 (possible decease
-     * of the entity which populated it)
-     * @param cell - cell to remove the entity
-     */
+
+    //    /** Change the containment of the c1 (possible decease
+    //     * of the entity which populated it)
+    //     * @param cell - cell to remove the entity
+    //     */
    /* public void mutate(WorldCell cell) {
         AtomicReference<Pair<Integer, Integer>> coordinates = new AtomicReference<>(cell.getMapPosition());
         Timer.schedule(new Timer.Task() {

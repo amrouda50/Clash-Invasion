@@ -8,7 +8,6 @@ import org.javatuples.Pair;
 
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.function.Supplier;
 
 /**
  * Soldier class implementation
@@ -32,7 +31,7 @@ public class Soldier extends ArtificialEntity {
     public boolean attackCastle(Castle castle) {
         float distance = getVec2Position().dst(castle.getVec2Position().x, castle.getVec2Position().y);
 
-        GameSoldierLevelIterator level = (GameSoldierLevelIterator)this.level;
+        GameSoldierLevelIterator level = (GameSoldierLevelIterator) this.level;
         if (distance < level.current().getVisibleArea()) {
             castle.damage(ATTACK + level.current().getAttackIncrease());
             return true;

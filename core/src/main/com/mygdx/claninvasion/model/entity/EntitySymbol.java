@@ -11,7 +11,7 @@ public enum EntitySymbol {
     STONE("Stone", 'S'),
     DRAGON("Dragon", 'D'),
     TREE("tree", 'T') ,
-    Tower("tower" , 't');
+    TOWER("tower", 't');
 
     public final String sourcePart;
     public final char letter;

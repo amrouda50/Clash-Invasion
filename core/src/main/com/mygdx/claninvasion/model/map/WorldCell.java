@@ -76,7 +76,7 @@ public class WorldCell {
     /**
      * @return - isometric vector of the left-top side of the cell in 3d space (might be useful)
      */
-    public Vector3 getworldIsoPointV3() {
+    public Vector3 getWorldIsoPointV3() {
         return new Vector3(getworldIsoPoint().x, getworldIsoPoint().y, 0);
     }
 
@@ -125,6 +125,10 @@ public class WorldCell {
 
     public Entity getOccupier() {
         return occupier;
+    }
+
+    public boolean hasOccupier() {
+        return occupier != null;
     }
 
     public void setOccupier(Entity occupier) {
