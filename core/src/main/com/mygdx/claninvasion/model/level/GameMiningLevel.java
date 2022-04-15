@@ -12,7 +12,7 @@ import org.javatuples.Sextet;
  * TODO: Logic part is missing
  */
 public class GameMiningLevel extends Level {
-    public int goldBonus;
+    private int goldBonus;
 
     public GameMiningLevel(Septet<Integer, Integer, Integer, Integer, Integer, Integer, Integer> values, int goldBonus) {
         super(values);

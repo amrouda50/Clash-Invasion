@@ -113,7 +113,6 @@ public class MainGamePage implements GamePage, UiUpdatable {
         addButtons();
         app.getMap().setGraph(32, app.getMap().getCells());
         fireTower();
-
     }
 
     private void fireTower() {
@@ -164,6 +163,7 @@ public class MainGamePage implements GamePage, UiUpdatable {
             fireAnimated.setView(app.getCamera());
             fireAnimated.render();
             if (fireAnimated.isDone()) {
+                fireAnimated.dispose();
                 fireballs.remove(fireAnimated);
             }
         }

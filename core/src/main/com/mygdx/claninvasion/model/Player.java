@@ -2,9 +2,13 @@ package com.mygdx.claninvasion.model;
 
 import com.mygdx.claninvasion.model.entity.*;
 import com.mygdx.claninvasion.model.gamestate.GameState;
+import org.javatuples.Pair;
 
+import javax.swing.text.html.parser.Entity;
 import java.util.ArrayList;
 import java.util.UUID;
+import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * This class is responsible for handling
@@ -16,6 +20,7 @@ import java.util.UUID;
  */
 
 public class Player {
+    public static final int MAX_GOLDMINE = 3;
     /**
      * Opponent of the active player
      */
@@ -34,7 +39,7 @@ public class Player {
     /**
      * All the mines of the player
      */
-    private ArrayList<Mineable> miningFarms;
+    private ArrayList<MiningFarm> miningFarms;
 
     /**
      * Status of player in the game
@@ -44,7 +49,7 @@ public class Player {
     /**
      * Amount of gold of the player
      */
-    private int wealth;
+    private AtomicInteger wealth;
 
     /**
      * All the soldiers of the player
@@ -56,6 +61,8 @@ public class Player {
      */
     private final Castle castle;
     private final UUID id;
+    private final BlockingQueue<Integer> coinProduceQueue = new LinkedBlockingDeque<>(MAX_GOLDMINE);
+    private final ExecutorService executorService = Executors.newFixedThreadPool(MAX_GOLDMINE + 1);
 
     public Player() {
         this.id = UUID.randomUUID();
@@ -63,6 +70,44 @@ public class Player {
         miningFarms = new ArrayList<>();
         soldiers = new ArrayList<>();
         towers = new ArrayList<>();
+        wealth = new AtomicInteger(0);
+//        executorService.execute(this::consumeGold);
+//        createNewMining(new Pair<>(1,1));
+    }
+
+    public void createNewMining(Pair<Integer, Integer> pair) {
+        MiningFarm farm = new MiningFarm(EntitySymbol.MINING, pair, coinProduceQueue);
+        executorService.execute(farm::startMining);
+        miningFarms.add(farm);
+    }
+
+    private void shutdownThreads() {
+        executorService.shutdown();
+        try {
+            if (!executorService.awaitTermination(3500, TimeUnit.MILLISECONDS)) {
+                executorService.shutdownNow();
+            }
+        } catch (InterruptedException e) {
+            executorService.shutdownNow();
+        }
+    }
+
+    private void consumeGold() {
+        while (true) {
+            try {
+                Integer gold = coinProduceQueue.take();
+                wealth.addAndGet(gold);
+                System.out.println(wealth.get());
+                int active = Thread.activeCount();
+                System.out.println("currently active threads: " + active);
+                if (miningFarms.stream().noneMatch(ArtificialEntity::isAlive)) {
+                    shutdownThreads();
+                    break;
+                }
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     public Castle getCastle() {
