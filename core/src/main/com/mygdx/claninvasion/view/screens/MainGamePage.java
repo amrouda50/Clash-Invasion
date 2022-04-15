@@ -95,7 +95,7 @@ public class MainGamePage implements GamePage, UiUpdatable {
                         return;
                     }
                     System.out.println(worldCell.getOccupier().getSymbol());
-                    System.out.println(app.getMap().transformMapPositionToIndex(worldCell.getMapPosition()));
+
                     //worldCell.getTileCell().setTile(null);
                 }
             }
@@ -111,13 +111,12 @@ public class MainGamePage implements GamePage, UiUpdatable {
         entitiesStage = new TiledMapStage();
         Gdx.input.setInputProcessor(entitiesStage);
         addButtons();
-        System.out.println(app.getMap().getCells());
         app.getMap().setGraph(32, app.getMap().getCells());
         // fire tower effects
-        fireTower();
+   /*    fireTower();
 
         // graph movement
-        app.getMap().getGraph().printGraph();
+       app.getMap().getGraph().printGraph();
         LinkedList<Integer> paths = app.getMap().getGraph().GetShortestDistance(886, 873, 32 * 32);
         new Thread(() -> {
             for (int i = paths.size() - 1; i > 0; i--) {
@@ -129,7 +128,7 @@ public class MainGamePage implements GamePage, UiUpdatable {
                 }
             }
             
-        }).start();
+        }).start();*/
     }
 
     private void fireTower() {
