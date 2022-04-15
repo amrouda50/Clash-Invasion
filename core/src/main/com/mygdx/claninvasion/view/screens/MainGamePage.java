@@ -3,15 +3,19 @@ package com.mygdx.claninvasion.view.screens;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.mygdx.claninvasion.ClanInvasion;
 import com.mygdx.claninvasion.model.adapters.IsometricToOrthogonalAdapt;
 import com.mygdx.claninvasion.model.map.WorldCell;
@@ -42,6 +46,9 @@ public class MainGamePage implements GamePage, UiUpdatable {
     private GameButton soldierButton;
     private GameButton towerButton;
     private GameButton mineButton;
+    private Image muteButton;
+    private Stage bStage;
+
 
 
     /**
@@ -71,11 +78,32 @@ public class MainGamePage implements GamePage, UiUpdatable {
         uiStage.addActor(table);
     }
 
+    public void muteButton() {
+        bStage = new Stage();
+        Gdx.input.setInputProcessor(bStage);
+        muteButton = new Image(new Texture("muteButton/speaker.png"));
 
-    /**
-     * Is fired once the page becomes active in application
-     * See GamePage interface
-     */
+        //muteButton.setTouchable(Touchable.enabled);
+        muteButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                if (app.music.isPlaying()) {
+                    app.music.pause();
+                } else if (!app.music.isPlaying()) {
+                    app.music.play();
+                }
+            }
+        });
+        muteButton.setPosition(0, 0);
+        muteButton.setSize(36, 36);
+        bStage.addActor(muteButton);
+    }
+
+
+        /**
+         * Is fired once the page becomes active in application
+         * See GamePage interface
+         */
     @Override
     public void show() {
         app.getCamera().update();
@@ -105,6 +133,7 @@ public class MainGamePage implements GamePage, UiUpdatable {
         entitiesStage = new TiledMapStage();
         Gdx.input.setInputProcessor(entitiesStage);
         addButtons();
+        muteButton();
         WorldCell c1 = app.getMap().getCell(new Pair<>(7, 4));
         app.getMap().mutate(c1);
         //System.out.println(app.getMap().getlayer1.getcell());
@@ -199,5 +228,7 @@ public class MainGamePage implements GamePage, UiUpdatable {
         entitiesStage.draw();
         uiStage.act(delta);
         uiStage.draw();
+        bStage.act(delta);
+        bStage.draw();
     }
 }

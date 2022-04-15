@@ -30,7 +30,7 @@ public class SplashScreen implements GamePage, UiUpdatable {
     private Image background;
     private GameButton startGameButton;
     private GameButton endGameButton;
-    private Music music;
+    //private Music music;
 
     /**
      * @param app - app instance
@@ -53,7 +53,7 @@ public class SplashScreen implements GamePage, UiUpdatable {
         splash.setPosition((stage.getWidth() / 1000) - 170, (stage.getHeight() / 1000) - 100);
         stage.addActor(background);
         stage.addActor(splash);
-        addMusic();
+        //addMusic();
         addButtons();
         addActionListeners();
 
@@ -79,13 +79,13 @@ public class SplashScreen implements GamePage, UiUpdatable {
         endGameButton.addClickListener(() -> Gdx.app.exit());
     }
 
-
+/*
     private void addMusic() {
         music = Gdx.audio.newMusic(Gdx.files.internal("music/SplashScreenMusic.mp3"));
         music.setVolume(1.0f);
         music.setLooping(true);
         music.play();
-    }
+    }*/
 
     /**
      * Is fired once the page becomes active in application
@@ -161,6 +161,6 @@ public class SplashScreen implements GamePage, UiUpdatable {
     @Override
     public void dispose() {
         stage.dispose();
-        music.dispose();
+        //music.dispose();
     }
 }

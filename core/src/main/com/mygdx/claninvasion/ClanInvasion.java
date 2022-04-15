@@ -1,6 +1,8 @@
 package com.mygdx.claninvasion;
 
 import com.badlogic.gdx.Game;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.mygdx.claninvasion.model.GameModel;
@@ -25,6 +27,8 @@ public class ClanInvasion extends Game {
     private BitmapFont font;
     private OrthographicCamera camera;
     private ArrayList<GamePage> gamePages;
+    public Music music;
+
     /**
      * * GameModel responsible for the model handling
      * and is working as a bridge between UI/Logic
@@ -37,6 +41,14 @@ public class ClanInvasion extends Game {
         screens = new GameScreens();
         gameModel = new GameModel();
     }
+
+    private void addMusic() {
+        music = Gdx.audio.newMusic(Gdx.files.internal("music/SplashScreenMusic.mp3"));
+        music.setVolume(1.0f);
+        music.setLooping(true);
+        music.play();
+    }
+
 
     /** Called when the application is first created.
      * It bundles all the screens as a stack
@@ -69,6 +81,7 @@ public class ClanInvasion extends Game {
         for (GamePage gamePage : gamePages) {
             screens.push(gamePage);
         }
+        addMusic();
     }
 
     /** Used to change the screen one after the other.
@@ -120,5 +133,6 @@ public class ClanInvasion extends Game {
     @Override
     public void dispose() {
         this.getScreen().dispose();
+        music.dispose();
     }
 }
