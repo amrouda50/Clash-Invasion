@@ -15,8 +15,8 @@ public class FireAnimated implements ApplicationListener {
     private SpriteBatch batch;
     private Texture texture;
     private Sprite sprite;
-    private Vector2 positionDest;
-    private Vector2 currentPosition;
+    private final Vector2 positionDest;
+    private final Vector2 currentPosition;
 
     public FireAnimated(Vector2 position1, Vector2 position2, SpriteBatch batch) {
         positionDest = position2;
@@ -41,7 +41,7 @@ public class FireAnimated implements ApplicationListener {
         return currentPosition.equals(positionDest);
     }
 
-    public void setView (OrthographicCamera camera) {
+    public void setView(OrthographicCamera camera) {
         batch.setProjectionMatrix(camera.combined);
     }
 
@@ -58,6 +58,10 @@ public class FireAnimated implements ApplicationListener {
         sprite.draw(batch);
         batch.end();
 
+        changeCurrentPosition();
+    }
+
+    protected void changeCurrentPosition() {
         float initDot = currentPosition.dst(positionDest);
         Vector2 newPosition = currentPosition.cpy();
         // try to move to the right
@@ -79,49 +83,10 @@ public class FireAnimated implements ApplicationListener {
         moveCurrent(new Pair<>(MOVE_BY, -MOVE_BY), initDot, newPosition);
         // try to move to the left-bottom
         moveCurrent(new Pair<>(-MOVE_BY, MOVE_BY), initDot, newPosition);
-//        newPosition.set(newPosition.x + MOVE_BY, newPosition.y);
-//        if (initDot > newPosition.dst(positionDest)) {
-//            currentPosition.set(newPosition);
-//        }
-//
-//        newPosition.set(newPosition.x, newPosition.y + MOVE_BY);
-//        if (initDot > newPosition.dst(positionDest)) {
-//            currentPosition.set(newPosition);
-//        }
-//
-//        newPosition.set(newPosition.x - MOVE_BY, newPosition.y);
-//        if (initDot > newPosition.dst(positionDest)) {
-//            currentPosition.set(newPosition);
-//        }
-//
-//        newPosition.set(newPosition.x , newPosition.y - MOVE_BY);
-//        if (initDot > newPosition.dst(positionDest)) {
-//            currentPosition.set(newPosition);
-//        }
-//
-//        newPosition.set(newPosition.x + MOVE_BY, newPosition.y + MOVE_BY);
-//        if (initDot > newPosition.dst(positionDest)) {
-//            currentPosition.set(newPosition);
-//        }
-//
-//        newPosition.set(newPosition.x - MOVE_BY, newPosition.y - MOVE_BY);
-//        if (initDot > newPosition.dst(positionDest)) {
-//            currentPosition.set(newPosition);
-//        }
-//
-//        newPosition.set(newPosition.x + MOVE_BY, newPosition.y - MOVE_BY);
-//        if (initDot > newPosition.dst(positionDest)) {
-//            currentPosition.set(newPosition);
-//        }
-//
-//        newPosition.set(newPosition.x - MOVE_BY, newPosition.y + MOVE_BY);
-//        if (initDot > newPosition.dst(positionDest)) {
-//            currentPosition.set(newPosition);
-//        }
     }
 
-    private void moveCurrent(Pair<Float, Float> MOVE_BY, float initDistance, Vector2 newPosition) {
-        newPosition.set(newPosition.x + MOVE_BY.getValue0(), newPosition.y + MOVE_BY.getValue1());
+    protected void moveCurrent(Pair<Float, Float> moveBy, float initDistance, Vector2 newPosition) {
+        newPosition.set(newPosition.x + moveBy.getValue0(), newPosition.y + moveBy.getValue1());
         if (initDistance > newPosition.dst(positionDest)) {
             currentPosition.set(newPosition);
         }
