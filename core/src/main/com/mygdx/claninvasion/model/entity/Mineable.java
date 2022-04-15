@@ -9,5 +9,5 @@ public interface Mineable {
     /**
      * Start mining process
      */
-    default void startMining() {}
+    void startMining();
 }

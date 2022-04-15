@@ -120,5 +120,6 @@ public class ClanInvasion extends Game {
     @Override
     public void dispose() {
         this.getScreen().dispose();
+        System.exit(0);
     }
 }

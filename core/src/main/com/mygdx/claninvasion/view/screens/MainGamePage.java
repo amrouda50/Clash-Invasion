@@ -176,6 +176,7 @@ public class MainGamePage implements GamePage, UiUpdatable {
             fireAnimated.setView(app.getCamera());
             fireAnimated.render();
             if (fireAnimated.isDone()) {
+                fireAnimated.dispose();
                 fireballs.remove(fireAnimated);
             }
         }
