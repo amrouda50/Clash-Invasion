@@ -112,23 +112,8 @@ public class MainGamePage implements GamePage, UiUpdatable {
         Gdx.input.setInputProcessor(entitiesStage);
         addButtons();
         app.getMap().setGraph(32, app.getMap().getCells());
-        // fire tower effects
-   /*    fireTower();
+        fireTower();
 
-        // graph movement
-       app.getMap().getGraph().printGraph();
-        LinkedList<Integer> paths = app.getMap().getGraph().GetShortestDistance(886, 873, 32 * 32);
-        new Thread(() -> {
-            for (int i = paths.size() - 1; i > 0; i--) {
-                app.getMap().mutate(paths.get(i), paths.get(i - 1));
-                try {
-                    Thread.sleep(500);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-            
-        }).start();*/
     }
 
     private void fireTower() {
@@ -146,34 +131,6 @@ public class MainGamePage implements GamePage, UiUpdatable {
             }));
         }
     }
-
-
-    private void testTowerMovement(LinkedList<Integer> paths) {
-        new Thread(() -> {
-            for (int i = 0; i < paths.size() - 1; i++) {
-                app.getMap().mutate(paths.get(i), paths.get(i + 1));
-                try {
-                    Thread.sleep(500);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-        }).start();
-    }
-
-    private void test(LinkedList<Integer> paths) {
-        new Thread(() -> {
-            for (int i = paths.size() - 1; i > 0; i--) {
-                app.getMap().mutate(paths.get(i), paths.get(i - 1));
-                try {
-                    Thread.sleep(500);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-        }).start();
-    }
-
     /**
      * Fired on every frame update
      * See GamePage interface
