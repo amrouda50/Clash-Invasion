@@ -121,7 +121,7 @@ public class MainGamePage implements GamePage, UiUpdatable {
         ArrayList<Soldier> soldiers = app.getMap().getSoldiers();
         if (towers.size() > 0 && soldiers.size() > 0) {
             Tower tower = towers.get(0);
-            tower.attack(soldiers.get(6), (src, dest) -> CompletableFuture.supplyAsync(() -> {
+            tower.attack(soldiers.get(0), (src, dest) -> CompletableFuture.supplyAsync(() -> {
                 Vector2 positionSrc = app.getMap().tranformMapPositionToIso(src);
                 Vector2 positionDest = app.getMap().tranformMapPositionToIso(dest);
                 FireAnimated animated = new FireAnimated(positionSrc,
