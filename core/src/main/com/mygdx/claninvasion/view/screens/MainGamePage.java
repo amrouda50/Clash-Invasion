@@ -14,9 +14,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.mygdx.claninvasion.ClanInvasion;
 import com.mygdx.claninvasion.model.adapters.IsometricToOrthogonalAdapt;
-import com.mygdx.claninvasion.model.entity.EntitySymbol;
-import com.mygdx.claninvasion.model.entity.Soldier;
-import com.mygdx.claninvasion.model.entity.Tower;
+import com.mygdx.claninvasion.model.entity.*;
 import com.mygdx.claninvasion.model.map.WorldCell;
 import com.mygdx.claninvasion.view.actors.GameButton;
 import com.mygdx.claninvasion.view.actors.HealthBar;
@@ -123,15 +121,19 @@ public class MainGamePage implements GamePage, UiUpdatable {
             for (WorldCell worldCell : app.getMap().getCells()) {
                 if (worldCell.contains(mouseOrtho3)) {
 
-                    HealthBar healthBar;
+                    HealthBar healthBar = new HealthBar();
+                    ArtificialEntity artificialEntity = null;
                     if (worldCell.getOccupier() == null && EntitySymbol.TOWER == mapClickEntityCreate) {
-                        Tower tower = app.getCurrentPlayer().buildTower(worldCell);
-                        healthBar =  new HealthBar(new Pair<>(14f, 5f), Tower.HEALTHBAR_OFFSET);
-                        healthBar.setCoordinates(new Pair<>(worldCell.getWorldIsoPoint1().x , worldCell.getWorldIsoPoint1().y));
-                        hpBars.add(healthBar);
-                        tower.setHealthBar(healthBar);
+                        artificialEntity = app.getCurrentPlayer().buildTower(worldCell);
+
                     } else if (worldCell.getOccupier() == null && EntitySymbol.MINING == mapClickEntityCreate) {
-                        app.getCurrentPlayer().createNewMining(worldCell);
+                        artificialEntity = app.getCurrentPlayer().createNewMining(worldCell);
+                    }
+
+                    if (artificialEntity != null) {
+                        healthBar.setCoordinates(new Pair<>(worldCell.getWorldIsoPoint1().x , worldCell.getWorldIsoPoint1().y));
+                        artificialEntity.setHealthBar(healthBar);
+                        hpBars.add(healthBar);
                     }
 
                     if (worldCell.getOccupier() != null) {
@@ -210,7 +212,6 @@ public class MainGamePage implements GamePage, UiUpdatable {
         update(delta);
         entitiesStage.act(delta);
         entitiesStage.draw();
-
     }
 
 

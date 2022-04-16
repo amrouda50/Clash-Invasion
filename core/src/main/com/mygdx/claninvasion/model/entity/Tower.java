@@ -2,7 +2,6 @@ package com.mygdx.claninvasion.model.entity;
 
 import com.mygdx.claninvasion.model.level.Level;
 import com.mygdx.claninvasion.model.level.LevelIterator;
-import com.mygdx.claninvasion.view.actors.HealthBar;
 import org.javatuples.Pair;
 
 import java.util.concurrent.CompletableFuture;
@@ -10,8 +9,6 @@ import java.util.concurrent.CompletableFuture;
 import static java.util.concurrent.TimeUnit.SECONDS;
 
 public class Tower extends ArtificialEntity implements Defensible {
-    public static final  Pair<Float , Float> HEALTHBAR_OFFSET = new Pair<>(-26f , 40f);
-
     public Tower(EntitySymbol entitySymbol, Pair<Integer, Integer> position) {
         super(entitySymbol, position);
 
@@ -19,9 +16,6 @@ public class Tower extends ArtificialEntity implements Defensible {
 
     Tower(LevelIterator<Level> levelIterator) {
         super(levelIterator);
-    }
-    public void setHealthBar(HealthBar b){
-    hpBar = b;
     }
 
     @Override

@@ -8,18 +8,31 @@ import org.javatuples.Triplet;
 
 
 public class HealthBar extends ShapeRenderer {
-    private static int OFFSET = 1;
+    private static final int OFFSET = 1;
     private Pair<Float , Float> coordinates;
-    private final float width;
-    private final float height;
+    private float width;
+    private float height;
     private float stamina;
     private Pair<Float, Float> positionOffset;
 
-    public HealthBar(Pair<Float, Float> sizes, Pair<Float, Float> offsets) {
-        width = sizes.getValue0();
-        height = sizes.getValue1();
-        stamina = sizes.getValue0() - OFFSET;
-        positionOffset = offsets;
+    public HealthBar(Pair<Float, Float> sizes) {
+        setDimensions(sizes);
+    }
+
+    public HealthBar() {
+        super();
+    }
+
+    public void setPositionOffset(Pair<Float, Float> positionOffset) {
+        this.positionOffset = positionOffset;
+    }
+
+    public void addStamina(float percent) {
+        stamina += stamina * percent;
+    }
+
+    public void substrStamina(float percent) {
+        stamina -= stamina * percent;
     }
 
     private void drawRectangle(Matrix4 camera) {
@@ -49,5 +62,11 @@ public class HealthBar extends ShapeRenderer {
     }
     public void setCoordinates(Pair<Float , Float> coordinates){
         this.coordinates = coordinates;
+    }
+
+    public void setDimensions(Pair<Float, Float> sizes) {
+        width = sizes.getValue0();
+        height = sizes.getValue1();
+        stamina = sizes.getValue0() - OFFSET;
     }
 }

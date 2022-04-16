@@ -82,10 +82,11 @@ public class Player {
         this.castle = castle;
     }
 
-    public void createNewMining(WorldCell cell) {
+    public MiningFarm createNewMining(WorldCell cell) {
         MiningFarm farm = (MiningFarm) game.getWorldMap().createMapEntity(EntitySymbol.MINING, cell, coinProduceQueue);
         executorService.execute(farm::startMining);
         miningFarms.add(farm);
+        return farm;
     }
 
     private void shutdownThreads() {

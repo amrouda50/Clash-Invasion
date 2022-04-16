@@ -41,6 +41,20 @@ public class ArtificialEntity extends Entity {
         direction = Direction.DOWN;
     }
 
+    public void setHealthBar(HealthBar bar){
+        bar.setDimensions(getHealthBarSizes());
+        bar.setPositionOffset(getHealthBarOffset());
+        hpBar = bar;
+    }
+
+    public Pair<Float, Float> getHealthBarOffset() {
+        return new Pair<>(-26f , 40f);
+    }
+
+    public Pair<Float, Float> getHealthBarSizes() {
+        return new Pair<>(14f, 5f);
+    }
+
     /**
      * Should heal the entity
      */
