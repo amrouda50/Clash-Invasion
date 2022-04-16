@@ -1,5 +1,6 @@
 package com.mygdx.claninvasion.model.entity;
 
+import com.mygdx.claninvasion.model.entity.attacktype.AttackType;
 import com.mygdx.claninvasion.model.helpers.Direction;
 import com.mygdx.claninvasion.model.level.GameSoldierLevel;
 import com.mygdx.claninvasion.model.level.GameSoldierLevelIterator;
@@ -25,6 +26,17 @@ public abstract class Soldier extends ArtificialEntity {
 
     public Soldier(EntitySymbol entitySymbol, Pair<Integer, Integer> position) {
         super(entitySymbol, position);
+    private AtomicBoolean hasTrained = new AtomicBoolean(false);
+    private int pos_x;
+    private int pos_y;
+
+    public Soldier(EntitySymbol entitySymbol, Pair<Integer, Integer> position) {
+        super(entitySymbol, position);
+        level = Levels.createSoldierLevelIterator();
+
+        pos_x = getPositionX();
+        pos_y = getPositionY();
+
     }
 
     /**
@@ -94,5 +106,15 @@ public abstract class Soldier extends ArtificialEntity {
 
     public CompletableFuture<Integer> train(ExecutorService service) {
         return CompletableFuture.supplyAsync(this::trainCall, service);
+    }
+
+
+    /**
+     *  Deciding type of attack of a soldier
+     */
+    public void Attack() {
+        AttackType attackType;
+        GameSoldierLevelIterator level = (GameSoldierLevelIterator) this.level;
+
     }
 }

@@ -7,13 +7,13 @@ package com.mygdx.claninvasion.model.entity.attacktype;
 public class AttackTypeSword extends AttackTypeSoldier{
     boolean checkDistance = false;
     boolean attackSword = false;
+
     /**
      * Overrides base attack implementation
      * @see AttackType
-     * @return
      */
     @Override
-    public boolean attack() {
+    public void attack() {
         checkDistance = (checkEnemyDistance() == 1);
         if (checkDistance) {
             return attackSword;
@@ -22,7 +22,7 @@ public class AttackTypeSword extends AttackTypeSoldier{
     }
 
     private int checkEnemyDistance() {
-        //Check all the neighboring cells
+
         return 0;
     }
 }

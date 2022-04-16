@@ -6,9 +6,7 @@ package com.mygdx.claninvasion.model.entity.attacktype;
 public interface AttackType {
     /**
      * Should represent the way of attacking of certain entity
-     * @return
      */
-    boolean attack();
-
+    void attack();
 
 }
