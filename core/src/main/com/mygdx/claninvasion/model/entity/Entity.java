@@ -38,6 +38,11 @@ public class Entity {
     public Integer getPositionX() {
         return position.getValue0();
     }
+
+    public Pair<Integer, Integer> getPosition() {
+        return position;
+    }
+
     /**
      * Returns map symbol
      * @return - position on the map of Y

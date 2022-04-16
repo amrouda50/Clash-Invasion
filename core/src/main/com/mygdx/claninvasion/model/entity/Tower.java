@@ -36,6 +36,15 @@ public class Tower extends ArtificialEntity implements Defensible {
 
     @Override
     public CompletableFuture<Boolean> attack(ArtificialEntity artificialEntity, Fireable fire) {
+        float distance = getVec2Position().dst(
+                artificialEntity.getVec2Position().x,
+                artificialEntity.getVec2Position().y
+        );
+
+        if (distance > 2) {
+            return CompletableFuture.supplyAsync(() -> false);
+        }
+
         if (!artificialEntity.isAlive()) {
             return CompletableFuture.supplyAsync(() -> false);
         }

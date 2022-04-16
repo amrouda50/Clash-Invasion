@@ -24,6 +24,7 @@ import com.mygdx.claninvasion.view.actors.GameButton;
 import com.mygdx.claninvasion.view.actors.HealthBar;
 import com.mygdx.claninvasion.view.animated.FireAnimated;
 import com.mygdx.claninvasion.view.tiledmap.TiledMapStage;
+import com.mygdx.claninvasion.view.utils.EntityPlacer;
 import com.mygdx.claninvasion.view.utils.GameInputProcessor;
 import com.mygdx.claninvasion.view.utils.IsometricTiledMapGameRenderer;
 import org.javatuples.Pair;
@@ -71,7 +72,7 @@ public class MainGamePage implements GamePage, UiUpdatable {
         TextureAtlas atlas = new TextureAtlas("skin/skin/uiskin.atlas");
         Skin skin = new Skin(atlas);
         Table table = new Table(skin);
-        table.setBounds(-100, Gdx.graphics.getWidth() / 4f, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        table.setBounds(-100, -Gdx.graphics.getWidth() / 3f, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
         soldierButton = new GameButton(skin, "Train soldiers");
         towerButton = new GameButton(skin, "Place towers");
@@ -134,6 +135,11 @@ public class MainGamePage implements GamePage, UiUpdatable {
                         app.getCurrentPlayer().createNewMining(worldCell);
 
                     }
+
+                    if (worldCell.getOccupier() != null) {
+                        System.out.println((worldCell.getOccupier().getSymbol()));
+                    }
+
                     System.out.println(worldCell.getMapPosition().getValue0() + " " + worldCell.getMapPosition().getValue1());
                     System.out.println(worldCell.getWorldIsoPoint1().x + " " + worldCell.getWorldIsoPoint1().y);
                 }
@@ -141,13 +147,17 @@ public class MainGamePage implements GamePage, UiUpdatable {
         });
         map = new TmxMapLoader().load(Gdx.files.getLocalStoragePath() + "/TileMap/Tilemap.tmx");
         app.getMap().setTileset(map.getTileSets());
-        renderer = new IsometricTiledMapGameRenderer(map, 1);
+        renderer = new IsometricTiledMapGameRenderer(
+                map,
+                1,
+                new EntityPlacer(app.getGameModel())
+        );
 
         // transform camera position ans scale to be in the center
         app.getCamera().translate(translateCamera);
         app.getCamera().zoom -= -.7;
         renderer.setView(app.getCamera());
-        renderer.render(app.getMap());
+        renderer.render(app.getMap(), true);
         entitiesStage = new TiledMapStage();
         Gdx.input.setInputProcessor(entitiesStage);
         addButtons();
