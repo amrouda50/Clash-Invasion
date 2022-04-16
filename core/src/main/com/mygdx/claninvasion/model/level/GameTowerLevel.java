@@ -14,10 +14,24 @@ import org.javatuples.Sextet;
  */
 public class GameTowerLevel extends Level{
     protected int hitsPointBonus;
+    public int level;
 
-    public GameTowerLevel(Septet<Integer, Integer, Integer, Integer, Integer, Integer, Integer> values, int hitsPointBonus) {
+    public GameTowerLevel(int Level, Septet<Integer, Integer, Integer, Integer, Integer, Integer, Integer> values, int hitsPointBonus) {
         super(values);
+        this.level = level;
         this.hitsPointBonus = hitsPointBonus;
+    }
+
+    public void setHitsPointBonus(int hitsPointBonus) {
+        this.hitsPointBonus = hitsPointBonus;
+    }
+
+    public int getLevel() {
+        return level;
+    }
+
+    public void setLevel(int level) {
+        this.level = level;
     }
 
     public int getHitsPointBonus() {
