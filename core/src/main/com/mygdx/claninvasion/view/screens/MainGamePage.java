@@ -13,6 +13,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.mygdx.claninvasion.ClanInvasion;
+import com.mygdx.claninvasion.model.Player;
 import com.mygdx.claninvasion.model.adapters.IsometricToOrthogonalAdapt;
 import com.mygdx.claninvasion.model.entity.EntitySymbol;
 import com.mygdx.claninvasion.model.entity.Soldier;
@@ -23,6 +24,11 @@ import com.mygdx.claninvasion.view.animated.FireAnimated;
 import com.mygdx.claninvasion.view.tiledmap.TiledMapStage;
 import com.mygdx.claninvasion.view.utils.GameInputProcessor;
 import com.mygdx.claninvasion.view.utils.IsometricTiledMapGameRenderer;
+
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.Color;
+import com.mygdx.claninvasion.model.GameModel;
 
 
 import java.util.*;
@@ -52,6 +58,8 @@ public class MainGamePage implements GamePage, UiUpdatable {
     private final List<FireAnimated> fireballs = Collections.synchronizedList(new CopyOnWriteArrayList<>());
     private EntitySymbol mapClickEntityCreate;
 
+    public GameModel gameModel;
+
 
     /**
      * @param app - app instance
@@ -60,6 +68,7 @@ public class MainGamePage implements GamePage, UiUpdatable {
         this.app = app;
         camera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         uiStage = new Stage(new StretchViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), camera));
+        gameModel = new GameModel();
     }
 
     private void addButtons() {
@@ -183,10 +192,26 @@ public class MainGamePage implements GamePage, UiUpdatable {
 
         // render animated object (fireballs, arrows, etc.)
         updateAnimated();
+        showText();
 
         update(delta);
         entitiesStage.act(delta);
         entitiesStage.draw();
+    }
+
+    private void showText() {
+
+        SpriteBatch batch;
+        BitmapFont font = new BitmapFont();
+        batch = new SpriteBatch();
+        batch.begin();
+        font.setColor(Color.BLACK);
+
+        Player activePlayerName = gameModel.getActivePlayer();
+        String name = activePlayerName.getName();
+
+        font.draw(batch, "Turn:" + name, 0, 480);
+        batch.end();
     }
 
 
