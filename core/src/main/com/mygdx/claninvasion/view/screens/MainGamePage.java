@@ -32,6 +32,8 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.Color;
 import com.mygdx.claninvasion.model.GameModel;
+import java.util.Timer;
+import java.util.TimerTask;
 
 
 import java.util.*;
@@ -65,7 +67,14 @@ public class MainGamePage implements GamePage, UiUpdatable {
     private EntitySymbol mapClickEntityCreate;
 
     public GameModel gameModel;
+    private float timeCount;
     private TiledMap map;
+
+
+    Table Toptable;
+    int counter = 30;
+    Label Time;
+
 
 
     /**
@@ -76,6 +85,8 @@ public class MainGamePage implements GamePage, UiUpdatable {
         camera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         uiStage = new Stage(new StretchViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), camera));
         gameModel = new GameModel();
+        Time = new Label(Integer.toString(counter) , s2);
+
     }
     private void AddSeprationLines(){
         ShapeRenderer sr = new ShapeRenderer();
@@ -87,7 +98,7 @@ public class MainGamePage implements GamePage, UiUpdatable {
         sr.setColor(Color.BLACK);
         sr.setProjectionMatrix(camera.combined);
         sr.begin(ShapeRenderer.ShapeType.Filled);
-        sr.rectLine(-100, 75, 1100, 75, 2);
+        sr.rectLine(-100, 85, 1100, 85, 2);
         sr.end();
     }
     private void SetTopBar() {
@@ -95,7 +106,7 @@ public class MainGamePage implements GamePage, UiUpdatable {
         Toptable.setBounds(-10, Gdx.graphics.getWidth() / 3, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
         Label Turn = new Label("Turn:Player 1 , 1 sec" , s2);
-        Label Time = new Label("Time: 29 sec left" , s2);
+      // Label Time = new Label("Time: 29 sec left" , s2);
         Label Phase = new Label("Phase: Building" , s2);
         Turn.setColor(Color.BLACK);
         Time.setColor(Color.BLACK);
@@ -290,6 +301,18 @@ public class MainGamePage implements GamePage, UiUpdatable {
         // render animated object (fireballs, arrows, etc.)
         updateAnimated();
 
+        Timer t = new Timer( );
+        t.scheduleAtFixedRate(new TimerTask() {
+
+            @Override
+            public void run() {
+                //updateTime();
+                if(counter > 0) {
+                counter--;
+                System.out.println(counter);}
+            }
+        }, 1000,1000);
+
         showText();
         update(delta);
         entitiesStage.act(delta);
@@ -297,6 +320,12 @@ public class MainGamePage implements GamePage, UiUpdatable {
         AddSeprationLines();
 
     }
+
+    private void updateTime() {
+        counter--;
+        Time.setText(counter);
+    }
+
 
     private void showText() {
         //TextureAtlas atlas = new TextureAtlas("skin/skin/uiskin.atlas");
@@ -308,7 +337,6 @@ public class MainGamePage implements GamePage, UiUpdatable {
         font.setColor(Color.BLACK);
         Player activePlayerName = gameModel.getActivePlayer();
         String name = activePlayerName.getName();
-
         font.draw(batch, "Turn:" + name, 0, 480);
         batch.end();*/
     }
