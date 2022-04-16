@@ -7,6 +7,7 @@ import com.mygdx.claninvasion.model.map.WorldMap;
 import org.javatuples.Pair;
 
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.*;
@@ -183,6 +184,13 @@ public class Player {
                 .thenRunAsync(() -> System.out.println("New soldiers were successfully added"));
     }
 
+    public void addTrainedToMapSoldiers() {
+        while (!castle.getSoldiers().empty()) {
+            Soldier soldier = castle.getSoldiers().pop();
+            soldiers.add((Soldier) game.getWorldMap().createMapEntity(soldier.getSymbol(), soldier.getPosition(), null));
+        }
+    }
+
     /**
      * This will add more soldiers
      * to player's army
@@ -190,7 +198,6 @@ public class Player {
     public void addSoldiers(Runnable after)  {
         addSoldiers()
                 .thenRunAsync(after);
-
     }
 
     public void attackAndMove(Pair<Integer, Integer> position) {
