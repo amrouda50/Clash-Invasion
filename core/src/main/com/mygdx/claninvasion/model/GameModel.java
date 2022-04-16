@@ -103,6 +103,10 @@ public class GameModel {
         return activePlayer;
     }
 
+    public Player getPlayerOne() { return playerOne; }
+
+    public Player getPlayerTwo() { return playerTwo; }
+
     /**
      * Changes the active player
      */

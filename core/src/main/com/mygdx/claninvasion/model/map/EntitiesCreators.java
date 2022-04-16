@@ -18,7 +18,6 @@ public class EntitiesCreators {
             EntitySymbol.BARBARIAN, (EntityCreator<Void>) (entitySymbol, position, args) -> new Barbarian(entitySymbol, position),
             EntitySymbol.DRAGON, (EntityCreator<Void>)  (entitySymbol, position, args) -> new Dragon(entitySymbol, position),
             EntitySymbol.TOWER, (EntityCreator<Void>) (entitySymbol, position, args) -> new Tower(entitySymbol, position),
-            EntitySymbol.CASTEL, (EntityCreator<Player>) (symbol, position, player) -> new Castle(symbol, position, (Player) player),
             EntitySymbol.MINING, (EntityCreator<BlockingQueue<Integer>>) (entitySymbol, position, queue) -> new MiningFarm(entitySymbol, position, (BlockingQueue<Integer>) queue)
     ));
 
