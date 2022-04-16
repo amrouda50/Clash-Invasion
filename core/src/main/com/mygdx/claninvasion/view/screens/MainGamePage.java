@@ -1,10 +1,12 @@
 package com.mygdx.claninvasion.view.screens;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.maps.tiled.*;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
@@ -19,10 +21,12 @@ import com.mygdx.claninvasion.model.entity.Soldier;
 import com.mygdx.claninvasion.model.entity.Tower;
 import com.mygdx.claninvasion.model.map.WorldCell;
 import com.mygdx.claninvasion.view.actors.GameButton;
+import com.mygdx.claninvasion.view.actors.HealthBar;
 import com.mygdx.claninvasion.view.animated.FireAnimated;
 import com.mygdx.claninvasion.view.tiledmap.TiledMapStage;
 import com.mygdx.claninvasion.view.utils.GameInputProcessor;
 import com.mygdx.claninvasion.view.utils.IsometricTiledMapGameRenderer;
+import org.javatuples.Pair;
 
 
 import java.util.*;
@@ -51,6 +55,7 @@ public class MainGamePage implements GamePage, UiUpdatable {
     private TiledMap map;
     private final List<FireAnimated> fireballs = Collections.synchronizedList(new CopyOnWriteArrayList<>());
     private EntitySymbol mapClickEntityCreate;
+    private HealthBar hpBar;
 
 
     /**
@@ -111,6 +116,7 @@ public class MainGamePage implements GamePage, UiUpdatable {
     @Override
     public void show() {
         app.getCamera().update();
+
         inputProcessor = new GameInputProcessor(app.getCamera(), (Vector3 mousePosition) -> {
             Vector2 mouseOrtho = new IsometricToOrthogonalAdapt(new Vector2(mousePosition.x, mousePosition.y)).getPoint();
             Vector3 mouseOrtho3 = new Vector3(mouseOrtho.x + WorldCell.getTransformWidth(), mouseOrtho.y - WorldCell.getTransformWidth(), 0);
@@ -124,6 +130,11 @@ public class MainGamePage implements GamePage, UiUpdatable {
                         app.getCurrentPlayer().createNewMining(worldCell);
                     }
                     System.out.println(worldCell.getMapPosition().getValue0() + " " + worldCell.getMapPosition().getValue1());
+                    System.out.println(worldCell.getWorldIsoPoint1().x + " " + worldCell.getWorldIsoPoint1().y);
+                    hpBar = new HealthBar();
+                    hpBar.setCoordinates(new Pair<Float , Float>(worldCell.getWorldIsoPoint1().x , worldCell.getWorldIsoPoint1().y));
+                    //System.out.println(worldCell.getworldIsoPoint().x + " " + worldCell.getworldIsoPoint().y);
+                   // shape.setColor(clue);
 
 
                     //worldCell.getTileCell().setTile(null);
@@ -171,22 +182,41 @@ public class MainGamePage implements GamePage, UiUpdatable {
     public void render(float delta) {
         Gdx.gl.glClearColor(255, 255, 255, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+
         for (FireAnimated fireAnimated : fireballs) {
             fireAnimated.create();
         }
+
         app.getCamera().update();
         inputProcessor.onRender();
 
         renderer.setView(app.getCamera());
         app.getMap().clear();
-        renderer.render(app.getMap());
 
+        renderer.render(app.getMap());
         // render animated object (fireballs, arrows, etc.)
         updateAnimated();
+        if(hpBar != null){
+            hpBar.rendering(app.getCamera().combined);
+        }
+
+      /*  if(shape != null){
+            shape.begin(ShapeRenderer.ShapeType.Line);
+            shape.setColor(Color.BLACK);
+            shape.rect(610 ,-45 , 15 , 5);
+            shape.end();
+            shape.begin(ShapeRenderer.ShapeType.Filled);
+            shape.setColor(Color.RED);
+            shape.rect((float)610.5 , (float)-44.5 , 14 , 4);
+            shape.setProjectionMatrix(app.getCamera().combined);
+            shape.end();
+        }*/
+
 
         update(delta);
         entitiesStage.act(delta);
         entitiesStage.draw();
+
     }
 
 
@@ -255,6 +285,7 @@ public class MainGamePage implements GamePage, UiUpdatable {
     @Override
     public void dispose() {
         entitiesStage.dispose();
+        hpBar.dispose();
         uiStage.dispose();
     }
 
