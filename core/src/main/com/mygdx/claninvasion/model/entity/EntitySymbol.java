@@ -8,6 +8,7 @@ package com.mygdx.claninvasion.model.entity;
 public enum EntitySymbol {
     BARBARIAN("barbarian", 'B', "Solider", 17),
     CASTEL("castel", 'C', "castel", 9),
+    CASTEL_REVERSED("castel-reverse", 'C', "castel reverse", 3),
     STONE("Stone", 'S', "stone", 19),
     DRAGON("Dragon", 'D', "dragon", 15),
     TREE("tree", 'T', "Tree", 2) ,
@@ -24,5 +25,11 @@ public enum EntitySymbol {
         this.letter = letter;
         this.tsx = tsx;
         this.id = id;
+    }
+
+
+    @Override
+    public String toString() {
+        return this.sourcePart;
     }
 }

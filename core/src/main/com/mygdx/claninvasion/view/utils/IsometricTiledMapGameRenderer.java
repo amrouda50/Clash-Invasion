@@ -36,9 +36,12 @@ public class IsometricTiledMapGameRenderer extends BatchTiledMapRenderer {
 
     protected static String BACKGROUND_LAYER = "Layer1";
     protected static String ENTITIES_LAYER = "Layer2";
+    protected EntityPlacer chooser;
+    protected boolean firstRender;
 
-    public IsometricTiledMapGameRenderer(TiledMap map, float unitScale) {
+    public IsometricTiledMapGameRenderer(TiledMap map, float unitScale, EntityPlacer chooser) {
         super(map, unitScale);
+        this.chooser = chooser;
         init();
     }
 
@@ -63,11 +66,15 @@ public class IsometricTiledMapGameRenderer extends BatchTiledMapRenderer {
         return screenPos;
     }
 
+    public void render(WorldMap worldMap) {
+        render(worldMap, false);
+    }
+
     /**
      * Rewritten render with special value supplied
      * @param worldMap - map of the application
      */
-    public void render(WorldMap worldMap) {
+    public void render(WorldMap worldMap, boolean firstRender) {
         beginRender();
         worldMap.setEntitiesLayer((TiledMapTileLayer) map.getLayers().get(ENTITIES_LAYER));
         for (MapLayer layer : map.getLayers()) {
@@ -75,6 +82,13 @@ public class IsometricTiledMapGameRenderer extends BatchTiledMapRenderer {
         }
 
         endRender();
+        this.firstRender = firstRender;
+
+        if (firstRender) {
+            chooser.handleMultiPositioned(worldMap);
+        } else {
+            chooser.placeRender(worldMap);
+        }
     }
 
     /**
@@ -229,45 +243,46 @@ public class IsometricTiledMapGameRenderer extends BatchTiledMapRenderer {
                 worldCell.setTileCell(cell);
                 map.addCell(worldCell);
             } else if (map != null && layer.getName().equals(ENTITIES_LAYER)) {
-                try {
-                    WorldCell worldCell = map.getCell(position);
-                    Entity entity = chooseEntitySymbol(region, position);
-                    worldCell.addEntity(entity);
-                } catch (Exception ignored) {
-
-                }
+                WorldCell worldCell = map.getCell(position);
+                chooser.place(region, position, worldCell);
+//                if (worldCell != null && entity != null) {
+//                    worldCell.addEntity(entity);
+//                }
             } else if (map != null) {
                 throw new UnknownTiledMapLayerException(layer);
             }
         }
     }
 
-    /**
-     * This function takes in a cell and return the EntitySymbol of the Entity in the cell , if there is no Entity then it return null
-     * @return EntitySymbol
-     */
-    protected Entity chooseEntitySymbol(TextureRegion region, Pair<Integer, Integer> position) {
-        String path = region.getTexture().toString();
-        String entityName =  Paths.get(path).getFileName().toString();
-        String trimmedEntityName  = entityName.substring(0, entityName.lastIndexOf('.'));
-
-        switch (trimmedEntityName) {
-            case "Stone":
-                return new NaturalEntity(EntitySymbol.STONE, position);
-            case "tree":
-                return new NaturalEntity(EntitySymbol.TREE, position);
-            case "Dragon":
-            case "Dragon-Flipped":
-                return new Soldier(EntitySymbol.DRAGON, position);
-            case "barbarian-fliped":
-            case "barbarian":
-                return new Soldier(EntitySymbol.BARBARIAN, position);
-            case "tower":
-                return new Tower(EntitySymbol.TOWER, position);
-            default:
-                return null;
-        }
-    }
+//    /**
+//     * This function takes in a cell and return the EntitySymbol of the Entity in the cell , if there is no Entity then it return null
+//     * @return EntitySymbol
+//     */
+//    protected Entity chooseEntitySymbol(TextureRegion region, Pair<Integer, Integer> position) {
+//        String path = region.getTexture().toString();
+//        String entityName =  Paths.get(path).getFileName().toString();
+//        String trimmedEntityName  = entityName.substring(0, entityName.lastIndexOf('.'));
+//
+//        switch (trimmedEntityName) {
+//            case "Stone":
+//                return new NaturalEntity(EntitySymbol.STONE, position);
+//            case "tree":
+//                return new NaturalEntity(EntitySymbol.TREE, position);
+//            case "Dragon":
+//            case "Dragon-Flipped":
+//                return new Soldier(EntitySymbol.DRAGON, position);
+//            case "barbarian-fliped":
+//            case "barbarian":
+//                return new Soldier(EntitySymbol.BARBARIAN, position);
+//            case "tower":
+//                return new Tower(EntitySymbol.TOWER, position);
+//            case EntitySymbol.CASTEL.sourcePart:
+//
+//                return new Castle(EntitySymbol.CASTEL, position);
+//            default:
+//                return null;
+//        }
+//    }
 
     /**
      * Overridden method to yse local

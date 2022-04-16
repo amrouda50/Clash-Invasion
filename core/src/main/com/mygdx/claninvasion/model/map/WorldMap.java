@@ -1,7 +1,5 @@
 package com.mygdx.claninvasion.model.map;
 
-
-import com.badlogic.gdx.maps.tiled.TiledMapTile;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TiledMapTileSet;
 import com.badlogic.gdx.maps.tiled.TiledMapTileSets;
@@ -11,8 +9,6 @@ import com.mygdx.claninvasion.model.entity.EntitySymbol;
 import com.mygdx.claninvasion.model.entity.Soldier;
 import com.mygdx.claninvasion.model.entity.Tower;
 import org.javatuples.Pair;
-
-import javax.swing.text.Position;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -96,8 +92,13 @@ public class WorldMap {
     }
 
     public WorldCell getCell(Pair<Integer, Integer> cellPlace) {
-        return (WorldCell) worldCells.stream().filter(cell -> cell.getMapPosition().equals(cellPlace)).toArray()[0];
+        try {
+            return (WorldCell) worldCells.stream().filter(cell -> cell.getMapPosition().equals(cellPlace)).toArray()[0];
+        } catch (Exception e) {
+            return null;
+        }
     }
+
     public void setEntitiesLayer(TiledMapTileLayer entitiesLayer) {
         this.entitiesLayer = entitiesLayer;
     }

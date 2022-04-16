@@ -19,6 +19,11 @@ public class MiningFarm extends ArtificialEntity implements Runnable, Mineable {
         level = Levels.createMiningLevelIterator();
     }
 
+    @Override
+    public void changePosition(Pair<Integer, Integer> position) {
+        throw new RuntimeException("Can not change goldmine position after initialization");
+    }
+
     public void setCoins(BlockingQueue<Integer> queue) {
         coins = queue;
     }
