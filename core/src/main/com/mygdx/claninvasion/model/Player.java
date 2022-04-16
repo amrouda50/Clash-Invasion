@@ -31,7 +31,7 @@ public class Player {
     /**
      * All the towers of the player
      */
-    private List<Tower> towers;
+    private final List<Tower> towers;
 
     /**
      * Name of the player
@@ -41,7 +41,7 @@ public class Player {
     /**
      * All the mines of the player
      */
-    private List<MiningFarm> miningFarms;
+    private final List<MiningFarm> miningFarms;
 
     /**
      * Status of player in the game
@@ -51,7 +51,7 @@ public class Player {
     /**
      * Amount of gold of the player
      */
-    private AtomicInteger wealth;
+    private final AtomicInteger wealth;
 
     /**
      * All the soldiers of the player

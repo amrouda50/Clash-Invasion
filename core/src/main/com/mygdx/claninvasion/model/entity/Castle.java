@@ -17,6 +17,7 @@ public class Castle extends ArtificialEntity {
     private final ArrayList<Soldier> soldiers;
     private Quartet<Pair<Integer, Integer>, Pair<Integer, Integer>, Pair<Integer, Integer>, Pair<Integer, Integer>> positions;
     private static int AMOUNT_OF_SOLDIERS = 2;
+    private Pair<Integer, Integer> soldierPosition = new Pair<>(Integer.MAX_VALUE, Integer.MAX_VALUE);
 
     public Castle(EntitySymbol symbol,  Quartet<Pair<Integer, Integer>, Pair<Integer, Integer>, Pair<Integer, Integer>, Pair<Integer, Integer>> positions, Player player) {
         super(symbol,  positions.getValue0());
@@ -43,7 +44,7 @@ public class Castle extends ArtificialEntity {
         ExecutorService executor = newFixedThreadPool(2);
         soldiers.clear();
         for (int i = 0; i < AMOUNT_OF_SOLDIERS; i++) {
-            Soldier soldier = (Soldier) player.getMap().createMapEntity(EntitySymbol.BARBARIAN, position, null);
+            Soldier soldier = new Soldier(EntitySymbol.BARBARIAN, soldierPosition);
             soldiers.add(soldier);
         }
 
