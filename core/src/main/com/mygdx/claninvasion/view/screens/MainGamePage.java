@@ -96,13 +96,7 @@ public class MainGamePage implements GamePage, UiUpdatable {
                 if (worldCell.contains(mouseOrtho3)) {
 
                     if (worldCell.getOccupier() == null) {
-                        Pair<Integer ,Integer> p  = new Pair(worldCell.getMapPosition().getValue0() ,worldCell.getMapPosition().getValue1() );
-                        TiledMapTileLayer l2 =  app.getMap().getLayer2();
-                        TiledMapTileLayer.Cell cell = new TiledMapTileLayer.Cell();
-                        TiledMapTileSet tileSet = map.getTileSets().getTileSet("tower");
-                        cell.setTile(tileSet.getTile(20));
-                        l2.setCell(p.getValue1()  , p.getValue0(), cell);
-                        worldCell.setOccupier(new Tower(EntitySymbol.TOWER , p ));
+                        app.getCurrentPlayer().buildTower(worldCell);
                     }
                     System.out.println(worldCell.getOccupier().getSymbol());
                     System.out.println(worldCell.getMapPosition().getValue0() + " " + worldCell.getMapPosition().getValue1());
@@ -113,6 +107,7 @@ public class MainGamePage implements GamePage, UiUpdatable {
             }
         });
         map = new TmxMapLoader().load(Gdx.files.getLocalStoragePath() + "/TileMap/Tilemap.tmx");
+        app.getMap().setTileset(map.getTileSets());
         renderer = new IsometricTiledMapGameRenderer(map, 1);
 
         // transform camera position ans scale to be in the center

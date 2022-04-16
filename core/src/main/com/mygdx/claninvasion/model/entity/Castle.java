@@ -12,13 +12,13 @@ import static java.util.concurrent.Executors.newFixedThreadPool;
  * TODO: Logic part is missing
  */
 public class Castle extends ArtificialEntity {
-    private final Player player;
+    private Player player;
     private final ArrayList<Soldier> soldiers;
 
-    public Castle(Player player) {
-        super(EntitySymbol.CASTEL,  new Pair<>(0, 0));
-        this.player = player;
+    public Castle(EntitySymbol symbol, Pair<Integer, Integer> position, Player player) {
+        super(symbol,  position);
         soldiers = new ArrayList<>();
+        this.player = player;
     }
     /**
      * @see ArtificialEntity

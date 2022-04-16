@@ -2,10 +2,16 @@ package com.mygdx.claninvasion.model.map;
 
 
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
+import com.badlogic.gdx.maps.tiled.TiledMapTileSet;
+import com.badlogic.gdx.maps.tiled.TiledMapTileSets;
 import com.badlogic.gdx.math.Vector2;
+import com.mygdx.claninvasion.model.entity.Entity;
+import com.mygdx.claninvasion.model.entity.EntitySymbol;
 import com.mygdx.claninvasion.model.entity.Soldier;
 import com.mygdx.claninvasion.model.entity.Tower;
 import org.javatuples.Pair;
+
+import javax.swing.text.Position;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -19,6 +25,7 @@ public class WorldMap {
     private final ArrayList<WorldCell> worldCells;
     private TiledMapTileLayer entitiesLayer;
     private Graph G;
+    private TiledMapTileSets tilesets;
 
     /**
      * @param worldCells - array of worldCells
@@ -34,6 +41,35 @@ public class WorldMap {
 
     public void addCell(WorldCell worldCell) {
         this.worldCells.add(worldCell);
+    }
+
+    public void setTileset(TiledMapTileSets tilesets) {
+        this.tilesets = tilesets;
+    }
+
+    public Entity createMapEntity(EntitySymbol symbol, WorldCell worldCell, Object obj) {
+        TiledMapTileLayer.Cell cell = new TiledMapTileLayer.Cell();
+
+        TiledMapTileSet tileSet = tilesets.getTileSet(symbol.tsx);
+        cell.setTile(tileSet.getTile(symbol.id));
+
+        Entity entity = EntitiesCreators.createEntity(symbol, worldCell.getMapPosition(), obj);
+        occupyPosition(worldCell, entity, cell);
+        return entity;
+    }
+
+    public Entity createMapEntity(EntitySymbol symbol, Pair<Integer, Integer> position, Object obj) {
+        WorldCell cell = getCell(position);
+        return createMapEntity(symbol, cell, obj);
+    }
+
+    public void occupyPosition(WorldCell worldCell, Entity occupier, TiledMapTileLayer.Cell cell) {
+        getLayer2().setCell(
+                worldCell.getMapPosition().getValue1(),
+                worldCell.getMapPosition().getValue0(),
+                cell
+        );
+        worldCell.setOccupier(occupier);
     }
 
     public void clear() {

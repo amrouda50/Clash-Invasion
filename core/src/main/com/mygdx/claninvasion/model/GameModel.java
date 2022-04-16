@@ -55,8 +55,8 @@ public class GameModel {
         this.phase = GamePhase.BUILDING;
         this.gameEnded = true;
         this.gamePause = false;
-        playerOne = new Player();
-        playerTwo = new Player();
+        playerOne = new Player(this);
+        playerTwo = new Player(this);
 
         playerOne.setOpponent(playerTwo);
         playerTwo.setOpponent(playerOne);

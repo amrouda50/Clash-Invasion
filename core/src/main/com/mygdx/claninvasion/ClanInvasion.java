@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.mygdx.claninvasion.model.GameModel;
 import com.mygdx.claninvasion.model.Globals;
+import com.mygdx.claninvasion.model.Player;
 import com.mygdx.claninvasion.model.map.WorldMap;
 import com.mygdx.claninvasion.view.screens.*;
 
@@ -108,6 +109,10 @@ public class ClanInvasion extends Game {
      */
     public WorldMap getMap() {
         return gameModel.getWorldMap();
+    }
+
+    public Player getCurrentPlayer() {
+        return gameModel.getActivePlayer();
     }
 
     /** Called to destroy the application

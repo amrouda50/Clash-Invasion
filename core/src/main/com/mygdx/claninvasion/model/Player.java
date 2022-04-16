@@ -2,6 +2,7 @@ package com.mygdx.claninvasion.model;
 
 import com.mygdx.claninvasion.model.entity.*;
 import com.mygdx.claninvasion.model.gamestate.GameState;
+import com.mygdx.claninvasion.model.map.WorldCell;
 import org.javatuples.Pair;
 
 import javax.swing.text.html.parser.Entity;
@@ -55,6 +56,7 @@ public class Player {
      * All the soldiers of the player
      */
     private final ArrayList<Soldier> soldiers;
+    private final GameModel game;
 
     /**
      * Castle of the active player
@@ -64,9 +66,10 @@ public class Player {
     private final BlockingQueue<Integer> coinProduceQueue = new LinkedBlockingDeque<>(MAX_GOLDMINE);
     private final ExecutorService executorService = Executors.newFixedThreadPool(MAX_GOLDMINE + 1);
 
-    public Player() {
+    public Player(GameModel game) {
         this.id = UUID.randomUUID();
-        this.castle = new Castle(this);
+        this.game = game;
+        castle = new Castle(EntitySymbol.CASTEL, new Pair<>(0, 0), this);
         miningFarms = new ArrayList<>();
         soldiers = new ArrayList<>();
         towers = new ArrayList<>();
@@ -127,9 +130,9 @@ public class Player {
     /**
      * This method starts building towers for the active player
      */
-    public void buildTower()
-    {
-
+    public void buildTower(WorldCell cell) {
+         Tower tower = (Tower) game.getWorldMap().createMapEntity(EntitySymbol.TOWER, cell, null);
+         towers.add(tower);
     }
 
     /**
