@@ -194,10 +194,10 @@ public class MainGamePage implements GamePage, UiUpdatable {
         renderer.render(app.getMap());
         // render animated object (fireballs, arrows, etc.)
         updateAnimated();
+
         for (HealthBar curr : hpBars) {
-            if(curr != null){
-                curr.rendering(app.getCamera().combined);
-            }
+
+                curr.rendering(app.getCamera().combined , Tower.HealthBarOffset);
 
         }
 
