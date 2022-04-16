@@ -52,7 +52,7 @@ public class MainGamePage implements GamePage, UiUpdatable {
     private TiledMap map;
     private final List<FireAnimated> fireballs = Collections.synchronizedList(new CopyOnWriteArrayList<>());
     private EntitySymbol mapClickEntityCreate;
-    private ArrayList<HealthBar> hpBars;
+    private List<HealthBar> hpBars = Collections.synchronizedList(new CopyOnWriteArrayList<>());
 
 
     /**
@@ -62,7 +62,6 @@ public class MainGamePage implements GamePage, UiUpdatable {
         this.app = app;
         camera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         uiStage = new Stage(new StretchViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), camera));
-        hpBars = new ArrayList<>();
     }
 
     private void addButtons() {
@@ -206,8 +205,13 @@ public class MainGamePage implements GamePage, UiUpdatable {
         updateAnimated();
 
         for (HealthBar curr : hpBars) {
-                curr.rendering(app.getCamera().combined);
+            curr.rendering(app.getCamera().combined);
+            if (!curr.isActive()) {
+                hpBars.remove(curr);
+            }
         }
+        app.getGameModel().getPlayerOne().removeDead();
+        app.getGameModel().getPlayerTwo().removeDead();
 
         update(delta);
         entitiesStage.act(delta);

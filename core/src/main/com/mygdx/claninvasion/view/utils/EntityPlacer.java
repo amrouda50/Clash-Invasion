@@ -11,6 +11,7 @@ import org.javatuples.Quartet;
 
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.List;
 
 interface Placer {
     void placeRender(WorldMap map);
@@ -101,7 +102,7 @@ public class EntityPlacer implements Placer {
         }
     }
 
-    private <T extends Entity> void setEntities(ArrayList<T> entities, WorldMap map) {
+    private <T extends Entity> void setEntities(List<T> entities, WorldMap map) {
         for (Entity soldier : entities) {
             WorldCell cell = map.getCell(soldier.getPosition());
             if (cell != null) {

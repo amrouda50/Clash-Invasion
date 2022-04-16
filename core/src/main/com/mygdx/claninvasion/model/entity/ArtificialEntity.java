@@ -1,5 +1,6 @@
 package com.mygdx.claninvasion.model.entity;
 
+import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -22,6 +23,7 @@ public class ArtificialEntity extends Entity {
     protected LevelIterator<? extends Level> level;
     protected AtomicInteger reactionTime;
     protected Direction direction;
+    private UUID id;
 
     ArtificialEntity(EntitySymbol entitySymbol, Pair<Integer, Integer> position) {
         super(entitySymbol, position);
@@ -39,9 +41,10 @@ public class ArtificialEntity extends Entity {
         health = new AtomicInteger(level.current().getMaxHealth());
         reactionTime = new AtomicInteger(level.current().getReactionTime());
         direction = Direction.DOWN;
+        id = UUID.randomUUID();
     }
 
-    public void setHealthBar(HealthBar bar){
+    public void setHealthBar(HealthBar bar) {
         bar.setDimensions(getHealthBarSizes());
         bar.setPositionOffset(getHealthBarOffset());
         hpBar = bar;
@@ -66,7 +69,7 @@ public class ArtificialEntity extends Entity {
          Thread thread = new Thread(() -> {
             while (getPercentage().get() < level.current().getHealGoalPoint()) {
                 try {
-                    health.set(level.current().getHealHealthIncrease() + health.get());
+                    setIncreaseHealth();
                     Thread.sleep(level.current().getReactionTime());
                 } catch (InterruptedException e) {
                     e.printStackTrace();
@@ -99,6 +102,18 @@ public class ArtificialEntity extends Entity {
         return health.get();
     }
 
+    protected void setDecreaseHealth(int amount) {
+        float percent = amount / (float)health.get();
+        health.set(health.get() - amount);
+        hpBar.substStamina(percent);
+    }
+
+    protected void setIncreaseHealth() {
+        float percent = level.current().getHealHealthIncrease() / (float)health.get();
+        health.set(level.current().getHealHealthIncrease() + health.get());
+        hpBar.addStamina(percent);
+    }
+
     public float getHealthPercentage() {
         return (health.get() / (float) level.current().getMaxHealth()) * 100;
     }
@@ -123,5 +138,9 @@ public class ArtificialEntity extends Entity {
      */
     public void setLevel(LevelIterator<Level> level) {
         this.level = level;
+    }
+
+    public UUID getId() {
+        return id;
     }
 }

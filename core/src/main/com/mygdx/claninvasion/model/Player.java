@@ -3,12 +3,11 @@ package com.mygdx.claninvasion.model;
 import com.mygdx.claninvasion.model.entity.*;
 import com.mygdx.claninvasion.model.gamestate.GameState;
 import com.mygdx.claninvasion.model.map.WorldCell;
-import com.mygdx.claninvasion.view.actors.HealthBar;
 import com.mygdx.claninvasion.model.map.WorldMap;
 import org.javatuples.Pair;
 
-import javax.swing.text.html.parser.Entity;
-import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -32,7 +31,7 @@ public class Player {
     /**
      * All the towers of the player
      */
-    private ArrayList<Tower> towers;
+    private List<Tower> towers;
 
     /**
      * Name of the player
@@ -42,7 +41,7 @@ public class Player {
     /**
      * All the mines of the player
      */
-    private ArrayList<MiningFarm> miningFarms;
+    private List<MiningFarm> miningFarms;
 
     /**
      * Status of player in the game
@@ -57,7 +56,7 @@ public class Player {
     /**
      * All the soldiers of the player
      */
-    private final ArrayList<Soldier> soldiers;
+    private final List<Soldier> soldiers;
     private final GameModel game;
 
     /**
@@ -66,14 +65,14 @@ public class Player {
     private Castle castle;
     private final UUID id;
     private final BlockingQueue<Integer> coinProduceQueue = new LinkedBlockingDeque<>(MAX_GOLDMINE);
-    private final ExecutorService executorService = Executors.newFixedThreadPool(MAX_GOLDMINE + 1);
+    private ExecutorService executorService = Executors.newFixedThreadPool(MAX_GOLDMINE + 1);
 
     public Player(GameModel game) {
         this.id = UUID.randomUUID();
         this.game = game;
-        miningFarms = new ArrayList<>();
-        soldiers = new ArrayList<>();
-        towers = new ArrayList<>();
+        miningFarms = Collections.synchronizedList(new CopyOnWriteArrayList<>());
+        soldiers = Collections.synchronizedList(new CopyOnWriteArrayList<>());
+        towers = Collections.synchronizedList(new CopyOnWriteArrayList<>());
         wealth = new AtomicInteger(0);
         executorService.execute(this::consumeGold);
     }
@@ -108,10 +107,10 @@ public class Player {
                 System.out.println("Updated wealth: " + wealth.get());
                 // for thread debugging
                 // int active = Thread.activeCount();
-                if (miningFarms.stream().noneMatch(ArtificialEntity::isAlive)) {
-                    shutdownThreads();
-                    break;
-                }
+                // if (miningFarms.stream().noneMatch(ArtificialEntity::isAlive)) {
+                //   shutdownThreads();
+                //    break;
+                // }
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -130,6 +129,9 @@ public class Player {
      * This method resets all the resources for the player
      */
     public void reset() {
+        if (miningFarms.stream().noneMatch(ArtificialEntity::isAlive)) {
+            shutdownThreads();
+        }
     }
 
     /**
@@ -139,6 +141,15 @@ public class Player {
          Tower tower = (Tower) game.getWorldMap().createMapEntity(EntitySymbol.TOWER, cell, null);
          towers.add(tower);
          return tower;
+    }
+
+    public void removeDead() {
+        for (MiningFarm farm : miningFarms) {
+            if (!farm.isAlive()) {
+                miningFarms.remove(farm);
+                game.getWorldMap().removeMapEntity(farm);
+            }
+        }
     }
 
     /**
@@ -205,15 +216,15 @@ public class Player {
         return game.getWorldMap();
     }
 
-    public ArrayList<Soldier> getSoldiers() {
+    public List<Soldier> getSoldiers() {
         return soldiers;
     }
 
-    public ArrayList<Tower> getTowers() {
+    public List<Tower> getTowers() {
         return towers;
     }
 
-    public ArrayList<MiningFarm> getMiningFarms() {
+    public List<MiningFarm> getMiningFarms() {
         return miningFarms;
     }
 }

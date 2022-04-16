@@ -11,6 +11,8 @@ import com.mygdx.claninvasion.model.entity.Tower;
 import org.javatuples.Pair;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Map modal of the application
@@ -55,6 +57,20 @@ public class WorldMap {
         return entity;
     }
 
+    public boolean removeMapEntity(Entity entity) {
+        List<WorldCell> cells = getCells(entity.getPosition());
+        if (cells == null || cells.size() == 0) return false;
+        cells.forEach(WorldCell::removeEntity);
+        cells.forEach(cell -> {
+            getLayer2().setCell(
+                    cell.getMapPosition().getValue1(),
+                    cell.getMapPosition().getValue0(),
+                    null
+            );
+        });
+        return true;
+    }
+
     public Entity createMapEntity(EntitySymbol symbol, Pair<Integer, Integer> position, Object obj) {
         WorldCell cell = getCell(position);
         return createMapEntity(symbol, cell, obj);
@@ -67,6 +83,8 @@ public class WorldMap {
                 cell
         );
         worldCell.setOccupier(occupier);
+        System.out.println(worldCell.getMapPosition().toString());
+        System.out.println(worldCell.getOccupier().getPosition());
     }
 
     public void clear() {
@@ -95,6 +113,15 @@ public class WorldMap {
         try {
             return (WorldCell) worldCells.stream().filter(cell -> cell.getMapPosition().equals(cellPlace)).toArray()[0];
         } catch (Exception e) {
+            return null;
+        }
+    }
+
+    public List<WorldCell> getCells(Pair<Integer, Integer> cellPlace) {
+        try {
+            return worldCells.stream().filter(cell -> cell.getMapPosition().equals(cellPlace)).collect(Collectors.toList());
+        } catch (Exception e) {
+            e.printStackTrace();
             return null;
         }
     }

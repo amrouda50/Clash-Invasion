@@ -14,6 +14,7 @@ public class HealthBar extends ShapeRenderer {
     private float height;
     private float stamina;
     private Pair<Float, Float> positionOffset;
+    private boolean isActive = true;
 
     public HealthBar(Pair<Float, Float> sizes) {
         setDimensions(sizes);
@@ -31,8 +32,10 @@ public class HealthBar extends ShapeRenderer {
         stamina += stamina * percent;
     }
 
-    public void substrStamina(float percent) {
+    public void substStamina(float percent) {
+        if (stamina == 0) return;
         stamina -= stamina * percent;
+        if (stamina == 0) isActive = false;
     }
 
     private void drawRectangle(Matrix4 camera) {
@@ -68,5 +71,9 @@ public class HealthBar extends ShapeRenderer {
         width = sizes.getValue0();
         height = sizes.getValue1();
         stamina = sizes.getValue0() - OFFSET;
+    }
+
+    public boolean isActive() {
+        return isActive;
     }
 }

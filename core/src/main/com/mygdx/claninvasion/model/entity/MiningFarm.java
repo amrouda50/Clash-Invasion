@@ -39,12 +39,6 @@ public class MiningFarm extends ArtificialEntity implements Runnable, Mineable {
         return new Pair<>(super.getHealthBarOffset().getValue0() + HP_OFFSET_X, super.getHealthBarOffset().getValue1());
     }
 
-    private void decreaseHealth() {
-        float percent = healthDecreaseRate / (float)health.get();
-        health.set(health.get() - healthDecreaseRate);
-        hpBar.substrStamina(percent);
-    }
-
     @Override
     public void startMining() {
         while (isAlive()) {
@@ -56,7 +50,7 @@ public class MiningFarm extends ArtificialEntity implements Runnable, Mineable {
                 int reaction = level.current().getReactionTime();
                 int boundedRandomValue = ThreadLocalRandom.current().nextInt(reaction / 2, reaction);
                 int gold = ((GameMiningLevelIterator)level).current().getGoldBonus();
-                decreaseHealth();
+                setDecreaseHealth(healthDecreaseRate);
 
                 Thread.sleep(boundedRandomValue);
                 coins.put(gold);
