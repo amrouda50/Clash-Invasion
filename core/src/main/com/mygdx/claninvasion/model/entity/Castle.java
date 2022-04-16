@@ -14,6 +14,7 @@ import static java.util.concurrent.Executors.newFixedThreadPool;
 public class Castle extends ArtificialEntity {
     private Player player;
     private final ArrayList<Soldier> soldiers;
+    private static int AMOUNT_OF_SOLDIERS = 10;
 
     public Castle(EntitySymbol symbol, Pair<Integer, Integer> position, Player player) {
         super(symbol,  position);
@@ -32,8 +33,9 @@ public class Castle extends ArtificialEntity {
     public CompletionStage<Boolean> trainSoldiers() {
         ExecutorService executor = newFixedThreadPool(2);
         soldiers.clear();
-        for (int i = 0; i < 10; i++) {
-            soldiers.add(new Soldier(EntitySymbol.DRAGON, position));
+        for (int i = 0; i < AMOUNT_OF_SOLDIERS; i++) {
+            Soldier soldier = (Soldier) player.getMap().createMapEntity(EntitySymbol.BARBARIAN, position, null);
+            soldiers.add(soldier);
         }
 
         CompletableFuture<Boolean> supply = CompletableFuture.supplyAsync(() -> {

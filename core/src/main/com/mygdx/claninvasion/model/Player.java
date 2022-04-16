@@ -3,6 +3,7 @@ package com.mygdx.claninvasion.model;
 import com.mygdx.claninvasion.model.entity.*;
 import com.mygdx.claninvasion.model.gamestate.GameState;
 import com.mygdx.claninvasion.model.map.WorldCell;
+import com.mygdx.claninvasion.model.map.WorldMap;
 import org.javatuples.Pair;
 
 import javax.swing.text.html.parser.Entity;
@@ -152,7 +153,6 @@ public class Player {
      * This checks if the player has lost
      */
     public void looseEntity() {
-
     }
 
     /**
@@ -178,5 +178,9 @@ public class Player {
 
     public UUID getId() {
         return id;
+    }
+
+    public WorldMap getMap() {
+        return game.getWorldMap();
     }
 }

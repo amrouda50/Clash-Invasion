@@ -6,7 +6,7 @@ package com.mygdx.claninvasion.model.entity;
  * @version 0.01
  */
 public enum EntitySymbol {
-    BARBARIAN("barbarian", 'B', "solider", 17),
+    BARBARIAN("barbarian", 'B', "Solider", 17),
     CASTEL("castel", 'C', "castel", 9),
     STONE("Stone", 'S', "stone", 19),
     DRAGON("Dragon", 'D', "dragon", 15),
