@@ -15,9 +15,10 @@ public class AttackTypePoison extends AttackTypeTower{
     /**
      * Overrides base attack implementation
      * @see AttackType
+     * @return
      */
     @Override
-    public void attack() {
+    public boolean attack() {
         poisonAttackStart = true;
 
         timer.schedule(new TimerTask() {
@@ -26,17 +27,17 @@ public class AttackTypePoison extends AttackTypeTower{
             public void run() {
                 count++;
                 if( count < 3) {
-                    //decreaseHealth();
+                    decreaseHealth();
                 } else {
                     stopTimer();
                 }
             }
         }, 0, 1000);
+        return false;
     }
 
     private boolean stopTimer() {
-        poisonAttackSuccessful = true;
-        return poisonAttackSuccessful;
+        return poisonAttackSuccessful = true;
     }
 
 }

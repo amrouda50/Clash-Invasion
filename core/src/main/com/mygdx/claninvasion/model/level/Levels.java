@@ -14,14 +14,16 @@ public class Levels {
     private static final Septet<Integer, Integer, Integer, Integer, Integer, Integer, Integer> level2 =
             new Septet<>(800, 280, 1090, 0, 1000, 10, 35);
 
+
+
     private static final ArrayList<GameTowerLevel> towerLevels = new ArrayList<>(
             Arrays.asList(
                     // level 0
-                    new GameTowerLevel(level0, 200),
+                    new GameTowerLevel(0,level0, 200),
                     // level 1
-                    new GameTowerLevel(level1, 200),
+                    new GameTowerLevel(1,level1, 200),
                     // level 2
-                    new GameTowerLevel(level2, 170)
+                    new GameTowerLevel(2,level2, 170)
             )
     );
 

@@ -8,9 +8,10 @@ public class AttackTypeBullet extends AttackTypeTower {
     /**
      * Overrides base attack implementation
      * @see AttackType
+     * @return
      */
     @Override
-    public void attack() {
+    public boolean attack() {
         super.attack();
         return false;
     }

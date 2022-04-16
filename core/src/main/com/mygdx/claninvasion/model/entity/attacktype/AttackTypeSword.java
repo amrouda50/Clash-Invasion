@@ -11,9 +11,10 @@ public class AttackTypeSword extends AttackTypeSoldier{
     /**
      * Overrides base attack implementation
      * @see AttackType
+     * @return
      */
     @Override
-    public void attack() {
+    public boolean attack() {
         checkDistance = (checkEnemyDistance() == 1);
         if (checkDistance) {
             return attackSword;

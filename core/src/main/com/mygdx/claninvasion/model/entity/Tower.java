@@ -1,5 +1,7 @@
 package com.mygdx.claninvasion.model.entity;
 
+import com.mygdx.claninvasion.model.level.GameSoldierLevelIterator;
+import com.mygdx.claninvasion.model.level.GameTowerLevel;
 import com.mygdx.claninvasion.model.level.Level;
 import com.mygdx.claninvasion.model.level.LevelIterator;
 import org.javatuples.Pair;
@@ -9,6 +11,9 @@ import java.util.concurrent.CompletableFuture;
 import static java.util.concurrent.TimeUnit.SECONDS;
 
 public class Tower extends ArtificialEntity implements Defensible {
+
+    public Level level;
+
     public Tower(EntitySymbol entitySymbol, Pair<Integer, Integer> position) {
         super(entitySymbol, position);
 
@@ -53,4 +58,9 @@ public class Tower extends ArtificialEntity implements Defensible {
                 .completeExceptionally(new RuntimeException("Could not finish the defend method"));
         return future;
     }
+
+    public void attack() {
+
+    }
+
 }
