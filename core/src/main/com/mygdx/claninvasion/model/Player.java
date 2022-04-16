@@ -74,12 +74,11 @@ public class Player {
         soldiers = new ArrayList<>();
         towers = new ArrayList<>();
         wealth = new AtomicInteger(0);
-//        executorService.execute(this::consumeGold);
-//        createNewMining(new Pair<>(1,1));
+        executorService.execute(this::consumeGold);
     }
 
-    public void createNewMining(Pair<Integer, Integer> pair) {
-        MiningFarm farm = new MiningFarm(EntitySymbol.MINING, pair, coinProduceQueue);
+    public void createNewMining(WorldCell cell) {
+        MiningFarm farm = (MiningFarm) game.getWorldMap().createMapEntity(EntitySymbol.MINING, cell, coinProduceQueue);
         executorService.execute(farm::startMining);
         miningFarms.add(farm);
     }
@@ -100,9 +99,9 @@ public class Player {
             try {
                 Integer gold = coinProduceQueue.take();
                 wealth.addAndGet(gold);
-                System.out.println(wealth.get());
-                int active = Thread.activeCount();
-                System.out.println("currently active threads: " + active);
+                System.out.println("Updated wealth: " + wealth.get());
+                // for thread debugging
+                // int active = Thread.activeCount();
                 if (miningFarms.stream().noneMatch(ArtificialEntity::isAlive)) {
                     shutdownThreads();
                     break;
@@ -160,11 +159,20 @@ public class Player {
      * This will add more soldiers
      * to player's army
      */
-    public void addSoldiers()  {
-        castle
-            .trainSoldiers()
-            .thenRun(() -> soldiers.addAll(castle.getSoldiers()))
-            .thenRunAsync(() -> System.out.println("New soldiers were successfully added"));
+    public CompletionStage<Void> addSoldiers()  {
+        return castle
+                .trainSoldiers()
+                .thenRun(() -> soldiers.addAll(castle.getSoldiers()))
+                .thenRunAsync(() -> System.out.println("New soldiers were successfully added"));
+    }
+
+    /**
+     * This will add more soldiers
+     * to player's army
+     */
+    public void addSoldiers(Runnable after)  {
+        addSoldiers()
+                .thenRunAsync(after);
 
     }
 

@@ -3,7 +3,6 @@ package com.mygdx.claninvasion.view.screens;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.maps.tiled.*;
@@ -12,19 +11,19 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.mygdx.claninvasion.ClanInvasion;
 import com.mygdx.claninvasion.model.adapters.IsometricToOrthogonalAdapt;
-import com.mygdx.claninvasion.model.entity.Entity;
 import com.mygdx.claninvasion.model.entity.EntitySymbol;
 import com.mygdx.claninvasion.model.entity.Soldier;
 import com.mygdx.claninvasion.model.entity.Tower;
 import com.mygdx.claninvasion.model.map.WorldCell;
 import com.mygdx.claninvasion.view.actors.GameButton;
 import com.mygdx.claninvasion.view.animated.FireAnimated;
-import com.mygdx.claninvasion.view.utils.IsometricTiledMapGameRenderer;
 import com.mygdx.claninvasion.view.tiledmap.TiledMapStage;
 import com.mygdx.claninvasion.view.utils.GameInputProcessor;
-import org.javatuples.Pair;
+import com.mygdx.claninvasion.view.utils.IsometricTiledMapGameRenderer;
+
 
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
@@ -51,6 +50,7 @@ public class MainGamePage implements GamePage, UiUpdatable {
     private GameButton mineButton;
     private TiledMap map;
     private final List<FireAnimated> fireballs = Collections.synchronizedList(new CopyOnWriteArrayList<>());
+    private EntitySymbol mapClickEntityCreate;
 
 
     /**
@@ -58,15 +58,15 @@ public class MainGamePage implements GamePage, UiUpdatable {
      */
     public MainGamePage(ClanInvasion app) {
         this.app = app;
-        camera = new OrthographicCamera();
-        uiStage = new Stage();
+        camera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        uiStage = new Stage(new StretchViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), camera));
     }
 
     private void addButtons() {
         TextureAtlas atlas = new TextureAtlas("skin/skin/uiskin.atlas");
         Skin skin = new Skin(atlas);
         Table table = new Table(skin);
-        table.setBounds(-145, 150, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        table.setBounds(-100, Gdx.graphics.getWidth() / 4f, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
         soldierButton = new GameButton(skin, "Train soldiers");
         towerButton = new GameButton(skin, "Place towers");
@@ -78,6 +78,29 @@ public class MainGamePage implements GamePage, UiUpdatable {
         table.add(towerButton.getButton()).spaceLeft(10);
         table.add(mineButton.getButton()).spaceLeft(10);
         uiStage.addActor(table);
+    }
+
+    private void addButtonListeners() {
+        soldierButton.addClickListener(() -> {
+            System.out.println("Train barbarians...");
+            this.mapClickEntityCreate = EntitySymbol.BARBARIAN;
+            soldierButton.getButton().setText("Training in progress...");
+            app.getCurrentPlayer().addSoldiers(() ->
+                    soldierButton.getButton().setText("Train soldiers"));
+        });
+
+        towerButton.addClickListener(() -> {
+            System.out.println("Place tower...");
+            this.mapClickEntityCreate = EntitySymbol.TOWER;
+        });
+
+        mineButton.addClickListener(() -> {
+            System.out.println("Create mining...");
+            this.mapClickEntityCreate = EntitySymbol.MINING;
+        });
+
+        uiStage.setDebugUnderMouse(true);
+        Gdx.input.setInputProcessor(uiStage);
     }
 
 
@@ -95,10 +118,11 @@ public class MainGamePage implements GamePage, UiUpdatable {
             for (WorldCell worldCell : app.getMap().getCells()) {
                 if (worldCell.contains(mouseOrtho3)) {
 
-                    if (worldCell.getOccupier() == null) {
+                    if (worldCell.getOccupier() == null && EntitySymbol.TOWER == mapClickEntityCreate) {
                         app.getCurrentPlayer().buildTower(worldCell);
+                    } else if (worldCell.getOccupier() == null && EntitySymbol.MINING == mapClickEntityCreate) {
+                        app.getCurrentPlayer().createNewMining(worldCell);
                     }
-                    System.out.println(worldCell.getOccupier().getSymbol());
                     System.out.println(worldCell.getMapPosition().getValue0() + " " + worldCell.getMapPosition().getValue1());
 
 
@@ -118,9 +142,9 @@ public class MainGamePage implements GamePage, UiUpdatable {
         entitiesStage = new TiledMapStage();
         Gdx.input.setInputProcessor(entitiesStage);
         addButtons();
+        addButtonListeners();
         app.getMap().setGraph(32, app.getMap().getCells());
         //fireTower();
-
     }
 
     private void fireTower() {
@@ -197,8 +221,7 @@ public class MainGamePage implements GamePage, UiUpdatable {
                 width,
                 height
                 );
-        entitiesStage.act();
-        entitiesStage.draw();
+        uiStage.getViewport().update(width, height, true);
     }
 
     /**
