@@ -8,10 +8,13 @@ public class AttackTypeTower implements AttackType{
     /**
      * Overrides base attack implementation
      * @see AttackType
-     * @return
      */
     @Override
-    public boolean attack() {
+    public void attack() {
         return false;
+    }
+
+    public void checkNeighboringCells() {
+
     }
 }
