@@ -139,9 +139,6 @@ public class Player {
          towers.add(tower);
          return tower;
     }
-    public void setHealthBar(HealthBar Bar, Tower t){
-        t.setHealthBar(Bar);
-    }
 
     /**
      * This method starts the mining for the active player

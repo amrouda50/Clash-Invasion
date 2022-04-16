@@ -1,12 +1,10 @@
 package com.mygdx.claninvasion.view.screens;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.maps.tiled.*;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
@@ -66,6 +64,7 @@ public class MainGamePage implements GamePage, UiUpdatable {
         this.app = app;
         camera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         uiStage = new Stage(new StretchViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), camera));
+        hpBars = new ArrayList<>();
     }
 
     private void addButtons() {
@@ -117,7 +116,6 @@ public class MainGamePage implements GamePage, UiUpdatable {
     @Override
     public void show() {
         app.getCamera().update();
-        hpBars = new ArrayList<HealthBar>();
         inputProcessor = new GameInputProcessor(app.getCamera(), (Vector3 mousePosition) -> {
             Vector2 mouseOrtho = new IsometricToOrthogonalAdapt(new Vector2(mousePosition.x, mousePosition.y)).getPoint();
             Vector3 mouseOrtho3 = new Vector3(mouseOrtho.x + WorldCell.getTransformWidth(), mouseOrtho.y - WorldCell.getTransformWidth(), 0);
@@ -125,15 +123,15 @@ public class MainGamePage implements GamePage, UiUpdatable {
             for (WorldCell worldCell : app.getMap().getCells()) {
                 if (worldCell.contains(mouseOrtho3)) {
 
+                    HealthBar healthBar;
                     if (worldCell.getOccupier() == null && EntitySymbol.TOWER == mapClickEntityCreate) {
-                        HealthBar curr =  new HealthBar();
-                        curr.setCoordinates(new Pair<Float , Float>(worldCell.getWorldIsoPoint1().x , worldCell.getWorldIsoPoint1().y));
-                        hpBars.add(curr);
-                        Tower t =  app.getCurrentPlayer().buildTower(worldCell);
-                        app.getCurrentPlayer().setHealthBar(curr , t);
+                        Tower tower = app.getCurrentPlayer().buildTower(worldCell);
+                        healthBar =  new HealthBar(new Pair<>(14f, 5f), Tower.HEALTHBAR_OFFSET);
+                        healthBar.setCoordinates(new Pair<>(worldCell.getWorldIsoPoint1().x , worldCell.getWorldIsoPoint1().y));
+                        hpBars.add(healthBar);
+                        tower.setHealthBar(healthBar);
                     } else if (worldCell.getOccupier() == null && EntitySymbol.MINING == mapClickEntityCreate) {
                         app.getCurrentPlayer().createNewMining(worldCell);
-
                     }
 
                     if (worldCell.getOccupier() != null) {
@@ -206,23 +204,8 @@ public class MainGamePage implements GamePage, UiUpdatable {
         updateAnimated();
 
         for (HealthBar curr : hpBars) {
-
-                curr.rendering(app.getCamera().combined , Tower.HealthBarOffset);
-
+                curr.rendering(app.getCamera().combined);
         }
-
-      /*  if(shape != null){
-            shape.begin(ShapeRenderer.ShapeType.Line);
-            shape.setColor(Color.BLACK);
-            shape.rect(610 ,-45 , 15 , 5);
-            shape.end();
-            shape.begin(ShapeRenderer.ShapeType.Filled);
-            shape.setColor(Color.RED);
-            shape.rect((float)610.5 , (float)-44.5 , 14 , 4);
-            shape.setProjectionMatrix(app.getCamera().combined);
-            shape.end();
-        }*/
-
 
         update(delta);
         entitiesStage.act(delta);
@@ -298,6 +281,7 @@ public class MainGamePage implements GamePage, UiUpdatable {
         entitiesStage.dispose();
         //hpBar.dispose();
         uiStage.dispose();
+        hpBars.clear();
     }
 
     /**

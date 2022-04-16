@@ -10,7 +10,8 @@ import java.util.concurrent.CompletableFuture;
 import static java.util.concurrent.TimeUnit.SECONDS;
 
 public class Tower extends ArtificialEntity implements Defensible {
-    public final static Pair<Float , Float> HealthBarOffset = new Pair<>(-26f , 40f);
+    public static final  Pair<Float , Float> HEALTHBAR_OFFSET = new Pair<>(-26f , 40f);
+
     public Tower(EntitySymbol entitySymbol, Pair<Integer, Integer> position) {
         super(entitySymbol, position);
 
