@@ -87,7 +87,7 @@ public class MainGamePage implements GamePage, UiUpdatable {
         sr.setColor(Color.BLACK);
         sr.setProjectionMatrix(camera.combined);
         sr.begin(ShapeRenderer.ShapeType.Filled);
-        sr.rectLine(-100, 75, 1100, 75, 2);
+        sr.rectLine(-100, 85, 1100, 85, 2);
         sr.end();
     }
     private void SetTopBar() {
