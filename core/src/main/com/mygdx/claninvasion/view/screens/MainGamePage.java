@@ -55,7 +55,7 @@ public class MainGamePage implements GamePage, UiUpdatable {
     private TiledMap map;
     private final List<FireAnimated> fireballs = Collections.synchronizedList(new CopyOnWriteArrayList<>());
     private EntitySymbol mapClickEntityCreate;
-    private HealthBar hpBar;
+    private ArrayList<HealthBar> hpBars;
 
 
     /**
@@ -116,7 +116,7 @@ public class MainGamePage implements GamePage, UiUpdatable {
     @Override
     public void show() {
         app.getCamera().update();
-
+        hpBars = new ArrayList<HealthBar>();
         inputProcessor = new GameInputProcessor(app.getCamera(), (Vector3 mousePosition) -> {
             Vector2 mouseOrtho = new IsometricToOrthogonalAdapt(new Vector2(mousePosition.x, mousePosition.y)).getPoint();
             Vector3 mouseOrtho3 = new Vector3(mouseOrtho.x + WorldCell.getTransformWidth(), mouseOrtho.y - WorldCell.getTransformWidth(), 0);
@@ -125,19 +125,17 @@ public class MainGamePage implements GamePage, UiUpdatable {
                 if (worldCell.contains(mouseOrtho3)) {
 
                     if (worldCell.getOccupier() == null && EntitySymbol.TOWER == mapClickEntityCreate) {
-                        app.getCurrentPlayer().buildTower(worldCell);
+                        HealthBar curr =  new HealthBar();
+                        curr.setCoordinates(new Pair<Float , Float>(worldCell.getWorldIsoPoint1().x , worldCell.getWorldIsoPoint1().y));
+                        hpBars.add(curr);
+                        Tower t =  app.getCurrentPlayer().buildTower(worldCell);
+                        app.getCurrentPlayer().setHealthBar(curr , t);
                     } else if (worldCell.getOccupier() == null && EntitySymbol.MINING == mapClickEntityCreate) {
                         app.getCurrentPlayer().createNewMining(worldCell);
+
                     }
                     System.out.println(worldCell.getMapPosition().getValue0() + " " + worldCell.getMapPosition().getValue1());
                     System.out.println(worldCell.getWorldIsoPoint1().x + " " + worldCell.getWorldIsoPoint1().y);
-                    hpBar = new HealthBar();
-                    hpBar.setCoordinates(new Pair<Float , Float>(worldCell.getWorldIsoPoint1().x , worldCell.getWorldIsoPoint1().y));
-                    //System.out.println(worldCell.getworldIsoPoint().x + " " + worldCell.getworldIsoPoint().y);
-                   // shape.setColor(clue);
-
-
-                    //worldCell.getTileCell().setTile(null);
                 }
             }
         });
@@ -196,8 +194,11 @@ public class MainGamePage implements GamePage, UiUpdatable {
         renderer.render(app.getMap());
         // render animated object (fireballs, arrows, etc.)
         updateAnimated();
-        if(hpBar != null){
-            hpBar.rendering(app.getCamera().combined);
+        for (HealthBar curr : hpBars) {
+            if(curr != null){
+                curr.rendering(app.getCamera().combined);
+            }
+
         }
 
       /*  if(shape != null){
@@ -285,7 +286,7 @@ public class MainGamePage implements GamePage, UiUpdatable {
     @Override
     public void dispose() {
         entitiesStage.dispose();
-        hpBar.dispose();
+        //hpBar.dispose();
         uiStage.dispose();
     }
 

@@ -7,6 +7,7 @@ import com.mygdx.claninvasion.model.helpers.Direction;
 import com.mygdx.claninvasion.model.level.Level;
 import com.mygdx.claninvasion.model.level.LevelIterator;
 import com.mygdx.claninvasion.model.level.Levels;
+import com.mygdx.claninvasion.view.actors.HealthBar;
 import org.javatuples.Pair;
 
 /**
@@ -17,6 +18,7 @@ import org.javatuples.Pair;
  */
 public class ArtificialEntity extends Entity {
     protected AtomicInteger health;
+    protected HealthBar hpBar;
     protected LevelIterator<? extends Level> level;
     protected AtomicInteger reactionTime;
     protected Direction direction;

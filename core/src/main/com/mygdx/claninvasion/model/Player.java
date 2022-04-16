@@ -3,6 +3,7 @@ package com.mygdx.claninvasion.model;
 import com.mygdx.claninvasion.model.entity.*;
 import com.mygdx.claninvasion.model.gamestate.GameState;
 import com.mygdx.claninvasion.model.map.WorldCell;
+import com.mygdx.claninvasion.view.actors.HealthBar;
 import org.javatuples.Pair;
 
 import javax.swing.text.html.parser.Entity;
@@ -129,9 +130,13 @@ public class Player {
     /**
      * This method starts building towers for the active player
      */
-    public void buildTower(WorldCell cell) {
+    public Tower buildTower(WorldCell cell) {
          Tower tower = (Tower) game.getWorldMap().createMapEntity(EntitySymbol.TOWER, cell, null);
          towers.add(tower);
+         return tower;
+    }
+    public void setHealthBar(HealthBar Bar, Tower t){
+        t.setHealthBar(Bar);
     }
 
     /**
