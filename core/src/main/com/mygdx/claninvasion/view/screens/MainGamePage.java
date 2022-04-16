@@ -1,16 +1,19 @@
 package com.mygdx.claninvasion.view.screens;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.maps.tiled.*;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.mygdx.claninvasion.ClanInvasion;
 import com.mygdx.claninvasion.model.Player;
@@ -32,6 +35,7 @@ import com.mygdx.claninvasion.model.GameModel;
 
 
 import java.util.*;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -54,11 +58,14 @@ public class MainGamePage implements GamePage, UiUpdatable {
     private GameButton soldierButton;
     private GameButton towerButton;
     private GameButton mineButton;
-    private TiledMap map;
+    private final  TextureAtlas atlas = new TextureAtlas("skin/skin/uiskin.atlas");
+    private final Skin skin = new Skin(atlas);
+    private final Skin s2 = new Skin(Gdx.files.internal("skin/skin/uiskin.json"));
     private final List<FireAnimated> fireballs = Collections.synchronizedList(new CopyOnWriteArrayList<>());
     private EntitySymbol mapClickEntityCreate;
 
     public GameModel gameModel;
+    private TiledMap map;
 
 
     /**
@@ -70,23 +77,112 @@ public class MainGamePage implements GamePage, UiUpdatable {
         uiStage = new Stage(new StretchViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), camera));
         gameModel = new GameModel();
     }
+    private void AddSeprationLines(){
+        ShapeRenderer sr = new ShapeRenderer();
+        sr.setColor(Color.BLACK);
+        sr.setProjectionMatrix(camera.combined);
+        sr.begin(ShapeRenderer.ShapeType.Filled);
+        sr.rectLine(-100, 425, 1100, 425, 2);
+        sr.end();
+        sr.setColor(Color.BLACK);
+        sr.setProjectionMatrix(camera.combined);
+        sr.begin(ShapeRenderer.ShapeType.Filled);
+        sr.rectLine(-100, 75, 1100, 75, 2);
+        sr.end();
+    }
+    private void SetTopBar() {
+        Table Toptable = new Table(skin);
+        Toptable.setBounds(-10, Gdx.graphics.getWidth() / 3, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
-    private void addButtons() {
-        TextureAtlas atlas = new TextureAtlas("skin/skin/uiskin.atlas");
-        Skin skin = new Skin(atlas);
-        Table table = new Table(skin);
-        table.setBounds(-100, Gdx.graphics.getWidth() / 4f, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        Label Turn = new Label("Turn:Player 1 , 1 sec" , s2);
+        Label Time = new Label("Time: 29 sec left" , s2);
+        Label Phase = new Label("Phase: Building" , s2);
+        Turn.setColor(Color.BLACK);
+        Time.setColor(Color.BLACK);
+        Phase.setColor(Color.BLACK);
+        Toptable.add(Turn).spaceLeft(2);
+        Toptable.add(Time).spaceLeft(100);
+        Toptable.add(Phase).spaceLeft(100);
 
-        soldierButton = new GameButton(skin, "Train soldiers");
-        towerButton = new GameButton(skin, "Place towers");
-        mineButton = new GameButton(skin, "Place goldmine");
-        soldierButton.getButton().pad(2);
-        towerButton.getButton().pad(2);
-        mineButton.getButton().pad(2);
-        table.add(soldierButton.getButton()).space(10);
-        table.add(towerButton.getButton()).spaceLeft(10);
-        table.add(mineButton.getButton()).spaceLeft(10);
-        uiStage.addActor(table);
+        uiStage.addActor(Toptable);
+    }
+    private void SetButtonBar(){
+        Table Bottomtable = new Table(skin);
+        Bottomtable.setBounds(160, -200, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        setPlayer2(Bottomtable);
+        Table Bottomtable2 = new Table(skin);
+        Bottomtable2.setBounds(-160, -200, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        setPlayer1(Bottomtable2);
+
+
+       // setPlayer1(Bottomtable);
+
+
+    }
+    private void setPlayer2(Table Bottomtable){
+        String[] values = new String[]{"Train Soliders", "Building Tower", "Build Goldmine"};
+        SelectBox<String> selectBox = new SelectBox<String>(s2);
+        selectBox.setSize(5f , 5f);
+        selectBox.setItems(values);
+        Label P2 = new Label("Player 2 " , s2);
+        Label P2Money = new Label(" $ 4000" , s2);
+        Label P2Castels = new Label("10 castels" , s2);
+        Label P2Towers = new Label("    10 towers " , s2);
+        Label P2Soliders = new Label("100 Soliders" , s2);
+        Label P2Level = new Label("Level 1" , s2);
+        P2.setColor(Color.RED);
+        P2Money.setColor(Color.BLACK);
+        P2Castels.setColor(Color.BLACK);
+        P2Level.setColor(Color.BLACK);
+        P2Towers.setColor(Color.BLACK);
+        P2Soliders.setColor(Color.BLACK);
+        Bottomtable.add(P2);
+        Bottomtable.add(P2Money);
+        Bottomtable.add(selectBox);
+        Bottomtable.row();
+        Bottomtable.add(P2Castels);
+        Bottomtable.add(P2Towers);
+        Bottomtable.add(P2Soliders);
+        Bottomtable.row();
+        Bottomtable.add(P2Level).spaceLeft(0);
+
+        uiStage.addActor(Bottomtable);
+        /*selectBox.addListener(new ChangeListener() {
+
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                System.out.println( selectBox.getSelected());
+            }
+        });*/
+    }
+    private void setPlayer1(Table Bottomtable){
+        String[] values = new String[]{"Train Soliders", "Building Tower", "Build Goldmine"};
+        SelectBox<String> selectBox = new SelectBox<String>(s2);
+        selectBox.setSize(5f , 5f);
+        selectBox.setItems(values);
+        Label P2 = new Label("Player 2 " , s2);
+        Label P2Money = new Label(" $ 4000" , s2);
+        Label P2Castels = new Label("10 castels" , s2);
+        Label P2Towers = new Label("    10 towers " , s2);
+        Label P2Soliders = new Label("100 Soliders" , s2);
+        Label P2Level = new Label("Level 1" , s2);
+        P2.setColor(Color.RED);
+        P2Money.setColor(Color.BLACK);
+        P2Castels.setColor(Color.BLACK);
+        P2Level.setColor(Color.BLACK);
+        P2Towers.setColor(Color.BLACK);
+        P2Soliders.setColor(Color.BLACK);
+        Bottomtable.add(P2);
+        Bottomtable.add(P2Money);
+        Bottomtable.add(selectBox);
+        Bottomtable.row();
+        Bottomtable.add(P2Castels);
+        Bottomtable.add(P2Towers);
+        Bottomtable.add(P2Soliders);
+        Bottomtable.row();
+        Bottomtable.add(P2Level);
+
+        uiStage.addActor(Bottomtable);
     }
 
     private void addButtonListeners() {
@@ -134,8 +230,6 @@ public class MainGamePage implements GamePage, UiUpdatable {
                     }
                     System.out.println(worldCell.getMapPosition().getValue0() + " " + worldCell.getMapPosition().getValue1());
 
-
-                    //worldCell.getTileCell().setTile(null);
                 }
             }
         });
@@ -150,8 +244,11 @@ public class MainGamePage implements GamePage, UiUpdatable {
         renderer.render(app.getMap());
         entitiesStage = new TiledMapStage();
         Gdx.input.setInputProcessor(entitiesStage);
-        addButtons();
-        addButtonListeners();
+
+        SetTopBar();
+        SetButtonBar();
+
+       // addButtonListeners();
         app.getMap().setGraph(32, app.getMap().getCells());
         //fireTower();
     }
@@ -192,26 +289,28 @@ public class MainGamePage implements GamePage, UiUpdatable {
 
         // render animated object (fireballs, arrows, etc.)
         updateAnimated();
-        showText();
 
+        showText();
         update(delta);
         entitiesStage.act(delta);
         entitiesStage.draw();
+        AddSeprationLines();
+
     }
 
     private void showText() {
-
-        SpriteBatch batch;
-        BitmapFont font = new BitmapFont();
+        //TextureAtlas atlas = new TextureAtlas("skin/skin/uiskin.atlas");
+        //Skin skin = new Skin(atlas);
+     /*   SpriteBatch batch;
+        BitmapFont font = app.getFont();
         batch = new SpriteBatch();
         batch.begin();
         font.setColor(Color.BLACK);
-
         Player activePlayerName = gameModel.getActivePlayer();
         String name = activePlayerName.getName();
 
         font.draw(batch, "Turn:" + name, 0, 480);
-        batch.end();
+        batch.end();*/
     }
 
 
