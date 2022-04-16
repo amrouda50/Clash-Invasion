@@ -66,7 +66,7 @@ public class MainGamePage implements GamePage, UiUpdatable {
         TextureAtlas atlas = new TextureAtlas("skin/skin/uiskin.atlas");
         Skin skin = new Skin(atlas);
         Table table = new Table(skin);
-        table.setBounds(-100, Gdx.graphics.getWidth() / 4f, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        table.setBounds(-100, -Gdx.graphics.getWidth() / 3f, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
         soldierButton = new GameButton(skin, "Train soldiers");
         towerButton = new GameButton(skin, "Place towers");
