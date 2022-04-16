@@ -67,11 +67,11 @@ public class MainGamePage implements GamePage, UiUpdatable {
     private EntitySymbol mapClickEntityCreate;
 
     public GameModel gameModel;
-    private float timeCount;
+    private float timeSeconds = 0f;
+    private float period = 1f;
     private TiledMap map;
 
-
-    Table Toptable;
+    Timer t;
     int counter = 30;
     Label Time;
 
@@ -262,6 +262,14 @@ public class MainGamePage implements GamePage, UiUpdatable {
        // addButtonListeners();
         app.getMap().setGraph(32, app.getMap().getCells());
         //fireTower();
+
+        t = new Timer();
+        t.schedule(new TimerTask(){
+            @Override
+            public void run() {
+                counter--;
+            }
+        }, 1);
     }
 
     private void fireTower() {
@@ -286,6 +294,12 @@ public class MainGamePage implements GamePage, UiUpdatable {
      */
     @Override
     public void render(float delta) {
+        timeSeconds += Gdx.graphics.getDeltaTime();
+        if(timeSeconds > period){
+            timeSeconds-=period;
+            updateTime();
+        }
+
         Gdx.gl.glClearColor(255, 255, 255, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         for (FireAnimated fireAnimated : fireballs) {
@@ -301,17 +315,6 @@ public class MainGamePage implements GamePage, UiUpdatable {
         // render animated object (fireballs, arrows, etc.)
         updateAnimated();
 
-        Timer t = new Timer( );
-        t.scheduleAtFixedRate(new TimerTask() {
-
-            @Override
-            public void run() {
-                //updateTime();
-                if(counter > 0) {
-                counter--;
-                System.out.println(counter);}
-            }
-        }, 1000,1000);
 
         showText();
         update(delta);
@@ -322,9 +325,12 @@ public class MainGamePage implements GamePage, UiUpdatable {
     }
 
     private void updateTime() {
-        counter--;
-        Time.setText(counter);
+        if(counter > 0) {
+            counter--;
+            Time.setText(counter);
+        }
     }
+
 
 
     private void showText() {
