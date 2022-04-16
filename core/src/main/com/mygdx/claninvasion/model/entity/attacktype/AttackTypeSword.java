@@ -2,15 +2,26 @@ package com.mygdx.claninvasion.model.entity.attacktype;
 
 /**
  * Sword attack type
- * TODO: Logic part is missing
+ *
  */
 public class AttackTypeSword extends AttackTypeSoldier{
+    boolean checkDistance = false;
+    boolean attackSword = false;
     /**
      * Overrides base attack implementation
      * @see AttackType
+     * @return
      */
     @Override
-    public void attack() {
-        super.attack();
+    public boolean attack() {
+        checkDistance = (checkEnemyDistance() == 1);
+        if (checkDistance) {
+            return attackSword;
+        }
+        return false;
+    }
+
+    private int checkEnemyDistance() {
+        //Check all the neighboring cells
     }
 }
