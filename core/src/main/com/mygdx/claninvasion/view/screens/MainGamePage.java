@@ -27,8 +27,7 @@ import org.javatuples.Pair;
 
 
 import java.util.*;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.*;
 
 
 /**
@@ -202,10 +201,7 @@ public class MainGamePage implements GamePage, UiUpdatable {
 
         app.getCamera().update();
         inputProcessor.onRender();
-
         renderer.setView(app.getCamera());
-        app.getMap().clear();
-
         renderer.render(app.getMap());
         // render animated object (fireballs, arrows, etc.)
         updateAnimated();

@@ -75,6 +75,7 @@ public class IsometricTiledMapGameRenderer extends BatchTiledMapRenderer {
      * @param worldMap - map of the application
      */
     public void render(WorldMap worldMap, boolean firstRender) {
+        worldMap.restart();
         beginRender();
         worldMap.setEntitiesLayer((TiledMapTileLayer) map.getLayers().get(ENTITIES_LAYER));
         for (MapLayer layer : map.getLayers()) {
@@ -89,6 +90,7 @@ public class IsometricTiledMapGameRenderer extends BatchTiledMapRenderer {
         } else {
             chooser.placeRender(worldMap);
         }
+        worldMap.finish();
     }
 
     /**

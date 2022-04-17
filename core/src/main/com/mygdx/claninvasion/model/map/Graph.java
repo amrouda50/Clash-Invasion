@@ -2,13 +2,14 @@ package com.mygdx.claninvasion.model.map;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
 
 public class Graph {
     ArrayList<ArrayList<Integer> > adj ;
-    ArrayList<WorldCell> worldCells;
+    List<WorldCell> worldCells;
     int size;
     int arraysize ;
-    public Graph(int size , ArrayList<WorldCell> worldCells){
+    public Graph(int size , List<WorldCell> worldCells){
         this.size = size*size;
         this.arraysize = size;
         adj = new ArrayList<>(this.size);
@@ -100,7 +101,7 @@ public class Graph {
         }
 
         // LinkedList to store path
-        LinkedList<Integer> path = new LinkedList<Integer>();
+        LinkedList<Integer> path = new LinkedList<>();
         int crawl = dest;
         path.add(crawl);
         while (pred[crawl] != -1) {
@@ -119,17 +120,17 @@ public class Graph {
     // of each vertex in array pred
     // and its distance from source in array dist
     private static boolean BFS(ArrayList<ArrayList<Integer>> adj, int src,
-                               int dest, int v, int pred[], int dist[])
+                               int dest, int v, int[] pred, int[] dist)
     {
         // a queue to maintain queue of vertices whose
         // adjacency list is to be scanned as per normal
         // BFS algorithm using LinkedList of Integer type
-        LinkedList<Integer> queue = new LinkedList<Integer>();
+        LinkedList<Integer> queue = new LinkedList<>();
 
         // boolean array visited[] which stores the
         // information whether ith vertex is reached
         // at least once in the Breadth first search
-        boolean visited[] = new boolean[v];
+        boolean[] visited = new boolean[v];
 
         // initially all vertices are unvisited
         // so v[i] for all i is false
@@ -151,7 +152,7 @@ public class Graph {
         while (!queue.isEmpty()) {
             int u = queue.remove();
             for (int i = 0; i < adj.get(u).size(); i++) {
-                if (visited[adj.get(u).get(i)] == false) {
+                if (!visited[adj.get(u).get(i)]) {
                     visited[adj.get(u).get(i)] = true;
                     dist[adj.get(u).get(i)] = dist[u] + 1;
                     pred[adj.get(u).get(i)] = u;

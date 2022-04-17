@@ -207,11 +207,17 @@ public class Player implements Winnable {
             List<Integer> paths = game.getWorldMap().getGraph().GetShortestDistance( positionSrc, positionDest, 32*32);
                 for (int i = paths.size() - 1; i > 0; i--) {
                     game.getWorldMap().mutate(paths.get(i), paths.get(i-1));
-                    System.out.println("delay " + getMap().getCell(paths.get(i)).getOccupier());
+//                    System.out.println("delay " + getMap().getCell(paths.get(i)).getOccupier());
                     Pair<Integer, Integer> newPosition = game.getWorldMap().transformMapIndexToPosition(paths.get(i) - 1);
-                    System.out.println("new position" + newPosition);
+//                    System.out.println("new position" + newPosition);
                     soldier.changePosition(newPosition);
-                    System.out.println("done ");
+                    try {
+                        Thread.sleep(300);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+
+//                    System.out.println("done ");
                 }
             }
     }
