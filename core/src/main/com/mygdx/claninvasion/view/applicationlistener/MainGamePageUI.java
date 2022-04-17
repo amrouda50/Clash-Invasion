@@ -18,7 +18,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.mygdx.claninvasion.ClanInvasion;
-import com.mygdx.claninvasion.model.entity.Entity;
 import com.mygdx.claninvasion.model.entity.EntitySymbol;
 import org.javatuples.Pair;
 import org.javatuples.Quartet;
@@ -27,9 +26,9 @@ import java.util.*;
 
 public class MainGamePageUI implements ApplicationListener {
     private final Stage uiStage;
-    private Texture backgroundTexture = new Texture("background/background.jpg");
-    private SelectBox<String> playerOneDropdown;
-    private SelectBox<String> playerTwoDropdown;
+    private final Texture backgroundTexture = new Texture("background/background.jpg");
+    private final SelectBox<String> playerOneDropdown;
+    private final SelectBox<String> playerTwoDropdown;
     private final TextureAtlas atlas = new TextureAtlas("skin/skin/uiskin.atlas");
     private final Skin atlasSkin = new Skin(atlas);
     private final Skin jsonSkin = new Skin(Gdx.files.internal("skin/skin/uiskin.json"));
@@ -75,7 +74,7 @@ public class MainGamePageUI implements ApplicationListener {
         createRectangle(Color.BLACK, new Quartet<>(-100f, 85f, 1100f, 85f), 2);
     }
 
-    private void setTopBar() {
+    private void addTopBar() {
         Table topTable = new Table(atlasSkin);
         topTable.setBounds(-10, Gdx.graphics.getWidth() / 3f, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
@@ -122,7 +121,7 @@ public class MainGamePageUI implements ApplicationListener {
         uiStage.addActor(table);
     }
 
-    private void setBottomBar() {
+    private void addBottomBar() {
         Table tableOne = new Table(atlasSkin);
         tableOne.setBounds(160, -200, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         List<Pair<String, Color>> player1Data = new ArrayList<>(Arrays.asList(
@@ -208,8 +207,8 @@ public class MainGamePageUI implements ApplicationListener {
 
     @Override
     public void create() {
-        setTopBar();
-        setBottomBar();
+        addTopBar();
+        addBottomBar();
         addButtonListeners();
         setTimer();
     }
