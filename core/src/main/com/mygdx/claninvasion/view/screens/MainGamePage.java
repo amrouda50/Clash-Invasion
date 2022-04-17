@@ -90,7 +90,7 @@ public class MainGamePage implements GamePage, UiUpdatable {
         renderer = new IsometricTiledMapGameRenderer(
                 map,
                 1,
-                new EntityPlacer(app.getGameModel())
+                new EntityPlacer(app.getModel())
         );
 
         // transform camera position ans scale to be in the center
