@@ -1,19 +1,23 @@
 package com.mygdx.claninvasion.view.screens;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g2d.*;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.maps.tiled.*;
+import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.mygdx.claninvasion.ClanInvasion;
-import com.mygdx.claninvasion.model.Player;
 import com.mygdx.claninvasion.model.adapters.IsometricToOrthogonalAdapt;
 import com.mygdx.claninvasion.model.entity.EntitySymbol;
 import com.mygdx.claninvasion.model.entity.Soldier;
@@ -56,6 +60,8 @@ public class MainGamePage implements GamePage, UiUpdatable {
     private GameButton soldierButton;
     private GameButton towerButton;
     private GameButton mineButton;
+    private SelectBox<String> p2selectBox;
+    private SelectBox<String> p1selectBox;
     private Texture backgroundTexture = new Texture("background/background.jpg");
 
     private final  TextureAtlas atlas = new TextureAtlas("skin/skin/uiskin.atlas");
@@ -126,9 +132,10 @@ public class MainGamePage implements GamePage, UiUpdatable {
     }
     private void setPlayer2(Table Bottomtable){
         String[] values = new String[]{"Train Soliders", "Building Tower", "Build Goldmine"};
-        SelectBox<String> selectBox = new SelectBox<String>(s2);
-        selectBox.setSize(5f , 5f);
-        selectBox.setItems(values);
+        p2selectBox = new SelectBox<String>(s2);
+        p2selectBox.setSize(5f , 5f);
+        p2selectBox.setItems(values);
+        p2selectBox.setTouchable(Touchable.enabled);
         Label P2 = new Label("Player 2 " , s2);
         Label P2Money = new Label(" $ 4000" , s2);
         Label P2Castels = new Label("10 castels" , s2);
@@ -143,28 +150,28 @@ public class MainGamePage implements GamePage, UiUpdatable {
         P2Soliders.setColor(Color.BLACK);
         Bottomtable.add(P2);
         Bottomtable.add(P2Money);
-        Bottomtable.add(selectBox);
+        Bottomtable.add(p2selectBox);
         Bottomtable.row();
         Bottomtable.add(P2Castels);
         Bottomtable.add(P2Towers);
         Bottomtable.add(P2Soliders);
         Bottomtable.row();
         Bottomtable.add(P2Level).spaceLeft(0);
-
         uiStage.addActor(Bottomtable);
     }
     private void setPlayer1(Table Bottomtable){
         String[] values = new String[]{"Train Soliders", "Building Tower", "Build Goldmine"};
-        SelectBox<String> selectBox = new SelectBox<String>(s2);
-        selectBox.setSize(5f , 5f);
-        selectBox.setItems(values);
-        Label P2 = new Label("Player 2 " , s2);
-        Label P2Money = new Label(" $ 4000" , s2);
-        Label P2Castels = new Label("10 castels" , s2);
+        p1selectBox = new SelectBox<String>(s2);
+        p1selectBox.setSize(5f , 5f);
+        p1selectBox.setItems(values);
+        p2selectBox.setTouchable(Touchable.enabled);
+        Label P2 = new Label("Player 1 " , s2);
+        Label P2Money = new Label(" $ 3000" , s2);
+        Label P2Castels = new Label("5 castels" , s2);
         Label P2Towers = new Label("    10 towers " , s2);
-        Label P2Soliders = new Label("100 Soliders" , s2);
-        Label P2Level = new Label("Level 1" , s2);
-        P2.setColor(Color.RED);
+        Label P2Soliders = new Label("50 Soliders" , s2);
+        Label P2Level = new Label("Level 2" , s2);
+        P2.setColor(Color.BLUE);
         P2Money.setColor(Color.BLACK);
         P2Castels.setColor(Color.BLACK);
         P2Level.setColor(Color.BLACK);
@@ -172,7 +179,7 @@ public class MainGamePage implements GamePage, UiUpdatable {
         P2Soliders.setColor(Color.BLACK);
         Bottomtable.add(P2);
         Bottomtable.add(P2Money);
-        Bottomtable.add(selectBox);
+        Bottomtable.add(p1selectBox);
         Bottomtable.row();
         Bottomtable.add(P2Castels);
         Bottomtable.add(P2Towers);
@@ -184,7 +191,7 @@ public class MainGamePage implements GamePage, UiUpdatable {
     }
 
     private void addButtonListeners() {
-        soldierButton.addClickListener(() -> {
+       /* soldierButton.addClickListener(() -> {
             System.out.println("Train barbarians...");
             this.mapClickEntityCreate = EntitySymbol.BARBARIAN;
             soldierButton.getButton().setText("Training in progress...");
@@ -200,6 +207,18 @@ public class MainGamePage implements GamePage, UiUpdatable {
         mineButton.addClickListener(() -> {
             System.out.println("Create mining...");
             this.mapClickEntityCreate = EntitySymbol.MINING;
+        });*/
+        p1selectBox.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                System.out.println("Player1: " + " " +p1selectBox.getSelected());
+            }
+        });
+        p2selectBox.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                System.out.println("Player2: " + " " + p2selectBox.getSelected());
+            }
         });
 
         uiStage.setDebugUnderMouse(true);
@@ -246,7 +265,7 @@ public class MainGamePage implements GamePage, UiUpdatable {
         SetButtomBar();
 
 
-       // addButtonListeners();
+        addButtonListeners();
         app.getMap().setGraph(32, app.getMap().getCells());
         //fireTower();
         setTimer();
@@ -291,7 +310,7 @@ public class MainGamePage implements GamePage, UiUpdatable {
             updateTime();
         }
 
-        Gdx.gl.glClearColor(255, 255, 255, 1);
+        Gdx.gl.glClearColor((255f/255f), (255f/255f), (255f/255f), 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         for (FireAnimated fireAnimated : fireballs) {
             fireAnimated.create();

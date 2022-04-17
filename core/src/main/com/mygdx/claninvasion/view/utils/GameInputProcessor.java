@@ -70,19 +70,19 @@ public class GameInputProcessor implements InputProcessor {
         Vector3 translate = new Vector3(0, 0, 0);
 
         if (Gdx.input.isKeyPressed(Input.Keys.Z) && camera instanceof OrthographicCamera) {
-            ((OrthographicCamera) camera).zoom -= 0.01;
+            ((OrthographicCamera) camera).zoom -= 0.03;
         } else if (Gdx.input.isKeyPressed(Input.Keys.X) && camera instanceof OrthographicCamera) {
-            ((OrthographicCamera) camera).zoom += 0.01;
+            ((OrthographicCamera) camera).zoom += 0.03;
         }
 
         if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
-            translate.x -= 1;
+            translate.x -= 4;
         } else if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
-            translate.x += 1;
+            translate.x += 4;
         } else if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
-            translate.y -= 1;
+            translate.y -= 4;
         } else if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
-            translate.y += 1;
+            translate.y += 4;
         }
 
         if (Gdx.input.justTouched()) {
