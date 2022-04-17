@@ -1,8 +1,5 @@
 package com.mygdx.claninvasion.view.utils;
 
-import java.nio.file.Paths;
-
-import com.mygdx.claninvasion.model.entity.*;
 import com.mygdx.claninvasion.view.exceptions.UnknownTiledMapLayerException;
 import org.javatuples.Pair;
 import org.javatuples.Quartet;

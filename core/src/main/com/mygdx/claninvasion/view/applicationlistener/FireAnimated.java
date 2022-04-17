@@ -1,4 +1,4 @@
-package com.mygdx.claninvasion.view.animated;
+package com.mygdx.claninvasion.view.applicationlistener;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;

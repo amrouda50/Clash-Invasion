@@ -164,4 +164,5 @@ public class GameModel implements GameState {
     public WorldMap getWorldMap() {
         return worldMap;
     }
+
 }
