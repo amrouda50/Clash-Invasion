@@ -73,16 +73,6 @@ public class MainGamePageUI implements ApplicationListener {
     private void addSeparationLines() {
         createRectangle(Color.BLACK, new Quartet<>(-100f, 425f, 1100f, 425f), 2);
         createRectangle(Color.BLACK, new Quartet<>(-100f, 85f, 1100f, 85f), 2);
-//        shapeRenderer.setColor(Color.BLACK);
-//        shapeRenderer.setProjectionMatrix(app.getCamera().combined);
-//        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-//        shapeRenderer.rectLine(-100, 425, 1100, 425, 2);
-//        shapeRenderer.end();
-//        shapeRenderer.setColor(Color.BLACK);
-//        shapeRenderer.setProjectionMatrix(camera.combined);
-//        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-//        shapeRenderer.rectLine(-100, 85, 1100, 85, 2);
-//        shapeRenderer.end();
     }
 
     private void setTopBar() {
@@ -207,6 +197,7 @@ public class MainGamePageUI implements ApplicationListener {
 
     private void createBarBackground() {
         SpriteBatch batch = new SpriteBatch();
+        batch.setProjectionMatrix(camera.combined);
         batch.begin();
         batch.draw(backgroundTexture, 0, 0, 1000, 85);
         batch.end();
