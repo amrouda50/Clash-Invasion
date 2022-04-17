@@ -38,8 +38,7 @@ public class MainGamePage implements GamePage, UiUpdatable {
     private final ClanInvasion app;
     private Stage entitiesStage;
     private final List<FireAnimated> fireballs = Collections.synchronizedList(new CopyOnWriteArrayList<>());
-    private EntitySymbol mapClickEntityCreate;
-    private List<HealthBar> hpBars = Collections.synchronizedList(new CopyOnWriteArrayList<>());
+    private final List<HealthBar> hpBars = Collections.synchronizedList(new CopyOnWriteArrayList<>());
     private final MainGamePageUI mainGamePageUI;
     private TiledMap map;
 
@@ -61,7 +60,7 @@ public class MainGamePage implements GamePage, UiUpdatable {
     @Override
     public void show() {
         app.getCamera().update();
-        inputProcessor = new GameInputProcessor(app.getCamera(), new InputClicker(app ,mainGamePageUI ));
+        inputProcessor = new GameInputProcessor(app.getCamera(), new InputClicker(app ,mainGamePageUI, hpBars));
         map = new TmxMapLoader().load(Gdx.files.getLocalStoragePath() + "/TileMap/Tilemap.tmx");
         app.getMap().setTileset(map.getTileSets());
         renderer = new IsometricTiledMapGameRenderer(
@@ -116,21 +115,23 @@ public class MainGamePage implements GamePage, UiUpdatable {
         renderer.setView(app.getCamera());
         renderer.render(app.getMap());
 
-        // render game page ui
-        mainGamePageUI.render();
-
-        // render animated object (fireballs, arrows, etc.)
-        updateAnimated();
-
+        // health bar render
         for (HealthBar curr : hpBars) {
             curr.rendering(app.getCamera().combined);
             if (!curr.isActive()) {
                 hpBars.remove(curr);
             }
         }
+
+        // render game page ui
+        mainGamePageUI.render();
+
+        // render animated object (fireballs, arrows, etc.)
+        updateAnimated();
         app.getModel().getPlayerOne().removeDead();
         app.getModel().getPlayerTwo().removeDead();
 
+        // update actors
         update(delta);
     }
 
