@@ -1,10 +1,9 @@
 package com.mygdx.claninvasion.model.entity;
 
-import com.mygdx.claninvasion.model.Player;
+import com.mygdx.claninvasion.model.player.Player;
 import org.javatuples.Pair;
 import org.javatuples.Quartet;
 
-import java.util.ArrayList;
 import java.util.Stack;
 import java.util.concurrent.*;
 import static java.util.concurrent.Executors.newFixedThreadPool;
@@ -19,7 +18,7 @@ public final class Castle extends ArtificialEntity {
 
     // topLeft, topRight, bottomRight, bottomLeft
     private Quartet<Pair<Integer, Integer>, Pair<Integer, Integer>, Pair<Integer, Integer>, Pair<Integer, Integer>> positions;
-    private static int AMOUNT_OF_SOLDIERS = 2;
+    private static int AMOUNT_OF_SOLDIERS = 1;
     private Pair<Integer, Integer> soldierPosition;
 
     public Castle(EntitySymbol symbol,  Quartet<Pair<Integer, Integer>, Pair<Integer, Integer>, Pair<Integer, Integer>, Pair<Integer, Integer>> positions, Player player) {
@@ -28,6 +27,7 @@ public final class Castle extends ArtificialEntity {
         soldiers = new Stack<>();
         this.player = player;
         soldierPosition = symbol == EntitySymbol.CASTEL ? positions.getValue2() : positions.getValue0();
+        soldierPosition = new Pair<>(soldierPosition.getValue0() - 3, soldierPosition.getValue1() - 3);
     }
 
     @Override

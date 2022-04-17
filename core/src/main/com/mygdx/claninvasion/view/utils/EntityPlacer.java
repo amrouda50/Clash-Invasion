@@ -2,7 +2,7 @@ package com.mygdx.claninvasion.view.utils;
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.mygdx.claninvasion.model.GameModel;
-import com.mygdx.claninvasion.model.Player;
+import com.mygdx.claninvasion.model.player.Player;
 import com.mygdx.claninvasion.model.entity.*;
 import com.mygdx.claninvasion.model.map.WorldCell;
 import com.mygdx.claninvasion.model.map.WorldMap;

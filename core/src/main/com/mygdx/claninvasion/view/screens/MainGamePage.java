@@ -87,8 +87,11 @@ public class MainGamePage implements GamePage, UiUpdatable {
             System.out.println("Train barbarians...");
             this.mapClickEntityCreate = EntitySymbol.BARBARIAN;
             soldierButton.getButton().setText("Training in progress...");
-            app.getCurrentPlayer().addSoldiers(() ->
-                    soldierButton.getButton().setText("Train soldiers"));
+            app.getCurrentPlayer().addSoldiers(() -> {
+                    soldierButton.getButton().setText("Train soldiers");
+                    app.getCurrentPlayer().moveSoldiers();
+                }
+            );
         });
 
         towerButton.addClickListener(() -> {
@@ -117,6 +120,7 @@ public class MainGamePage implements GamePage, UiUpdatable {
             Vector2 mouseOrtho = new IsometricToOrthogonalAdapt(new Vector2(mousePosition.x, mousePosition.y)).getPoint();
             Vector3 mouseOrtho3 = new Vector3(mouseOrtho.x + WorldCell.getTransformWidth(), mouseOrtho.y - WorldCell.getTransformWidth(), 0);
 
+            int i = 0;
             for (WorldCell worldCell : app.getMap().getCells()) {
                 if (worldCell.contains(mouseOrtho3)) {
 
@@ -138,10 +142,12 @@ public class MainGamePage implements GamePage, UiUpdatable {
                     if (worldCell.getOccupier() != null) {
                         System.out.println((worldCell.getOccupier().getSymbol()));
                     }
+                    System.out.println("Index is " + i);
 
                     System.out.println(worldCell.getMapPosition().getValue0() + " " + worldCell.getMapPosition().getValue1());
                     System.out.println(worldCell.getWorldIsoPoint1().x + " " + worldCell.getWorldIsoPoint1().y);
                 }
+                i++;
             }
         });
         map = new TmxMapLoader().load(Gdx.files.getLocalStoragePath() + "/TileMap/Tilemap.tmx");
@@ -187,7 +193,7 @@ public class MainGamePage implements GamePage, UiUpdatable {
      */
     @Override
     public void render(float delta) {
-        Gdx.gl.glClearColor(255, 255, 255, 1);
+        Gdx.gl.glClearColor(1f,1, 1, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         for (FireAnimated fireAnimated : fireballs) {

@@ -104,6 +104,10 @@ public class WorldMap {
         return worldCells.indexOf(cell);
     }
 
+    public Pair<Integer, Integer> transformMapIndexToPosition(int index) {
+        return getCell(index).getMapPosition();
+    }
+
     public Vector2 tranformMapPositionToIso(Pair<Integer, Integer> cellPlace) {
         WorldCell cell = getCell(cellPlace);
         return cell.getworldIsoPoint();
@@ -232,8 +236,6 @@ public class WorldMap {
         WorldCell cell2 = getCell(index2);
 
         mutate(cell1, cell2);
-
-
     }
 
     public Graph getGraph() {

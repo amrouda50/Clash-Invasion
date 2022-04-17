@@ -1,6 +1,5 @@
 package com.mygdx.claninvasion.model.map;
 
-import com.mygdx.claninvasion.model.Player;
 import com.mygdx.claninvasion.model.entity.*;
 import org.javatuples.Pair;
 

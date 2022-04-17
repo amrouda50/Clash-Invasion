@@ -1,13 +1,12 @@
-package com.mygdx.claninvasion.model;
+package com.mygdx.claninvasion.model.player;
 
+import com.mygdx.claninvasion.model.GameModel;
 import com.mygdx.claninvasion.model.entity.*;
-import com.mygdx.claninvasion.model.gamestate.GameState;
 import com.mygdx.claninvasion.model.map.WorldCell;
 import com.mygdx.claninvasion.model.map.WorldMap;
 import org.javatuples.Pair;
 
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.*;
@@ -22,7 +21,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * TODO: Logic part is missing
  */
 
-public class Player {
+public class Player implements Winnable {
     public static final int MAX_GOLDMINE = 3;
     /**
      * Opponent of the active player
@@ -47,7 +46,7 @@ public class Player {
     /**
      * Status of player in the game
      */
-    private GameState winningState;
+    private WinningState winningState;
 
     /**
      * Amount of gold of the player
@@ -65,8 +64,8 @@ public class Player {
      */
     private Castle castle;
     private final UUID id;
-    private final BlockingQueue<Integer> coinProduceQueue = new LinkedBlockingDeque<>(MAX_GOLDMINE);
-    private ExecutorService executorService = Executors.newFixedThreadPool(MAX_GOLDMINE + 1);
+    private final BlockingQueue<Integer> coinProduceQueue;
+    private final ExecutorService executorService;
 
     public Player(GameModel game) {
         this.id = UUID.randomUUID();
@@ -75,7 +74,10 @@ public class Player {
         soldiers = Collections.synchronizedList(new CopyOnWriteArrayList<>());
         towers = Collections.synchronizedList(new CopyOnWriteArrayList<>());
         wealth = new AtomicInteger(0);
+        executorService = Executors.newFixedThreadPool(MAX_GOLDMINE + 1);
+        coinProduceQueue = new LinkedBlockingDeque<>(MAX_GOLDMINE);
         executorService.execute(this::consumeGold);
+        winningState = WinningState.UKNOWN;
     }
 
     public void changeCastle(Castle castle) {
@@ -133,6 +135,10 @@ public class Player {
         if (miningFarms.stream().noneMatch(ArtificialEntity::isAlive)) {
             shutdownThreads();
         }
+        miningFarms.clear();
+        soldiers.clear();
+        towers.clear();
+        this.winningState = WinningState.UKNOWN;
     }
 
     /**
@@ -156,22 +162,7 @@ public class Player {
     /**
      * This method starts the mining for the active player
      */
-    public void doMining() {
-
-    }
-
-    /**
-     * This checks if the player has won
-     */
-    public void checkWinningState() {
-
-    }
-
-    /**
-     * This checks if the player has lost
-     */
-    public void looseEntity() {
-    }
+    public void doMining() {}
 
     /**
      * This will add more soldiers
@@ -180,7 +171,7 @@ public class Player {
     public CompletionStage<Void> addSoldiers()  {
         return castle
                 .trainSoldiers()
-                .thenRun(() -> soldiers.addAll(castle.getSoldiers()))
+                .thenRun(this::addTrainedToMapSoldiers)
                 .thenRunAsync(() -> System.out.println("New soldiers were successfully added"));
     }
 
@@ -188,6 +179,7 @@ public class Player {
         while (!castle.getSoldiers().empty()) {
             Soldier soldier = castle.getSoldiers().pop();
             soldiers.add((Soldier) game.getWorldMap().createMapEntity(soldier.getSymbol(), soldier.getPosition(), null));
+            System.out.println("Soldier added " + soldiers.size());
         }
     }
 
@@ -198,6 +190,30 @@ public class Player {
     public void addSoldiers(Runnable after)  {
         addSoldiers()
                 .thenRunAsync(after);
+    }
+
+    public void moveSoldiers() {
+        for (Soldier soldier : soldiers) {
+            Pair<Integer, Integer> posSrc = new Pair<>(
+                    soldier.getPosition().getValue0() ,
+                    soldier.getPosition().getValue1()
+                );
+            Pair<Integer, Integer> posDst = new Pair<>(
+               opponent.getCastle().getPosition().getValue0() +1 ,
+               opponent.getCastle().getPosition().getValue1() +1
+            );
+            int positionSrc = game.getWorldMap().transformMapPositionToIndex(posSrc);
+            int positionDest = game.getWorldMap().transformMapPositionToIndex(posDst);
+            List<Integer> paths = game.getWorldMap().getGraph().GetShortestDistance( positionSrc, positionDest, 32*32);
+                for (int i = paths.size() - 1; i > 0; i--) {
+                    game.getWorldMap().mutate(paths.get(i), paths.get(i-1));
+                    System.out.println("delay " + getMap().getCell(paths.get(i)).getOccupier());
+                    Pair<Integer, Integer> newPosition = game.getWorldMap().transformMapIndexToPosition(paths.get(i) - 1);
+                    System.out.println("new position" + newPosition);
+                    soldier.changePosition(newPosition);
+                    System.out.println("done ");
+                }
+            }
     }
 
     public void attackAndMove(Pair<Integer, Integer> position) {
@@ -233,5 +249,20 @@ public class Player {
 
     public List<MiningFarm> getMiningFarms() {
         return miningFarms;
+    }
+
+    @Override
+    public WinningState winningState() {
+        return winningState;
+    }
+
+    @Override
+    public boolean hasWon() {
+        return winningState == WinningState.LOST;
+    }
+
+    @Override
+    public boolean hasLost() {
+        return winningState == WinningState.WON;
     }
 }
