@@ -104,9 +104,9 @@ public class MainGamePage implements GamePage, UiUpdatable {
         Table Toptable = new Table(skin);
         Toptable.setBounds(-10, Gdx.graphics.getWidth() / 3, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
-        Label Turn = new Label("Turn:Player 1 , 1 sec" , s2);
+        Label Turn = new Label("Turn: "+ app.getCurrentPlayer().getName() , s2);
       // Label Time = new Label("Time: 29 sec left" , s2);
-        Label Phase = new Label("Phase: Building" , s2);
+        Label Phase = new Label("Phase: " + gameModel.getPhase() , s2);
         Turn.setColor(Color.BLACK);
         Time.setColor(Color.BLACK);
         Phase.setColor(Color.BLACK);
