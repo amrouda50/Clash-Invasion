@@ -29,6 +29,8 @@ public class BuildingState extends CommonGameState{
      */
     @Override
     public void changePhase() {
-        this.game.setPhase(GamePhase.ATTACK);
+        if(this.game.getPhase() == GamePhase.BUILDING) {
+            this.game.setPhase(GamePhase.ATTACK);
+        }
     }
 }

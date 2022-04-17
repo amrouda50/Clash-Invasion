@@ -21,6 +21,7 @@ import com.mygdx.claninvasion.model.adapters.IsometricToOrthogonalAdapt;
 import com.mygdx.claninvasion.model.entity.EntitySymbol;
 import com.mygdx.claninvasion.model.entity.Soldier;
 import com.mygdx.claninvasion.model.entity.Tower;
+import com.mygdx.claninvasion.model.gamestate.GameState;
 import com.mygdx.claninvasion.model.map.WorldCell;
 import com.mygdx.claninvasion.view.actors.GameButton;
 import com.mygdx.claninvasion.view.animated.FireAnimated;
@@ -75,6 +76,7 @@ public class MainGamePage implements GamePage, UiUpdatable {
     int counter = 30;
     int totalTime = 0;
     Label Time;
+    Label Phase;
 
 
 
@@ -106,9 +108,9 @@ public class MainGamePage implements GamePage, UiUpdatable {
         Table Toptable = new Table(skin);
         Toptable.setBounds(-10, Gdx.graphics.getWidth() / 3, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
-        Label Turn = new Label("Turn:Player 1 , 1 sec" , s2);
+        Label Turn = new Label("Turn: "+ app.getCurrentPlayer().getName() , s2);
       // Label Time = new Label("Time: 29 sec left" , s2);
-        Label Phase = new Label("Phase: Building" , s2);
+        Phase = new Label("Phase: " + gameModel.getPhase() , s2);
         Turn.setColor(Color.BLACK);
         Time.setColor(Color.BLACK);
         Phase.setColor(Color.BLACK);
@@ -341,7 +343,8 @@ public class MainGamePage implements GamePage, UiUpdatable {
 
     private void changePhase() {
         gameModel.changePhase();
-
+        //System.out.println("Phase: " + gameModel.getPhase());
+        Phase.setText("Phase: " + gameModel.getPhase());
     }
 
 

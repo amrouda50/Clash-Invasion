@@ -33,6 +33,7 @@ public abstract class CommonGameState implements GameState  {
     @Override
     public void startGame() {
         game.setGameEnded(false);
+        game.setPhase(GamePhase.BUILDING);
     }
 
     /**
@@ -40,7 +41,7 @@ public abstract class CommonGameState implements GameState  {
      */
     @Override
     public void changePhase() {
-        game.setPhase(GamePhase.BUILDING);
+        game.setPhase(GamePhase.ATTACK);
     }
 
     /**
