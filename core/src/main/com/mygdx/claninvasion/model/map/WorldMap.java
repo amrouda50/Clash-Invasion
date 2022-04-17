@@ -223,19 +223,26 @@ public class WorldMap {
     }
 
     public void mutate(int index1, int index2) {
+try{
+    System.out.println(getSize() + " " + " worldmap size" );
+    if (index1 < 0 || index1 >= getSize()) {
+        throw new IllegalArgumentException("First argument has index out of bounds");
+    }
 
-        if (index1 < 0 || index1 >= getSize()) {
-            throw new IllegalArgumentException("First argument has index out of bounds");
-        }
+    if (index2 < 0 || index2 >= getSize()) {
+        throw new IllegalArgumentException("Second argument has index out of bounds");
+    }
 
-        if (index2 < 0 || index2 >= getSize()) {
-            throw new IllegalArgumentException("Second argument has index out of bounds");
-        }
+    WorldCell cell1 = getCell(index1);
+    WorldCell cell2 = getCell(index2);
 
-        WorldCell cell1 = getCell(index1);
-        WorldCell cell2 = getCell(index2);
+    mutate(cell1, cell2);
+}
+catch (Exception e){
+    System.out.println("");
+   e.printStackTrace();
+}
 
-        mutate(cell1, cell2);
     }
 
     public Graph getGraph() {
