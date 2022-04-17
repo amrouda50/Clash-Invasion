@@ -2,6 +2,7 @@ package com.mygdx.claninvasion.model.entity;
 
 import com.badlogic.gdx.physics.box2d.World;
 import com.mygdx.claninvasion.model.Globals;
+import com.mygdx.claninvasion.model.entity.attacktype.AttackType;
 import com.mygdx.claninvasion.model.level.GameSoldierLevelIterator;
 import com.mygdx.claninvasion.model.level.GameTowerLevel;
 import com.mygdx.claninvasion.model.level.Level;
@@ -18,12 +19,17 @@ import static java.util.concurrent.TimeUnit.SECONDS;
 public class Tower extends ArtificialEntity implements Defensible {
 
     public Level level;
+    public AttackType attackType;
+    int towerLevel;
+    public RomanFort romanFort;
+    public StrategicTower strategicTower;
+    public HillTower hillTower;
 
     public WorldCell worldCell;
 
-    public Tower(EntitySymbol entitySymbol, Pair<Integer, Integer> position) {
+    public Tower(EntitySymbol entitySymbol, Pair<Integer, Integer> position, int towerLevel) {
         super(entitySymbol, position);
-
+        this.towerLevel = towerLevel;
     }
 
     Tower(LevelIterator<Level> levelIterator) {
@@ -66,8 +72,10 @@ public class Tower extends ArtificialEntity implements Defensible {
         return future;
     }
 
-    public void attack(List<Pair<Integer,Integer>> neighbors, ArrayList<Soldier> soldiers) {
-
+    public void attack(List<Pair<Integer,Integer>> neighbors, List<Soldier> soldiers) {
+            if(towerLevel == 0) {
+                System.out.println("Tower level is level0."); //Assuming Roman Fort is tower level 0 as it could not be confirmed
+            }
     }
 
 }

@@ -14,6 +14,7 @@ import com.mygdx.claninvasion.model.entity.Soldier;
 import com.mygdx.claninvasion.model.entity.Tower;
 import com.mygdx.claninvasion.model.gamestate.GamePhase;
 import com.mygdx.claninvasion.model.map.WorldCell;
+import com.mygdx.claninvasion.view.actors.HealthBar;
 import com.mygdx.claninvasion.view.applicationlistener.FireAnimated;
 import com.mygdx.claninvasion.view.applicationlistener.MainGamePageUI;
 import com.mygdx.claninvasion.view.tiledmap.TiledMapStage;
@@ -133,7 +134,8 @@ public class MainGamePage implements GamePage, UiUpdatable {
         mainGamePageUI.render();
 
         if(app.getModel().getPhase() == GamePhase.ATTACK) {
-
+            System.out.println("Attack time has started");
+            app.getCurrentPlayer().attack();
         }
 
         // render animated object (fireballs, arrows, etc.)

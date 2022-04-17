@@ -11,7 +11,7 @@ import org.javatuples.Pair;
  */
 public class StrategicTower extends Tower {
     StrategicTower(EntitySymbol entitySymbol, Pair<Integer, Integer> position) {
-        super(entitySymbol, position);
+        super(entitySymbol, position,2);
     }
 
     StrategicTower(LevelIterator<Level> levelIterator) {

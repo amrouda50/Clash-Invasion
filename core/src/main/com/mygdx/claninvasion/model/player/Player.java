@@ -8,6 +8,7 @@ import org.javatuples.Pair;
 
 import javax.swing.text.html.parser.Entity;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.*;
@@ -233,11 +234,10 @@ public class Player implements Winnable {
     }
 
     public void attack() {
-
-        ArrayList<Tower> towers = getTowers();
+        System.out.println("Towers have started to attack");
         for (Tower tower : towers) {
             List<Pair<Integer,Integer>> neighbors  =  game.getWorldMap().getNeighborsOfPoint(tower.getPositionX(),tower.getPositionY());
-            tower.attack(neighbors,opponent.soldiers);
+            tower.attack(neighbors, opponent.soldiers);
         }
     }
 
