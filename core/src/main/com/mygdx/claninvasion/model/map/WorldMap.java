@@ -3,6 +3,7 @@ package com.mygdx.claninvasion.model.map;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TiledMapTileSets;
 import com.badlogic.gdx.math.Vector2;
+import com.mygdx.claninvasion.model.Globals;
 import com.mygdx.claninvasion.model.entity.Entity;
 import com.mygdx.claninvasion.model.entity.EntitySymbol;
 import com.mygdx.claninvasion.model.entity.Soldier;
@@ -12,6 +13,8 @@ import org.javatuples.Pair;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Map modal of the application
@@ -261,4 +264,28 @@ public class WorldMap {
         System.out.println(size);
         this.G = new Graph(size, this);
     }
+    }*/
+
+        public List<Pair<Integer,Integer>> getNeighborsOfPoint(int x, int y) {
+            List<Pair<Integer,Integer>> neighbors = new ArrayList<>();
+            for (int xx = -1; xx <= 1; xx++) {
+                for (int yy = -1; yy <= 1; yy++) {
+                    if (xx == 0 && yy == 0) {
+                        continue; // You are not neighbor to yourself
+                    }
+                    if (Math.abs(xx) + Math.abs(yy) > 1) {
+                        continue;
+                    }
+                    if (isOnMap(x + xx, y + yy)) {
+                        neighbors.add(new Pair<>(x + xx, y + yy));
+                    }
+                }
+            }
+            return neighbors;
+        }
+
+    public boolean isOnMap(int x, int y) {
+        return x >= 0 && y >= 0 && x < Globals.V_WIDTH && y < Globals.V_HEIGHT;
+    }
+
 }
