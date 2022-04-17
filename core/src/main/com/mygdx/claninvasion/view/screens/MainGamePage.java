@@ -4,24 +4,18 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.maps.tiled.*;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.mygdx.claninvasion.ClanInvasion;
-import com.mygdx.claninvasion.model.adapters.IsometricToOrthogonalAdapt;
 import com.mygdx.claninvasion.model.entity.*;
-import com.mygdx.claninvasion.model.map.WorldCell;
-import com.mygdx.claninvasion.view.actors.GameButton;
 import com.mygdx.claninvasion.view.actors.HealthBar;
+import com.mygdx.claninvasion.view.applicationlistener.FireAnimated;
 import com.mygdx.claninvasion.view.applicationlistener.MainGamePageUI;
-import com.mygdx.claninvasion.view.animated.FireAnimated;
 import com.mygdx.claninvasion.view.tiledmap.TiledMapStage;
 import com.mygdx.claninvasion.view.utils.EntityPlacer;
 import com.mygdx.claninvasion.view.utils.GameInputProcessor;
 import com.mygdx.claninvasion.view.utils.IsometricTiledMapGameRenderer;
 import com.mygdx.claninvasion.view.utils.InputClicker;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.mygdx.claninvasion.view.utils.RunnableTouchEvent;
-import org.javatuples.Pair;
 
 
 import java.util.*;
@@ -134,8 +128,8 @@ public class MainGamePage implements GamePage, UiUpdatable {
                 hpBars.remove(curr);
             }
         }
-        app.getGameModel().getPlayerOne().removeDead();
-        app.getGameModel().getPlayerTwo().removeDead();
+        app.getModel().getPlayerOne().removeDead();
+        app.getModel().getPlayerTwo().removeDead();
 
         update(delta);
     }

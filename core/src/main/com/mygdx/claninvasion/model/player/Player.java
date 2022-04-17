@@ -271,4 +271,12 @@ public class Player implements Winnable {
     public boolean hasLost() {
         return winningState == WinningState.WON;
     }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 }
