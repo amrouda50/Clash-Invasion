@@ -27,6 +27,8 @@ import com.mygdx.claninvasion.view.utils.IsometricTiledMapGameRenderer;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.mygdx.claninvasion.model.GameModel;
+import java.util.Timer;
+import java.util.TimerTask;
 
 
 
@@ -63,7 +65,15 @@ public class MainGamePage implements GamePage, UiUpdatable {
     private EntitySymbol mapClickEntityCreate;
 
     public GameModel gameModel;
+    private float timeSeconds = 0f;
+    private float period = 1f;
     private TiledMap map;
+
+    Timer t;
+    int counter = 30;
+    int totalTime = 0;
+    Label Time;
+
 
 
     /**
@@ -74,6 +84,8 @@ public class MainGamePage implements GamePage, UiUpdatable {
         camera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         uiStage = new Stage(new StretchViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), camera));
         gameModel = new GameModel();
+        Time = new Label(Integer.toString(counter) + " Sec", s2);
+
     }
     private void AddSeprationLines(){
         ShapeRenderer sr = new ShapeRenderer();
@@ -93,7 +105,7 @@ public class MainGamePage implements GamePage, UiUpdatable {
         Toptable.setBounds(-10, Gdx.graphics.getWidth() / 3, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
         Label Turn = new Label("Turn:Player 1 , 1 sec" , s2);
-        Label Time = new Label("Time: 29 sec left" , s2);
+      // Label Time = new Label("Time: 29 sec left" , s2);
         Label Phase = new Label("Phase: Building" , s2);
         Turn.setColor(Color.BLACK);
         Time.setColor(Color.BLACK);
@@ -140,13 +152,6 @@ public class MainGamePage implements GamePage, UiUpdatable {
         Bottomtable.add(P2Level).spaceLeft(0);
 
         uiStage.addActor(Bottomtable);
-        /*selectBox.addListener(new ChangeListener() {
-
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                System.out.println( selectBox.getSelected());
-            }
-        });*/
     }
     private void setPlayer1(Table Bottomtable){
         String[] values = new String[]{"Train Soliders", "Building Tower", "Build Goldmine"};
@@ -244,6 +249,18 @@ public class MainGamePage implements GamePage, UiUpdatable {
        // addButtonListeners();
         app.getMap().setGraph(32, app.getMap().getCells());
         //fireTower();
+        setTimer();
+
+    }
+
+    private void setTimer() {
+        t = new Timer();
+        t.schedule(new TimerTask(){
+            @Override
+            public void run() {
+                totalTime++;
+            }
+        }, 1);
     }
 
     private void fireTower() {
@@ -268,6 +285,12 @@ public class MainGamePage implements GamePage, UiUpdatable {
      */
     @Override
     public void render(float delta) {
+        timeSeconds += Gdx.graphics.getDeltaTime();
+        if(timeSeconds > period){
+            timeSeconds-=period;
+            updateTime();
+        }
+
         Gdx.gl.glClearColor(255, 255, 255, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         for (FireAnimated fireAnimated : fireballs) {
@@ -288,8 +311,21 @@ public class MainGamePage implements GamePage, UiUpdatable {
         entitiesStage.draw();
         AddSeprationLines();
 
+    }
 
+    private void updateTime() {
+        if(counter > 0) {
+            totalTime++;
+            counter--;
+            Time.setText(counter + " sec");
+        } else if(counter == 0 && totalTime<=60) {
+            counter = 30;
+        } else if(totalTime > 60) {
+            changePhase();
+        }
+    }
 
+    private void changePhase() {
 
     }
     private void createBarBackground(){
@@ -301,6 +337,7 @@ public class MainGamePage implements GamePage, UiUpdatable {
         batch.draw(backgroundTexture, 0, 425, 1000, 85);
         batch.end();
     }
+
 
 
 
