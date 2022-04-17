@@ -2,7 +2,7 @@ package com.mygdx.claninvasion.view.utils;
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.mygdx.claninvasion.model.GameModel;
-import com.mygdx.claninvasion.model.Player;
+import com.mygdx.claninvasion.model.player.Player;
 import com.mygdx.claninvasion.model.entity.*;
 import com.mygdx.claninvasion.model.map.WorldCell;
 import com.mygdx.claninvasion.model.map.WorldMap;
@@ -11,6 +11,7 @@ import org.javatuples.Quartet;
 
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.List;
 
 interface Placer {
     void placeRender(WorldMap map);
@@ -101,7 +102,7 @@ public class EntityPlacer implements Placer {
         }
     }
 
-    private <T extends Entity> void setEntities(ArrayList<T> entities, WorldMap map) {
+    private <T extends Entity> void setEntities(List<T> entities, WorldMap map) {
         for (Entity soldier : entities) {
             WorldCell cell = map.getCell(soldier.getPosition());
             if (cell != null) {

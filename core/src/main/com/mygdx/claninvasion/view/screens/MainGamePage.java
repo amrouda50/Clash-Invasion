@@ -4,14 +4,10 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.maps.tiled.*;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.mygdx.claninvasion.ClanInvasion;
-import com.mygdx.claninvasion.model.adapters.IsometricToOrthogonalAdapt;
-import com.mygdx.claninvasion.model.entity.EntitySymbol;
-import com.mygdx.claninvasion.model.entity.Soldier;
-import com.mygdx.claninvasion.model.entity.Tower;
-import com.mygdx.claninvasion.model.map.WorldCell;
+import com.mygdx.claninvasion.model.entity.*;
+import com.mygdx.claninvasion.view.actors.HealthBar;
 import com.mygdx.claninvasion.view.applicationlistener.FireAnimated;
 import com.mygdx.claninvasion.view.applicationlistener.MainGamePageUI;
 import com.mygdx.claninvasion.view.tiledmap.TiledMapStage;
@@ -20,7 +16,6 @@ import com.mygdx.claninvasion.view.utils.GameInputProcessor;
 import com.mygdx.claninvasion.view.utils.IsometricTiledMapGameRenderer;
 import com.mygdx.claninvasion.view.utils.InputClicker;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.mygdx.claninvasion.view.utils.RunnableTouchEvent;
 
 
 import java.util.*;
@@ -43,6 +38,7 @@ public class MainGamePage implements GamePage, UiUpdatable {
     private final ClanInvasion app;
     private Stage entitiesStage;
     private final List<FireAnimated> fireballs = Collections.synchronizedList(new CopyOnWriteArrayList<>());
+    private final List<HealthBar> hpBars = Collections.synchronizedList(new CopyOnWriteArrayList<>());
     private final MainGamePageUI mainGamePageUI;
     private TiledMap map;
 
@@ -64,7 +60,7 @@ public class MainGamePage implements GamePage, UiUpdatable {
     @Override
     public void show() {
         app.getCamera().update();
-        inputProcessor = new GameInputProcessor(app.getCamera(), new InputClicker(app ,mainGamePageUI ));
+        inputProcessor = new GameInputProcessor(app.getCamera(), new InputClicker(app ,mainGamePageUI, hpBars));
         map = new TmxMapLoader().load(Gdx.files.getLocalStoragePath() + "/TileMap/Tilemap.tmx");
         app.getMap().setTileset(map.getTileSets());
         renderer = new IsometricTiledMapGameRenderer(
@@ -109,22 +105,33 @@ public class MainGamePage implements GamePage, UiUpdatable {
     public void render(float delta) {
         Gdx.gl.glClearColor((255f/255f), (255f/255f), (255f/255f), 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+
         for (FireAnimated fireAnimated : fireballs) {
             fireAnimated.create();
         }
+
         app.getCamera().update();
         inputProcessor.onRender();
-
         renderer.setView(app.getCamera());
-        app.getMap().clear();
         renderer.render(app.getMap());
+
+        // health bar render
+        for (HealthBar curr : hpBars) {
+            curr.rendering(app.getCamera().combined);
+            if (!curr.isActive()) {
+                hpBars.remove(curr);
+            }
+        }
 
         // render game page ui
         mainGamePageUI.render();
 
         // render animated object (fireballs, arrows, etc.)
         updateAnimated();
+        app.getModel().getPlayerOne().removeDead();
+        app.getModel().getPlayerTwo().removeDead();
 
+        // update actors
         update(delta);
     }
 

@@ -4,6 +4,7 @@ import com.mygdx.claninvasion.model.gamestate.GamePhase;
 import com.mygdx.claninvasion.model.gamestate.GameState;
 import com.mygdx.claninvasion.model.gamestate.StartGameState;
 import com.mygdx.claninvasion.model.map.WorldMap;
+import com.mygdx.claninvasion.model.player.Player;
 
 /**
  * This class is responsible for handling
@@ -13,7 +14,7 @@ import com.mygdx.claninvasion.model.map.WorldMap;
  * @author Dinari
  */
 
-public class GameModel {
+public class GameModel implements GameState {
     /**
      * Players of the game
      */
@@ -53,26 +54,28 @@ public class GameModel {
 
     public GameModel() {
         this.phase = GamePhase.BUILDING;
-        this.gameEnded = true;
+        this.gameEnded = false;
         this.gamePause = false;
         playerOne = new Player(this);
         playerTwo = new Player(this);
 
         playerOne.setOpponent(playerTwo);
         playerTwo.setOpponent(playerOne);
-
         activePlayer = playerOne;
-
         gameState = new StartGameState(this);
         worldMap = new WorldMap();
+    }
 
-//        playerOne.addSoldiers();
+    public void reset() {
+        this.playerOne = new Player(this);
+        this.playerTwo = new Player(this);
     }
 
 
     /**
      * Responsible for stopping the game
      */
+    @Override
     public void stopGame() {
         gameState.stopGame();
     }
@@ -80,6 +83,7 @@ public class GameModel {
     /**
      * Responsible for starting the game
      */
+    @Override
     public void startGame() {
         gameState.startGame();
     }
@@ -87,6 +91,7 @@ public class GameModel {
     /**
      * changes the phase of the game
      */
+    @Override
     public void changePhase() {
         gameState.changePhase();
     }
@@ -94,8 +99,14 @@ public class GameModel {
     /**
      * Changes the turn of the player
      */
+    @Override
     public void changeTurn() {
         gameState.changeTurn();
+    }
+
+    @Override
+    public void changeState() {
+        gameState.changeState();
     }
 
 

@@ -18,8 +18,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.mygdx.claninvasion.ClanInvasion;
-import com.mygdx.claninvasion.model.Player;
-import com.mygdx.claninvasion.model.entity.Barbarian;
 import com.mygdx.claninvasion.model.entity.EntitySymbol;
 import com.mygdx.claninvasion.view.utils.InputClicker;
 import org.javatuples.Pair;
@@ -42,12 +40,12 @@ public class MainGamePageUI implements ApplicationListener {
     private Timer time;
     private int counter = 30;
     private int totalTime = 0;
-    private Label timeLabel;
+    private final Label timeLabel;
     private Label phaseLabel;
     private final ClanInvasion app;
     private EntitySymbol choosenSymbol;
 
-    private static String[] dropdownItems = new String[]{ "Train Barbarian 400$", "Train Dragon 600$", "Building Tower 500%", "Build Goldmine 800$" , "Upgrade Level 1000$"};
+    private static final String[] dropdownItems = new String[]{ "Train Barbarian 400$", "Train Dragon 600$", "Building Tower 500%", "Build Goldmine 800$" , "Upgrade Level 1000$"};
 
     public MainGamePageUI(ClanInvasion app) {
         this.app = app;
@@ -162,11 +160,11 @@ public class MainGamePageUI implements ApplicationListener {
                 System.out.println(selected);
                 if(selected.toString().equals("Tower")){
                     choosenSymbol = EntitySymbol.TOWER;
-                    InputClicker.Enabled = true;
+                    InputClicker.enabled = true;
                 }
                 else if(selected.toString().equals("Goldmine")){
                     choosenSymbol = EntitySymbol.MINING;
-                    InputClicker.Enabled = true;
+                    InputClicker.enabled = true;
 
                 }
                 else if (selected.toString().equals("Level")){
@@ -191,7 +189,7 @@ public class MainGamePageUI implements ApplicationListener {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 System.out.println("Player2: " + " " + playerTwoDropdown.getSelected());
-                InputClicker.Enabled = true;
+                InputClicker.enabled = true;
             }
         });
 

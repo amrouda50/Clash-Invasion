@@ -9,9 +9,9 @@ import java.util.concurrent.CompletableFuture;
 import static java.util.concurrent.TimeUnit.SECONDS;
 
 public class Tower extends ArtificialEntity implements Defensible {
-
     public Tower(EntitySymbol entitySymbol, Pair<Integer, Integer> position) {
         super(entitySymbol, position);
+
     }
 
     Tower(LevelIterator<Level> levelIterator) {

@@ -11,6 +11,11 @@ import com.mygdx.claninvasion.model.entity.Tower;
 import org.javatuples.Pair;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.CountDownLatch;
+import java.util.stream.Collectors;
 
 /**
  * Map modal of the application
@@ -19,21 +24,23 @@ import java.util.Arrays;
  * TODO Logic implementation required
  */
 public class WorldMap {
-    private final ArrayList<WorldCell> worldCells;
+    private final List<WorldCell> worldCells;
     private TiledMapTileLayer entitiesLayer;
     private Graph G;
     private TiledMapTileSets tilesets;
-
-    /**
-     * @param worldCells - array of worldCells
-     */
-    public WorldMap(WorldCell[] worldCells) {
-        this.worldCells = new ArrayList<>();
-        this.worldCells.addAll(Arrays.asList(worldCells));
-    }
+    private CountDownLatch latch = new CountDownLatch(1);
 
     public WorldMap() {
-        this.worldCells = new ArrayList<>();
+        this.worldCells = Collections.synchronizedList(new CopyOnWriteArrayList<>());
+    }
+
+    public void restart() {
+        latch = new CountDownLatch(1);
+        worldCells.clear();
+    }
+
+    public void finish() {
+        latch.countDown();
     }
 
     public void addCell(WorldCell worldCell) {
@@ -55,6 +62,18 @@ public class WorldMap {
         return entity;
     }
 
+    public boolean removeMapEntity(Entity entity) {
+        List<WorldCell> cells = getCells(entity.getPosition());
+        if (cells == null || cells.size() == 0) return false;
+        cells.forEach(WorldCell::removeEntity);
+        cells.forEach(cell -> getLayer2().setCell(
+                cell.getMapPosition().getValue1(),
+                cell.getMapPosition().getValue0(),
+                null
+        ));
+        return true;
+    }
+
     public Entity createMapEntity(EntitySymbol symbol, Pair<Integer, Integer> position, Object obj) {
         WorldCell cell = getCell(position);
         return createMapEntity(symbol, cell, obj);
@@ -67,6 +86,8 @@ public class WorldMap {
                 cell
         );
         worldCell.setOccupier(occupier);
+        System.out.println(worldCell.getMapPosition().toString());
+        System.out.println(worldCell.getOccupier().getPosition());
     }
 
     public void clear() {
@@ -78,12 +99,21 @@ public class WorldMap {
     }
 
     public WorldCell getCell(int index) {
+        try {
+            latch.await();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         return worldCells.get(index);
     }
 
     public int transformMapPositionToIndex(Pair<Integer, Integer> cellPlace) {
         WorldCell cell = getCell(cellPlace);
         return worldCells.indexOf(cell);
+    }
+
+    public Pair<Integer, Integer> transformMapIndexToPosition(int index) {
+        return getCell(index).getMapPosition();
     }
 
     public Vector2 tranformMapPositionToIso(Pair<Integer, Integer> cellPlace) {
@@ -95,6 +125,15 @@ public class WorldMap {
         try {
             return (WorldCell) worldCells.stream().filter(cell -> cell.getMapPosition().equals(cellPlace)).toArray()[0];
         } catch (Exception e) {
+            return null;
+        }
+    }
+
+    public List<WorldCell> getCells(Pair<Integer, Integer> cellPlace) {
+        try {
+            return worldCells.stream().filter(cell -> cell.getMapPosition().equals(cellPlace)).collect(Collectors.toList());
+        } catch (Exception e) {
+            e.printStackTrace();
             return null;
         }
     }
@@ -142,7 +181,7 @@ public class WorldMap {
                 .getValue1();
     }
 
-    public ArrayList<WorldCell> getCells() {
+    public List<WorldCell> getCells() {
         return worldCells;
     }
 
@@ -192,28 +231,21 @@ public class WorldMap {
     }
 
     public void mutate(int index1, int index2) {
+        try {
+            WorldCell cell1 = getCell(index1);
+            WorldCell cell2 = getCell(index2);
 
-        if (index1 < 0 || index1 >= getSize()) {
-            throw new IllegalArgumentException("First argument has index out of bounds");
+            mutate(cell1, cell2);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-
-        if (index2 < 0 || index2 >= getSize()) {
-            throw new IllegalArgumentException("Second argument has index out of bounds");
-        }
-
-        WorldCell cell1 = getCell(index1);
-        WorldCell cell2 = getCell(index2);
-
-        mutate(cell1, cell2);
-
-
     }
 
     public Graph getGraph() {
         return this.G;
     }
 
-    public void setGraph(int size, ArrayList<WorldCell> worldCells) {
+    public void setGraph(int size, List<WorldCell> worldCells) {
         System.out.println(size);
         this.G = new Graph(size, worldCells);
     }

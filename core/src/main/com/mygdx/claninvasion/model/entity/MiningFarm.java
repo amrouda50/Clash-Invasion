@@ -12,6 +12,7 @@ import java.util.concurrent.*;
 public class MiningFarm extends ArtificialEntity implements Runnable, Mineable {
     private BlockingQueue<Integer> coins;
     private final int healthDecreaseRate = 10;
+    private static final int HP_OFFSET_X = 20;
 
     public MiningFarm(EntitySymbol entitySymbol, Pair<Integer, Integer> position, BlockingQueue<Integer> queue) {
         super(entitySymbol, position);
@@ -34,6 +35,11 @@ public class MiningFarm extends ArtificialEntity implements Runnable, Mineable {
     }
 
     @Override
+    public Pair<Float, Float> getHealthBarOffset() {
+        return new Pair<>(super.getHealthBarOffset().getValue0() + HP_OFFSET_X, super.getHealthBarOffset().getValue1());
+    }
+
+    @Override
     public void startMining() {
         while (isAlive()) {
             if (coins == null) {
@@ -44,7 +50,7 @@ public class MiningFarm extends ArtificialEntity implements Runnable, Mineable {
                 int reaction = level.current().getReactionTime();
                 int boundedRandomValue = ThreadLocalRandom.current().nextInt(reaction / 2, reaction);
                 int gold = ((GameMiningLevelIterator)level).current().getGoldBonus();
-                health.set(health.get() - healthDecreaseRate);
+                setDecreaseHealth(healthDecreaseRate);
 
                 Thread.sleep(boundedRandomValue);
                 coins.put(gold);
