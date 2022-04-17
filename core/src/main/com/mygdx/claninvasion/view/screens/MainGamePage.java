@@ -80,6 +80,8 @@ public class MainGamePage implements GamePage, UiUpdatable {
                 if (worldCell.contains(mouseOrtho3)) {
 
                     if (worldCell.getOccupier() == null && EntitySymbol.TOWER == mainGamePageUI.getMapClickEntityCreate()) {
+                        System.out.println("Found entity symbol");
+                        System.out.println("WE are here");
                         app.getCurrentPlayer().buildTower(worldCell);
                     } else if (worldCell.getOccupier() == null && EntitySymbol.MINING == mainGamePageUI.getMapClickEntityCreate()) {
                         app.getCurrentPlayer().createNewMining(worldCell);
@@ -103,6 +105,25 @@ public class MainGamePage implements GamePage, UiUpdatable {
         app.getMap().setGraph(32, app.getMap().getCells());
         //fireTower();
         mainGamePageUI.create();
+    }
+
+    public void buildTower() {
+        inputProcessor = new GameInputProcessor(app.getCamera(), (Vector3 mousePosition) -> {
+            Vector2 mouseOrtho = new IsometricToOrthogonalAdapt(new Vector2(mousePosition.x, mousePosition.y)).getPoint();
+            Vector3 mouseOrtho3 = new Vector3(mouseOrtho.x + WorldCell.getTransformWidth(), mouseOrtho.y - WorldCell.getTransformWidth(), 0);
+            for (WorldCell worldCell : app.getMap().getCells()) {
+                if (worldCell.contains(mouseOrtho3)) {
+
+                    if (worldCell.getOccupier() == null && EntitySymbol.TOWER == mainGamePageUI.getMapClickEntityCreate()) {
+                        app.getCurrentPlayer().buildTower(worldCell);
+                    } else if (worldCell.getOccupier() == null && EntitySymbol.MINING == mainGamePageUI.getMapClickEntityCreate()) {
+                        app.getCurrentPlayer().createNewMining(worldCell);
+                    }
+                    System.out.println(worldCell.getMapPosition().getValue0() + " " + worldCell.getMapPosition().getValue1());
+
+                }
+            }
+        });
     }
 
     private void fireTower() {

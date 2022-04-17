@@ -20,6 +20,8 @@ import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.mygdx.claninvasion.ClanInvasion;
 import com.mygdx.claninvasion.model.entity.Entity;
 import com.mygdx.claninvasion.model.entity.EntitySymbol;
+import com.mygdx.claninvasion.model.entity.Tower;
+import com.mygdx.claninvasion.view.screens.MainGamePage;
 import org.javatuples.Pair;
 import org.javatuples.Quartet;
 
@@ -48,6 +50,7 @@ public class MainGamePageUI implements ApplicationListener {
     private Label timeLabel;
     private Label phaseLabel;
     private final ClanInvasion app;
+
 
     private static String[] dropdownItems = new String[]{"Train Soldiers", "Building Tower", "Build Goldmine"};
 
@@ -134,7 +137,7 @@ public class MainGamePageUI implements ApplicationListener {
 
     private void setBottomBar() {
         Table tableOne = new Table(atlasSkin);
-        tableOne.setBounds(160, -200, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        tableOne.setBounds(-160, -200, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         List<Pair<String, Color>> player1Data = new ArrayList<>(Arrays.asList(
                 new Pair<>("Player 1", Color.BLUE),
                 new Pair<>("$ 3000", Color.BLACK),
@@ -145,7 +148,7 @@ public class MainGamePageUI implements ApplicationListener {
         setPlayerData(tableOne, playerOneDropdown, player1Data);
 
         Table tableTwo = new Table(atlasSkin);
-        tableTwo.setBounds(-160, -200, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        tableTwo.setBounds(160, -200, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         List<Pair<String, Color>> player2Data = new ArrayList<>(Arrays.asList(
                 new Pair<>("Player 2", Color.BLUE),
                 new Pair<>("$ 3000", Color.BLACK),
@@ -171,6 +174,11 @@ public class MainGamePageUI implements ApplicationListener {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 System.out.println("Player1: " + " " + playerOneDropdown.getSelected());
+                if(playerOneDropdown.getSelected() == "Building Tower") {
+                    System.out.println("Tower building has to start");
+                    mapClickEntityCreate = EntitySymbol.TOWER;
+                }
+
             }
         });
         playerTwoDropdown.addListener(new ChangeListener() {
@@ -205,6 +213,7 @@ public class MainGamePageUI implements ApplicationListener {
     private void changePhase() {
         app.getModel().changePhase();
         phaseLabel.setText("Phase: " + app.getModel().getPhase());
+        System.out.println(totalTime);
     }
 
     private void createBarBackground() {
