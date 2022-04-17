@@ -12,6 +12,8 @@ public class InputClicker  implements  RunnableTouchEvent{
     private ClanInvasion app;
     private MainGamePageUI mainGamePageUI;
     public static boolean Enabled = false;
+  //  public static int clickedx = 0;
+   // public static int clickedy = 0;
     public  InputClicker(ClanInvasion app , MainGamePageUI mainGamePageUI){
         this.app = app;
         this.mainGamePageUI = mainGamePageUI;
@@ -26,17 +28,18 @@ public class InputClicker  implements  RunnableTouchEvent{
                 if (worldCell.contains(mouseOrtho3)) {
 
 
-                    if (worldCell.getOccupier() == null && EntitySymbol.TOWER == mainGamePageUI.getMapClickEntityCreate()) {
+                    if (worldCell.getOccupier() == null && EntitySymbol.TOWER == mainGamePageUI.getChoosenSymbol()) {
                         app.getCurrentPlayer().buildTower(worldCell);
-                    } else if (worldCell.getOccupier() == null && EntitySymbol.MINING == mainGamePageUI.getMapClickEntityCreate()) {
+                    } else if (worldCell.getOccupier() == null && EntitySymbol.MINING == mainGamePageUI.getChoosenSymbol()) {
                         app.getCurrentPlayer().createNewMining(worldCell);
                     }
 
                     if (worldCell.getOccupier() != null) {
                         System.out.println((worldCell.getOccupier().getSymbol()));
                     }
-
-                    System.out.println(worldCell.getMapPosition().getValue0() + " " + worldCell.getMapPosition().getValue1());
+                    //clickedx = worldCell.getMapPosition().getValue0();
+                    //clickedy = worldCell.getMapPosition().getValue1();
+                   // System.out.println(worldCell.getMapPosition().getValue0() + " " + worldCell.getMapPosition().getValue1());
 
                 }
             }

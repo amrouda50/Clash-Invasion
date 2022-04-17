@@ -34,20 +34,16 @@ public class MainGamePageUI implements ApplicationListener {
     private final Skin atlasSkin = new Skin(atlas);
     private final Skin jsonSkin = new Skin(Gdx.files.internal("skin/skin/uiskin.json"));
     private final OrthographicCamera camera;
-    private EntitySymbol mapClickEntityCreate;
-
     private final ShapeRenderer shapeRenderer;
-
-
     private float timeSeconds = 0f;
     private float period = 1f;
-
     private Timer time;
     private int counter = 30;
     private int totalTime = 0;
     private Label timeLabel;
     private Label phaseLabel;
     private final ClanInvasion app;
+    private EntitySymbol choosenSymbol;
 
     private static String[] dropdownItems = new String[]{"Train Soldiers", "Building Tower", "Build Goldmine"};
 
@@ -59,7 +55,7 @@ public class MainGamePageUI implements ApplicationListener {
         shapeRenderer = new ShapeRenderer();
         playerOneDropdown = new SelectBox<>(jsonSkin);
         playerTwoDropdown = new SelectBox<>(jsonSkin);
-        mapClickEntityCreate = null;
+        choosenSymbol = null;
     }
 
     private void createRectangle(Color color, Quartet<Float, Float, Float, Float> region, float width) {
@@ -161,8 +157,14 @@ public class MainGamePageUI implements ApplicationListener {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 System.out.println("Player1: " + " " + playerOneDropdown.getSelected());
-                System.out.println(actor);
                 InputClicker.Enabled = true;
+                if(playerOneDropdown.getSelected().equals("Building Tower")){
+                    choosenSymbol = EntitySymbol.TOWER;
+                }
+                else if(playerOneDropdown.getSelected().equals("Build Goldmine")){
+                    choosenSymbol = EntitySymbol.MINING;
+                }
+
 
             }
         });
@@ -252,7 +254,7 @@ public class MainGamePageUI implements ApplicationListener {
         uiStage.dispose();
     }
 
-    public EntitySymbol getMapClickEntityCreate() {
-        return mapClickEntityCreate;
+    public EntitySymbol getChoosenSymbol() {
+        return choosenSymbol;
     }
 }
