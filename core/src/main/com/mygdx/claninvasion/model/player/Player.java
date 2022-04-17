@@ -6,7 +6,8 @@ import com.mygdx.claninvasion.model.map.WorldCell;
 import com.mygdx.claninvasion.model.map.WorldMap;
 import org.javatuples.Pair;
 
-import java.util.Collections;
+import javax.swing.text.html.parser.Entity;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.*;
@@ -226,6 +227,17 @@ public class Player implements Winnable {
         for (Soldier soldier : soldiers) {
             soldier.changePosition(position);
             soldier.attackCastle(opponent.castle);
+        }
+
+
+    }
+
+    public void attack() {
+
+        ArrayList<Tower> towers = getTowers();
+        for (Tower tower : towers) {
+            List<Pair<Integer,Integer>> neighbors  =  game.getWorldMap().getNeighborsOfPoint(tower.getPositionX(),tower.getPositionY());
+            tower.attack(neighbors,opponent.soldiers);
         }
     }
 

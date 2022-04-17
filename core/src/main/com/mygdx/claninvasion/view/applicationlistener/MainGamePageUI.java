@@ -18,7 +18,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.mygdx.claninvasion.ClanInvasion;
+import com.mygdx.claninvasion.model.Player;
 import com.mygdx.claninvasion.model.entity.EntitySymbol;
+import com.mygdx.claninvasion.model.gamestate.GamePhase;
 import com.mygdx.claninvasion.view.utils.InputClicker;
 import org.javatuples.Pair;
 import org.javatuples.Quartet;
@@ -250,6 +252,9 @@ public class MainGamePageUI implements ApplicationListener {
             updateTime();
         }
 
+        if(app.getModel().getPhase() == GamePhase.ATTACK) {
+
+        }
         createBarBackground();
         addSeparationLines();
         uiStage.act(Gdx.graphics.getDeltaTime());

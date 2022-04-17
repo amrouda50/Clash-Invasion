@@ -18,7 +18,8 @@ public class GameSoldierLevel extends GameTowerLevel {
 
     public GameSoldierLevel(Septet<Integer, Integer, Integer, Integer, Integer, Integer, Integer> values, int hitsPointBonus,
                             int movementSpeed, int attackIncrease, int visibleArea) {
-        super(values, hitsPointBonus);
+
+        super(0,values, hitsPointBonus);
         this.movementSpeed = movementSpeed;
         this.attackIncrease = attackIncrease;
         this.visibleArea = visibleArea;

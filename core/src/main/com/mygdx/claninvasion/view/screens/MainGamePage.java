@@ -1,13 +1,19 @@
 package com.mygdx.claninvasion.view.screens;
 
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.maps.tiled.*;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.mygdx.claninvasion.ClanInvasion;
-import com.mygdx.claninvasion.model.entity.*;
-import com.mygdx.claninvasion.view.actors.HealthBar;
+import com.mygdx.claninvasion.model.GameModel;
+import com.mygdx.claninvasion.model.adapters.IsometricToOrthogonalAdapt;
+import com.mygdx.claninvasion.model.entity.EntitySymbol;
+import com.mygdx.claninvasion.model.entity.Soldier;
+import com.mygdx.claninvasion.model.entity.Tower;
+import com.mygdx.claninvasion.model.gamestate.GamePhase;
+import com.mygdx.claninvasion.model.map.WorldCell;
 import com.mygdx.claninvasion.view.applicationlistener.FireAnimated;
 import com.mygdx.claninvasion.view.applicationlistener.MainGamePageUI;
 import com.mygdx.claninvasion.view.tiledmap.TiledMapStage;
@@ -41,7 +47,6 @@ public class MainGamePage implements GamePage, UiUpdatable {
     private final List<HealthBar> hpBars = Collections.synchronizedList(new CopyOnWriteArrayList<>());
     private final MainGamePageUI mainGamePageUI;
     private TiledMap map;
-
 
 
     /**
@@ -78,6 +83,7 @@ public class MainGamePage implements GamePage, UiUpdatable {
         Gdx.input.setInputProcessor(entitiesStage);
         app.getMap().setGraph(32, app.getMap().getCells());
         //fireTower();
+
         mainGamePageUI.create();
     }
 
@@ -125,6 +131,10 @@ public class MainGamePage implements GamePage, UiUpdatable {
 
         // render game page ui
         mainGamePageUI.render();
+
+        if(app.getModel().getPhase() == GamePhase.ATTACK) {
+
+        }
 
         // render animated object (fireballs, arrows, etc.)
         updateAnimated();
