@@ -18,9 +18,9 @@ import com.mygdx.claninvasion.view.tiledmap.TiledMapStage;
 import com.mygdx.claninvasion.view.utils.EntityPlacer;
 import com.mygdx.claninvasion.view.utils.GameInputProcessor;
 import com.mygdx.claninvasion.view.utils.IsometricTiledMapGameRenderer;
-
+import com.mygdx.claninvasion.view.utils.InputClicker;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-
+import com.mygdx.claninvasion.view.utils.RunnableTouchEvent;
 
 
 import java.util.*;
@@ -56,6 +56,7 @@ public class MainGamePage implements GamePage, UiUpdatable {
         mainGamePageUI = new MainGamePageUI(app);
     }
 
+
     /**
      * Is fired once the page becomes active in application
      * See GamePage interface
@@ -63,28 +64,7 @@ public class MainGamePage implements GamePage, UiUpdatable {
     @Override
     public void show() {
         app.getCamera().update();
-        inputProcessor = new GameInputProcessor(app.getCamera(), (Vector3 mousePosition) -> {
-            Vector2 mouseOrtho = new IsometricToOrthogonalAdapt(new Vector2(mousePosition.x, mousePosition.y)).getPoint();
-            Vector3 mouseOrtho3 = new Vector3(mouseOrtho.x + WorldCell.getTransformWidth(), mouseOrtho.y - WorldCell.getTransformWidth(), 0);
-
-            for (WorldCell worldCell : app.getMap().getCells()) {
-                if (worldCell.contains(mouseOrtho3)) {
-
-                    if (worldCell.getOccupier() == null && EntitySymbol.TOWER == mainGamePageUI.getMapClickEntityCreate()) {
-                        app.getCurrentPlayer().buildTower(worldCell);
-                    } else if (worldCell.getOccupier() == null && EntitySymbol.MINING == mainGamePageUI.getMapClickEntityCreate()) {
-                        app.getCurrentPlayer().createNewMining(worldCell);
-                    }
-
-                    if (worldCell.getOccupier() != null) {
-                        System.out.println((worldCell.getOccupier().getSymbol()));
-                    }
-
-                    System.out.println(worldCell.getMapPosition().getValue0() + " " + worldCell.getMapPosition().getValue1());
-
-                }
-            }
-        });
+        inputProcessor = new GameInputProcessor(app.getCamera(), new InputClicker(app ,mainGamePageUI ));
         map = new TmxMapLoader().load(Gdx.files.getLocalStoragePath() + "/TileMap/Tilemap.tmx");
         app.getMap().setTileset(map.getTileSets());
         renderer = new IsometricTiledMapGameRenderer(
