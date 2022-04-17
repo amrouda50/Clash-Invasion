@@ -16,7 +16,7 @@ public class Castle extends ArtificialEntity {
     private Player player;
     private final ArrayList<Soldier> soldiers;
     private Quartet<Pair<Integer, Integer>, Pair<Integer, Integer>, Pair<Integer, Integer>, Pair<Integer, Integer>> positions;
-    private static int AMOUNT_OF_SOLDIERS = 2;
+    private static int AMOUNT_OF_SOLDIERS = 1;
 
     public Castle(EntitySymbol symbol,  Quartet<Pair<Integer, Integer>, Pair<Integer, Integer>, Pair<Integer, Integer>, Pair<Integer, Integer>> positions, Player player) {
         super(symbol,  positions.getValue0());
