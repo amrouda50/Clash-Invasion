@@ -67,12 +67,13 @@ public class MainGamePage implements GamePage, UiUpdatable {
     private EntitySymbol mapClickEntityCreate;
 
     public GameModel gameModel;
-    private float timeCount;
+    private float timeSeconds = 0f;
+    private float period = 1f;
     private TiledMap map;
 
-
-    Table Toptable;
+    Timer t;
     int counter = 30;
+    int totalTime = 0;
     Label Time;
 
 
@@ -85,7 +86,7 @@ public class MainGamePage implements GamePage, UiUpdatable {
         camera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         uiStage = new Stage(new StretchViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), camera));
         gameModel = new GameModel();
-        Time = new Label(Integer.toString(counter) , s2);
+        Time = new Label(Integer.toString(counter) + " Sec", s2);
 
     }
     private void AddSeprationLines(){
@@ -262,6 +263,18 @@ public class MainGamePage implements GamePage, UiUpdatable {
        // addButtonListeners();
         app.getMap().setGraph(32, app.getMap().getCells());
         //fireTower();
+        setTimer();
+
+    }
+
+    private void setTimer() {
+        t = new Timer();
+        t.schedule(new TimerTask(){
+            @Override
+            public void run() {
+                totalTime++;
+            }
+        }, 1);
     }
 
     private void fireTower() {
@@ -286,6 +299,12 @@ public class MainGamePage implements GamePage, UiUpdatable {
      */
     @Override
     public void render(float delta) {
+        timeSeconds += Gdx.graphics.getDeltaTime();
+        if(timeSeconds > period){
+            timeSeconds-=period;
+            updateTime();
+        }
+
         Gdx.gl.glClearColor(255, 255, 255, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         for (FireAnimated fireAnimated : fireballs) {
@@ -301,18 +320,6 @@ public class MainGamePage implements GamePage, UiUpdatable {
         // render animated object (fireballs, arrows, etc.)
         updateAnimated();
 
-        Timer t = new Timer( );
-        t.scheduleAtFixedRate(new TimerTask() {
-
-            @Override
-            public void run() {
-                //updateTime();
-                if(counter > 0) {
-                counter--;
-                System.out.println(counter);}
-            }
-        }, 1000,1000);
-
         showText();
         update(delta);
         entitiesStage.act(delta);
@@ -322,8 +329,19 @@ public class MainGamePage implements GamePage, UiUpdatable {
     }
 
     private void updateTime() {
-        counter--;
-        Time.setText(counter);
+        if(counter > 0) {
+            totalTime++;
+            counter--;
+            Time.setText(counter + " sec");
+        } else if(counter == 0 && totalTime<=60) {
+            counter = 30;
+        } else if(totalTime > 60) {
+            changePhase();
+        }
+    }
+
+    private void changePhase() {
+
     }
 
 
