@@ -19,6 +19,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.mygdx.claninvasion.ClanInvasion;
 import com.mygdx.claninvasion.model.entity.EntitySymbol;
+import com.mygdx.claninvasion.view.utils.InputClicker;
 import org.javatuples.Pair;
 import org.javatuples.Quartet;
 
@@ -160,12 +161,16 @@ public class MainGamePageUI implements ApplicationListener {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 System.out.println("Player1: " + " " + playerOneDropdown.getSelected());
+                System.out.println(actor);
+                InputClicker.Enabled = true;
+
             }
         });
         playerTwoDropdown.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 System.out.println("Player2: " + " " + playerTwoDropdown.getSelected());
+                InputClicker.Enabled = true;
             }
         });
 
