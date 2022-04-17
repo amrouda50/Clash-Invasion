@@ -11,10 +11,11 @@ import org.javatuples.Pair;
  */
 public class RomanFort extends Tower {
     RomanFort(EntitySymbol entitySymbol, Pair<Integer, Integer> position) {
-        super(entitySymbol, position);
+        super(entitySymbol, position,0);
     }
 
     RomanFort(LevelIterator<Level> levelIterator) {
         super(levelIterator);
     }
+
 }

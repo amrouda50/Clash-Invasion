@@ -11,7 +11,7 @@ import org.javatuples.Pair;
  */
 public class HillTower extends Tower {
     HillTower(EntitySymbol entitySymbol, Pair<Integer, Integer> position) {
-        super(entitySymbol, position);
+        super(entitySymbol, position,1);
     }
 
     HillTower(LevelIterator<Level> levelIterator) {
