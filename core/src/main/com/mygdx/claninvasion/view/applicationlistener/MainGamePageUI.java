@@ -18,6 +18,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.mygdx.claninvasion.ClanInvasion;
+import com.mygdx.claninvasion.model.Player;
+import com.mygdx.claninvasion.model.entity.Barbarian;
 import com.mygdx.claninvasion.model.entity.EntitySymbol;
 import com.mygdx.claninvasion.view.utils.InputClicker;
 import org.javatuples.Pair;
@@ -45,7 +47,7 @@ public class MainGamePageUI implements ApplicationListener {
     private final ClanInvasion app;
     private EntitySymbol choosenSymbol;
 
-    private static String[] dropdownItems = new String[]{"Train Soldiers", "Building Tower", "Build Goldmine"};
+    private static String[] dropdownItems = new String[]{ "Train Barbarian 400$", "Train Dragon 600$", "Building Tower 500%", "Build Goldmine 800$" , "Upgrade Level 1000$"};
 
     public MainGamePageUI(ClanInvasion app) {
         this.app = app;
@@ -156,13 +158,30 @@ public class MainGamePageUI implements ApplicationListener {
         playerOneDropdown.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                System.out.println("Player1: " + " " + playerOneDropdown.getSelected());
-                InputClicker.Enabled = true;
-                if(playerOneDropdown.getSelected().equals("Building Tower")){
+                StringBuilder selected = new StringBuilder(playerOneDropdown.getSelected().split(" ")[1]);
+                System.out.println(selected);
+                if(selected.toString().equals("Tower")){
                     choosenSymbol = EntitySymbol.TOWER;
+                    InputClicker.Enabled = true;
                 }
-                else if(playerOneDropdown.getSelected().equals("Build Goldmine")){
+                else if(selected.toString().equals("Goldmine")){
                     choosenSymbol = EntitySymbol.MINING;
+                    InputClicker.Enabled = true;
+
+                }
+                else if (selected.toString().equals("Level")){
+
+
+                }
+                else if (selected.toString().equals("Barbarian ")){
+                   // app.getCurrentPlayer().addSoldiers();
+
+                }
+                else if(selected.toString().equals("Dragon")){
+
+                }
+                else if(selected.toString().equals("Level")){
+
                 }
 
 
