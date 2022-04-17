@@ -320,7 +320,6 @@ public class MainGamePage implements GamePage, UiUpdatable {
         // render animated object (fireballs, arrows, etc.)
         updateAnimated();
 
-        showText();
         update(delta);
         entitiesStage.act(delta);
         entitiesStage.draw();
@@ -341,22 +340,8 @@ public class MainGamePage implements GamePage, UiUpdatable {
     }
 
     private void changePhase() {
+        gameModel.changePhase();
 
-    }
-
-
-    private void showText() {
-        //TextureAtlas atlas = new TextureAtlas("skin/skin/uiskin.atlas");
-        //Skin skin = new Skin(atlas);
-     /*   SpriteBatch batch;
-        BitmapFont font = app.getFont();
-        batch = new SpriteBatch();
-        batch.begin();
-        font.setColor(Color.BLACK);
-        Player activePlayerName = gameModel.getActivePlayer();
-        String name = activePlayerName.getName();
-        font.draw(batch, "Turn:" + name, 0, 480);
-        batch.end();*/
     }
 
 
