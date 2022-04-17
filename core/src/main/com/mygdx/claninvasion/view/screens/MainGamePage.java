@@ -1,11 +1,8 @@
 package com.mygdx.claninvasion.view.screens;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Camera;
-import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.*;
+import com.badlogic.gdx.graphics.g2d.*;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.maps.tiled.*;
 import com.badlogic.gdx.math.Vector2;
@@ -28,10 +25,9 @@ import com.mygdx.claninvasion.view.tiledmap.TiledMapStage;
 import com.mygdx.claninvasion.view.utils.GameInputProcessor;
 import com.mygdx.claninvasion.view.utils.IsometricTiledMapGameRenderer;
 
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.Color;
 import com.mygdx.claninvasion.model.GameModel;
+
 
 
 import java.util.*;
@@ -58,6 +54,8 @@ public class MainGamePage implements GamePage, UiUpdatable {
     private GameButton soldierButton;
     private GameButton towerButton;
     private GameButton mineButton;
+    private Texture backgroundTexture = new Texture("background/background.jpg");
+
     private final  TextureAtlas atlas = new TextureAtlas("skin/skin/uiskin.atlas");
     private final Skin skin = new Skin(atlas);
     private final Skin s2 = new Skin(Gdx.files.internal("skin/skin/uiskin.json"));
@@ -106,18 +104,13 @@ public class MainGamePage implements GamePage, UiUpdatable {
 
         uiStage.addActor(Toptable);
     }
-    private void SetButtonBar(){
+    private void SetButtomBar(){
         Table Bottomtable = new Table(skin);
         Bottomtable.setBounds(160, -200, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         setPlayer2(Bottomtable);
         Table Bottomtable2 = new Table(skin);
         Bottomtable2.setBounds(-160, -200, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         setPlayer1(Bottomtable2);
-
-
-       // setPlayer1(Bottomtable);
-
-
     }
     private void setPlayer2(Table Bottomtable){
         String[] values = new String[]{"Train Soliders", "Building Tower", "Build Goldmine"};
@@ -244,9 +237,9 @@ public class MainGamePage implements GamePage, UiUpdatable {
         renderer.render(app.getMap());
         entitiesStage = new TiledMapStage();
         Gdx.input.setInputProcessor(entitiesStage);
-
         SetTopBar();
-        SetButtonBar();
+        SetButtomBar();
+
 
        // addButtonListeners();
         app.getMap().setGraph(32, app.getMap().getCells());
@@ -289,29 +282,27 @@ public class MainGamePage implements GamePage, UiUpdatable {
 
         // render animated object (fireballs, arrows, etc.)
         updateAnimated();
-
-        showText();
+        createBarBackground();
         update(delta);
         entitiesStage.act(delta);
         entitiesStage.draw();
         AddSeprationLines();
 
-    }
 
-    private void showText() {
-        //TextureAtlas atlas = new TextureAtlas("skin/skin/uiskin.atlas");
-        //Skin skin = new Skin(atlas);
-     /*   SpriteBatch batch;
-        BitmapFont font = app.getFont();
-        batch = new SpriteBatch();
+
+
+    }
+    private void createBarBackground(){
+        SpriteBatch batch = new SpriteBatch();
         batch.begin();
-        font.setColor(Color.BLACK);
-        Player activePlayerName = gameModel.getActivePlayer();
-        String name = activePlayerName.getName();
-
-        font.draw(batch, "Turn:" + name, 0, 480);
-        batch.end();*/
+        batch.draw(backgroundTexture, 0, 0, 1000, 85);
+        batch.end();
+        batch.begin();
+        batch.draw(backgroundTexture, 0, 425, 1000, 85);
+        batch.end();
     }
+
+
 
 
     private void updateAnimated() {
