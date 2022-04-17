@@ -2,17 +2,10 @@ package com.mygdx.claninvasion.view.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.*;
-import com.badlogic.gdx.graphics.g2d.*;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.maps.tiled.*;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.Touchable;
-import com.badlogic.gdx.scenes.scene2d.ui.*;
-import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.mygdx.claninvasion.ClanInvasion;
 import com.mygdx.claninvasion.model.adapters.IsometricToOrthogonalAdapt;
 import com.mygdx.claninvasion.model.entity.EntitySymbol;
@@ -26,9 +19,6 @@ import com.mygdx.claninvasion.view.utils.GameInputProcessor;
 import com.mygdx.claninvasion.view.utils.IsometricTiledMapGameRenderer;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.mygdx.claninvasion.model.GameModel;
-import java.util.Timer;
-import java.util.TimerTask;
 
 
 
