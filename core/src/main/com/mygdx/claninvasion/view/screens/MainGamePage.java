@@ -1,32 +1,30 @@
 package com.mygdx.claninvasion.view.screens;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.maps.tiled.*;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.mygdx.claninvasion.ClanInvasion;
 import com.mygdx.claninvasion.model.adapters.IsometricToOrthogonalAdapt;
 import com.mygdx.claninvasion.model.entity.EntitySymbol;
 import com.mygdx.claninvasion.model.entity.Soldier;
 import com.mygdx.claninvasion.model.entity.Tower;
 import com.mygdx.claninvasion.model.map.WorldCell;
-import com.mygdx.claninvasion.view.actors.GameButton;
-import com.mygdx.claninvasion.view.animated.FireAnimated;
+import com.mygdx.claninvasion.view.applicationlistener.FireAnimated;
+import com.mygdx.claninvasion.view.applicationlistener.MainGamePageUI;
 import com.mygdx.claninvasion.view.tiledmap.TiledMapStage;
 import com.mygdx.claninvasion.view.utils.EntityPlacer;
 import com.mygdx.claninvasion.view.utils.GameInputProcessor;
 import com.mygdx.claninvasion.view.utils.IsometricTiledMapGameRenderer;
 
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+
+
 
 import java.util.*;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -44,14 +42,10 @@ public class MainGamePage implements GamePage, UiUpdatable {
     private GameInputProcessor inputProcessor;
     private final ClanInvasion app;
     private Stage entitiesStage;
-    private final Stage uiStage;
-    private final OrthographicCamera camera;
-    private GameButton soldierButton;
-    private GameButton towerButton;
-    private GameButton mineButton;
-    private TiledMap map;
     private final List<FireAnimated> fireballs = Collections.synchronizedList(new CopyOnWriteArrayList<>());
-    private EntitySymbol mapClickEntityCreate;
+    private final MainGamePageUI mainGamePageUI;
+    private TiledMap map;
+
 
 
     /**
@@ -59,51 +53,8 @@ public class MainGamePage implements GamePage, UiUpdatable {
      */
     public MainGamePage(ClanInvasion app) {
         this.app = app;
-        camera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        uiStage = new Stage(new StretchViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), camera));
+        mainGamePageUI = new MainGamePageUI(app);
     }
-
-    private void addButtons() {
-        TextureAtlas atlas = new TextureAtlas("skin/skin/uiskin.atlas");
-        Skin skin = new Skin(atlas);
-        Table table = new Table(skin);
-        table.setBounds(-100, -Gdx.graphics.getWidth() / 3f, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-
-        soldierButton = new GameButton(skin, "Train soldiers");
-        towerButton = new GameButton(skin, "Place towers");
-        mineButton = new GameButton(skin, "Place goldmine");
-        soldierButton.getButton().pad(2);
-        towerButton.getButton().pad(2);
-        mineButton.getButton().pad(2);
-        table.add(soldierButton.getButton()).space(10);
-        table.add(towerButton.getButton()).spaceLeft(10);
-        table.add(mineButton.getButton()).spaceLeft(10);
-        uiStage.addActor(table);
-    }
-
-    private void addButtonListeners() {
-        soldierButton.addClickListener(() -> {
-            System.out.println("Train barbarians...");
-            this.mapClickEntityCreate = EntitySymbol.BARBARIAN;
-            soldierButton.getButton().setText("Training in progress...");
-            app.getCurrentPlayer().addSoldiers(() ->
-                    soldierButton.getButton().setText("Train soldiers"));
-        });
-
-        towerButton.addClickListener(() -> {
-            System.out.println("Place tower...");
-            this.mapClickEntityCreate = EntitySymbol.TOWER;
-        });
-
-        mineButton.addClickListener(() -> {
-            System.out.println("Create mining...");
-            this.mapClickEntityCreate = EntitySymbol.MINING;
-        });
-
-        uiStage.setDebugUnderMouse(true);
-        Gdx.input.setInputProcessor(uiStage);
-    }
-
 
     /**
      * Is fired once the page becomes active in application
@@ -119,9 +70,9 @@ public class MainGamePage implements GamePage, UiUpdatable {
             for (WorldCell worldCell : app.getMap().getCells()) {
                 if (worldCell.contains(mouseOrtho3)) {
 
-                    if (worldCell.getOccupier() == null && EntitySymbol.TOWER == mapClickEntityCreate) {
+                    if (worldCell.getOccupier() == null && EntitySymbol.TOWER == mainGamePageUI.getMapClickEntityCreate()) {
                         app.getCurrentPlayer().buildTower(worldCell);
-                    } else if (worldCell.getOccupier() == null && EntitySymbol.MINING == mapClickEntityCreate) {
+                    } else if (worldCell.getOccupier() == null && EntitySymbol.MINING == mainGamePageUI.getMapClickEntityCreate()) {
                         app.getCurrentPlayer().createNewMining(worldCell);
                     }
 
@@ -131,8 +82,6 @@ public class MainGamePage implements GamePage, UiUpdatable {
 
                     System.out.println(worldCell.getMapPosition().getValue0() + " " + worldCell.getMapPosition().getValue1());
 
-
-                    //worldCell.getTileCell().setTile(null);
                 }
             }
         });
@@ -141,7 +90,7 @@ public class MainGamePage implements GamePage, UiUpdatable {
         renderer = new IsometricTiledMapGameRenderer(
                 map,
                 1,
-                new EntityPlacer(app.getGameModel())
+                new EntityPlacer(app.getModel())
         );
 
         // transform camera position ans scale to be in the center
@@ -151,10 +100,9 @@ public class MainGamePage implements GamePage, UiUpdatable {
         renderer.render(app.getMap(), true);
         entitiesStage = new TiledMapStage();
         Gdx.input.setInputProcessor(entitiesStage);
-        addButtons();
-        addButtonListeners();
         app.getMap().setGraph(32, app.getMap().getCells());
         //fireTower();
+        mainGamePageUI.create();
     }
 
     private void fireTower() {
@@ -179,7 +127,7 @@ public class MainGamePage implements GamePage, UiUpdatable {
      */
     @Override
     public void render(float delta) {
-        Gdx.gl.glClearColor(255, 255, 255, 1);
+        Gdx.gl.glClearColor((255f/255f), (255f/255f), (255f/255f), 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         for (FireAnimated fireAnimated : fireballs) {
             fireAnimated.create();
@@ -191,13 +139,15 @@ public class MainGamePage implements GamePage, UiUpdatable {
         app.getMap().clear();
         renderer.render(app.getMap());
 
+        // render game page ui
+        mainGamePageUI.render();
+
         // render animated object (fireballs, arrows, etc.)
         updateAnimated();
 
         update(delta);
-        entitiesStage.act(delta);
-        entitiesStage.draw();
     }
+
 
 
     private void updateAnimated() {
@@ -231,7 +181,7 @@ public class MainGamePage implements GamePage, UiUpdatable {
                 width,
                 height
                 );
-        uiStage.getViewport().update(width, height, true);
+        mainGamePageUI.resize(width, height);
     }
 
     /**
@@ -265,7 +215,7 @@ public class MainGamePage implements GamePage, UiUpdatable {
     @Override
     public void dispose() {
         entitiesStage.dispose();
-        uiStage.dispose();
+        mainGamePageUI.dispose();
     }
 
     /**
@@ -276,7 +226,5 @@ public class MainGamePage implements GamePage, UiUpdatable {
     public void update(float delta) {
         entitiesStage.act(delta);
         entitiesStage.draw();
-        uiStage.act(delta);
-        uiStage.draw();
     }
 }

@@ -115,7 +115,9 @@ public class ClanInvasion extends Game {
         return gameModel.getActivePlayer();
     }
 
-    public GameModel getGameModel() { return gameModel; }
+    public GameModel getModel() {
+        return gameModel;
+    }
 
     /** Called to destroy the application
      */

@@ -153,4 +153,5 @@ public class GameModel {
     public WorldMap getWorldMap() {
         return worldMap;
     }
+
 }

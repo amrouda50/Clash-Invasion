@@ -198,6 +198,14 @@ public class Player {
         return id;
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public WorldMap getMap() {
         return game.getWorldMap();
     }
