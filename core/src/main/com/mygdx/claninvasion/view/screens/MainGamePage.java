@@ -18,10 +18,12 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.mygdx.claninvasion.ClanInvasion;
+import com.mygdx.claninvasion.model.Player;
 import com.mygdx.claninvasion.model.adapters.IsometricToOrthogonalAdapt;
 import com.mygdx.claninvasion.model.entity.EntitySymbol;
 import com.mygdx.claninvasion.model.entity.Soldier;
 import com.mygdx.claninvasion.model.entity.Tower;
+import com.mygdx.claninvasion.model.gamestate.GameState;
 import com.mygdx.claninvasion.model.map.WorldCell;
 import com.mygdx.claninvasion.view.actors.GameButton;
 import com.mygdx.claninvasion.view.animated.FireAnimated;
@@ -79,6 +81,7 @@ public class MainGamePage implements GamePage, UiUpdatable {
     int counter = 30;
     int totalTime = 0;
     Label Time;
+    Label Phase;
 
 
 
@@ -112,7 +115,7 @@ public class MainGamePage implements GamePage, UiUpdatable {
 
         Label Turn = new Label("Turn: "+ app.getCurrentPlayer().getName() , s2);
       // Label Time = new Label("Time: 29 sec left" , s2);
-        Label Phase = new Label("Phase: " + gameModel.getPhase() , s2);
+        Phase = new Label("Phase: " + gameModel.getPhase() , s2);
         Turn.setColor(Color.BLACK);
         Time.setColor(Color.BLACK);
         Phase.setColor(Color.BLACK);
@@ -325,6 +328,7 @@ public class MainGamePage implements GamePage, UiUpdatable {
         // render animated object (fireballs, arrows, etc.)
         updateAnimated();
         createBarBackground();
+
         update(delta);
         entitiesStage.act(delta);
         entitiesStage.draw();
@@ -345,8 +349,13 @@ public class MainGamePage implements GamePage, UiUpdatable {
     }
 
     private void changePhase() {
-
+        gameModel.changePhase();
+        //System.out.println("Phase: " + gameModel.getPhase());
+        Phase.setText("Phase: " + gameModel.getPhase());
     }
+
+
+
     private void createBarBackground(){
         SpriteBatch batch = new SpriteBatch();
         batch.begin();
@@ -356,7 +365,6 @@ public class MainGamePage implements GamePage, UiUpdatable {
         batch.draw(backgroundTexture, 0, 425, 1000, 85);
         batch.end();
     }
-
 
 
 
