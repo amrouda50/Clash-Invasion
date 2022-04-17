@@ -1,32 +1,26 @@
 package com.mygdx.claninvasion.view.screens;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g2d.*;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.maps.tiled.*;
-import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.mygdx.claninvasion.ClanInvasion;
-import com.mygdx.claninvasion.model.Player;
 import com.mygdx.claninvasion.model.adapters.IsometricToOrthogonalAdapt;
 import com.mygdx.claninvasion.model.entity.EntitySymbol;
 import com.mygdx.claninvasion.model.entity.Soldier;
 import com.mygdx.claninvasion.model.entity.Tower;
-import com.mygdx.claninvasion.model.gamestate.GameState;
 import com.mygdx.claninvasion.model.map.WorldCell;
-import com.mygdx.claninvasion.view.actors.GameButton;
-import com.mygdx.claninvasion.view.animated.FireAnimated;
+import com.mygdx.claninvasion.view.applicationlistener.FireAnimated;
+import com.mygdx.claninvasion.view.applicationlistener.MainGamePageUI;
 import com.mygdx.claninvasion.view.tiledmap.TiledMapStage;
 import com.mygdx.claninvasion.view.utils.GameInputProcessor;
 import com.mygdx.claninvasion.view.utils.IsometricTiledMapGameRenderer;
@@ -57,31 +51,9 @@ public class MainGamePage implements GamePage, UiUpdatable {
     private GameInputProcessor inputProcessor;
     private final ClanInvasion app;
     private Stage entitiesStage;
-    private final Stage uiStage;
-    private final OrthographicCamera camera;
-    private GameButton soldierButton;
-    private GameButton towerButton;
-    private GameButton mineButton;
-    private SelectBox<String> p2selectBox;
-    private SelectBox<String> p1selectBox;
-    private Texture backgroundTexture = new Texture("background/background.jpg");
-
-    private final  TextureAtlas atlas = new TextureAtlas("skin/skin/uiskin.atlas");
-    private final Skin skin = new Skin(atlas);
-    private final Skin s2 = new Skin(Gdx.files.internal("skin/skin/uiskin.json"));
     private final List<FireAnimated> fireballs = Collections.synchronizedList(new CopyOnWriteArrayList<>());
-    private EntitySymbol mapClickEntityCreate;
-
-    public GameModel gameModel;
-    private float timeSeconds = 0f;
-    private float period = 1f;
+    private final MainGamePageUI mainGamePageUI;
     private TiledMap map;
-
-    Timer t;
-    int counter = 30;
-    int totalTime = 0;
-    Label Time;
-    Label Phase;
 
 
 
@@ -90,144 +62,8 @@ public class MainGamePage implements GamePage, UiUpdatable {
      */
     public MainGamePage(ClanInvasion app) {
         this.app = app;
-        camera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        uiStage = new Stage(new StretchViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), camera));
-        gameModel = new GameModel();
-        Time = new Label(Integer.toString(counter) + " Sec", s2);
-
+        mainGamePageUI = new MainGamePageUI(app);
     }
-    private void AddSeprationLines(){
-        ShapeRenderer sr = new ShapeRenderer();
-        sr.setColor(Color.BLACK);
-        sr.setProjectionMatrix(camera.combined);
-        sr.begin(ShapeRenderer.ShapeType.Filled);
-        sr.rectLine(-100, 425, 1100, 425, 2);
-        sr.end();
-        sr.setColor(Color.BLACK);
-        sr.setProjectionMatrix(camera.combined);
-        sr.begin(ShapeRenderer.ShapeType.Filled);
-        sr.rectLine(-100, 85, 1100, 85, 2);
-        sr.end();
-    }
-    private void SetTopBar() {
-        Table Toptable = new Table(skin);
-        Toptable.setBounds(-10, Gdx.graphics.getWidth() / 3, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-
-        Label Turn = new Label("Turn: "+ app.getCurrentPlayer().getName() , s2);
-      // Label Time = new Label("Time: 29 sec left" , s2);
-        Phase = new Label("Phase: " + gameModel.getPhase() , s2);
-        Turn.setColor(Color.BLACK);
-        Time.setColor(Color.BLACK);
-        Phase.setColor(Color.BLACK);
-        Toptable.add(Turn).spaceLeft(2);
-        Toptable.add(Time).spaceLeft(100);
-        Toptable.add(Phase).spaceLeft(100);
-
-        uiStage.addActor(Toptable);
-    }
-    private void SetButtomBar(){
-        Table Bottomtable = new Table(skin);
-        Bottomtable.setBounds(160, -200, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        setPlayer2(Bottomtable);
-        Table Bottomtable2 = new Table(skin);
-        Bottomtable2.setBounds(-160, -200, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        setPlayer1(Bottomtable2);
-    }
-    private void setPlayer2(Table Bottomtable){
-        String[] values = new String[]{"Train Soliders", "Building Tower", "Build Goldmine"};
-        p2selectBox = new SelectBox<String>(s2);
-        p2selectBox.setSize(5f , 5f);
-        p2selectBox.setItems(values);
-        p2selectBox.setTouchable(Touchable.enabled);
-        Label P2 = new Label("Player 2 " , s2);
-        Label P2Money = new Label(" $ 4000" , s2);
-        Label P2Castels = new Label("10 castels" , s2);
-        Label P2Towers = new Label("    10 towers " , s2);
-        Label P2Soliders = new Label("100 Soliders" , s2);
-        Label P2Level = new Label("Level 1" , s2);
-        P2.setColor(Color.RED);
-        P2Money.setColor(Color.BLACK);
-        P2Castels.setColor(Color.BLACK);
-        P2Level.setColor(Color.BLACK);
-        P2Towers.setColor(Color.BLACK);
-        P2Soliders.setColor(Color.BLACK);
-        Bottomtable.add(P2);
-        Bottomtable.add(P2Money);
-        Bottomtable.add(p2selectBox);
-        Bottomtable.row();
-        Bottomtable.add(P2Castels);
-        Bottomtable.add(P2Towers);
-        Bottomtable.add(P2Soliders);
-        Bottomtable.row();
-        Bottomtable.add(P2Level).spaceLeft(0);
-        uiStage.addActor(Bottomtable);
-    }
-    private void setPlayer1(Table Bottomtable){
-        String[] values = new String[]{"Train Soliders", "Building Tower", "Build Goldmine"};
-        p1selectBox = new SelectBox<String>(s2);
-        p1selectBox.setSize(5f , 5f);
-        p1selectBox.setItems(values);
-        p2selectBox.setTouchable(Touchable.enabled);
-        Label P2 = new Label("Player 1 " , s2);
-        Label P2Money = new Label(" $ 3000" , s2);
-        Label P2Castels = new Label("5 castels" , s2);
-        Label P2Towers = new Label("    10 towers " , s2);
-        Label P2Soliders = new Label("50 Soliders" , s2);
-        Label P2Level = new Label("Level 2" , s2);
-        P2.setColor(Color.BLUE);
-        P2Money.setColor(Color.BLACK);
-        P2Castels.setColor(Color.BLACK);
-        P2Level.setColor(Color.BLACK);
-        P2Towers.setColor(Color.BLACK);
-        P2Soliders.setColor(Color.BLACK);
-        Bottomtable.add(P2);
-        Bottomtable.add(P2Money);
-        Bottomtable.add(p1selectBox);
-        Bottomtable.row();
-        Bottomtable.add(P2Castels);
-        Bottomtable.add(P2Towers);
-        Bottomtable.add(P2Soliders);
-        Bottomtable.row();
-        Bottomtable.add(P2Level);
-
-        uiStage.addActor(Bottomtable);
-    }
-
-    private void addButtonListeners() {
-       /* soldierButton.addClickListener(() -> {
-            System.out.println("Train barbarians...");
-            this.mapClickEntityCreate = EntitySymbol.BARBARIAN;
-            soldierButton.getButton().setText("Training in progress...");
-            app.getCurrentPlayer().addSoldiers(() ->
-                    soldierButton.getButton().setText("Train soldiers"));
-        });
-
-        towerButton.addClickListener(() -> {
-            System.out.println("Place tower...");
-            this.mapClickEntityCreate = EntitySymbol.TOWER;
-        });
-
-        mineButton.addClickListener(() -> {
-            System.out.println("Create mining...");
-            this.mapClickEntityCreate = EntitySymbol.MINING;
-        });*/
-        p1selectBox.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                System.out.println("Player1: " + " " +p1selectBox.getSelected());
-            }
-        });
-        p2selectBox.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                System.out.println("Player2: " + " " + p2selectBox.getSelected());
-            }
-        });
-
-        uiStage.setDebugUnderMouse(true);
-        Gdx.input.setInputProcessor(uiStage);
-    }
-
 
     /**
      * Is fired once the page becomes active in application
@@ -243,9 +79,9 @@ public class MainGamePage implements GamePage, UiUpdatable {
             for (WorldCell worldCell : app.getMap().getCells()) {
                 if (worldCell.contains(mouseOrtho3)) {
 
-                    if (worldCell.getOccupier() == null && EntitySymbol.TOWER == mapClickEntityCreate) {
+                    if (worldCell.getOccupier() == null && EntitySymbol.TOWER == mainGamePageUI.getMapClickEntityCreate()) {
                         app.getCurrentPlayer().buildTower(worldCell);
-                    } else if (worldCell.getOccupier() == null && EntitySymbol.MINING == mapClickEntityCreate) {
+                    } else if (worldCell.getOccupier() == null && EntitySymbol.MINING == mainGamePageUI.getMapClickEntityCreate()) {
                         app.getCurrentPlayer().createNewMining(worldCell);
                     }
                     System.out.println(worldCell.getMapPosition().getValue0() + " " + worldCell.getMapPosition().getValue1());
@@ -264,25 +100,9 @@ public class MainGamePage implements GamePage, UiUpdatable {
         renderer.render(app.getMap());
         entitiesStage = new TiledMapStage();
         Gdx.input.setInputProcessor(entitiesStage);
-        SetTopBar();
-        SetButtomBar();
-
-
-        addButtonListeners();
         app.getMap().setGraph(32, app.getMap().getCells());
         //fireTower();
-        setTimer();
-
-    }
-
-    private void setTimer() {
-        t = new Timer();
-        t.schedule(new TimerTask(){
-            @Override
-            public void run() {
-                totalTime++;
-            }
-        }, 1);
+        mainGamePageUI.create();
     }
 
     private void fireTower() {
@@ -307,12 +127,6 @@ public class MainGamePage implements GamePage, UiUpdatable {
      */
     @Override
     public void render(float delta) {
-        timeSeconds += Gdx.graphics.getDeltaTime();
-        if(timeSeconds > period){
-            timeSeconds-=period;
-            updateTime();
-        }
-
         Gdx.gl.glClearColor((255f/255f), (255f/255f), (255f/255f), 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         for (FireAnimated fireAnimated : fireballs) {
@@ -325,47 +139,14 @@ public class MainGamePage implements GamePage, UiUpdatable {
         app.getMap().clear();
         renderer.render(app.getMap());
 
+        // render game page ui
+        mainGamePageUI.render();
+
         // render animated object (fireballs, arrows, etc.)
         updateAnimated();
-        createBarBackground();
 
         update(delta);
-        entitiesStage.act(delta);
-        entitiesStage.draw();
-        AddSeprationLines();
-
     }
-
-    private void updateTime() {
-        if(counter > 0) {
-            totalTime++;
-            counter--;
-            Time.setText(counter + " sec");
-        } else if(counter == 0 && totalTime<=60) {
-            counter = 30;
-        } else if(totalTime > 60) {
-            changePhase();
-        }
-    }
-
-    private void changePhase() {
-        gameModel.changePhase();
-        //System.out.println("Phase: " + gameModel.getPhase());
-        Phase.setText("Phase: " + gameModel.getPhase());
-    }
-
-
-
-    private void createBarBackground(){
-        SpriteBatch batch = new SpriteBatch();
-        batch.begin();
-        batch.draw(backgroundTexture, 0, 0, 1000, 85);
-        batch.end();
-        batch.begin();
-        batch.draw(backgroundTexture, 0, 425, 1000, 85);
-        batch.end();
-    }
-
 
 
 
@@ -400,7 +181,7 @@ public class MainGamePage implements GamePage, UiUpdatable {
                 width,
                 height
                 );
-        uiStage.getViewport().update(width, height, true);
+        mainGamePageUI.resize(width, height);
     }
 
     /**
@@ -434,7 +215,7 @@ public class MainGamePage implements GamePage, UiUpdatable {
     @Override
     public void dispose() {
         entitiesStage.dispose();
-        uiStage.dispose();
+        mainGamePageUI.dispose();
     }
 
     /**
@@ -445,7 +226,5 @@ public class MainGamePage implements GamePage, UiUpdatable {
     public void update(float delta) {
         entitiesStage.act(delta);
         entitiesStage.draw();
-        uiStage.act(delta);
-        uiStage.draw();
     }
 }
