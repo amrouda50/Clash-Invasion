@@ -73,6 +73,7 @@ public class MainGamePage implements GamePage, UiUpdatable {
 
     Timer t;
     int counter = 30;
+    int totalTime = 0;
     Label Time;
 
 
@@ -85,7 +86,7 @@ public class MainGamePage implements GamePage, UiUpdatable {
         camera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         uiStage = new Stage(new StretchViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), camera));
         gameModel = new GameModel();
-        Time = new Label(Integer.toString(counter) , s2);
+        Time = new Label(Integer.toString(counter) + " Sec", s2);
 
     }
     private void AddSeprationLines(){
@@ -262,12 +263,16 @@ public class MainGamePage implements GamePage, UiUpdatable {
        // addButtonListeners();
         app.getMap().setGraph(32, app.getMap().getCells());
         //fireTower();
+        setTimer();
 
+    }
+
+    private void setTimer() {
         t = new Timer();
         t.schedule(new TimerTask(){
             @Override
             public void run() {
-                counter--;
+                totalTime++;
             }
         }, 1);
     }
@@ -315,7 +320,6 @@ public class MainGamePage implements GamePage, UiUpdatable {
         // render animated object (fireballs, arrows, etc.)
         updateAnimated();
 
-
         showText();
         update(delta);
         entitiesStage.act(delta);
@@ -326,11 +330,19 @@ public class MainGamePage implements GamePage, UiUpdatable {
 
     private void updateTime() {
         if(counter > 0) {
+            totalTime++;
             counter--;
-            Time.setText(counter);
+            Time.setText(counter + " sec");
+        } else if(counter == 0 && totalTime<=60) {
+            counter = 30;
+        } else if(totalTime > 60) {
+            changePhase();
         }
     }
 
+    private void changePhase() {
+
+    }
 
 
     private void showText() {
