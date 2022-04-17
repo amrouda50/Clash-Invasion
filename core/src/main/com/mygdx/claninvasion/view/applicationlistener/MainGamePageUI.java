@@ -136,7 +136,7 @@ public class MainGamePageUI implements ApplicationListener {
         Table tableOne = new Table(atlasSkin);
         tableOne.setBounds(160, -200, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         List<Pair<String, Color>> player1Data = new ArrayList<>(Arrays.asList(
-                new Pair<>("Player1", Color.BLUE),
+                new Pair<>("Player 1", Color.BLUE),
                 new Pair<>("$ 3000", Color.BLACK),
                 new Pair<>("Healthy", Color.BLACK),
                 new Pair<>("10 towers", Color.BLACK),
@@ -147,7 +147,7 @@ public class MainGamePageUI implements ApplicationListener {
         Table tableTwo = new Table(atlasSkin);
         tableTwo.setBounds(-160, -200, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         List<Pair<String, Color>> player2Data = new ArrayList<>(Arrays.asList(
-                new Pair<>("Player1", Color.BLUE),
+                new Pair<>("Player 2", Color.BLUE),
                 new Pair<>("$ 3000", Color.BLACK),
                 new Pair<>("Healthy", Color.BLACK),
                 new Pair<>("10 towers", Color.BLACK),
@@ -197,6 +197,8 @@ public class MainGamePageUI implements ApplicationListener {
             counter = 30;
         } else if (totalTime > 60) {
             changePhase();
+        } else if(totalTime >= 121) {
+            System.out.println("Game Over");
         }
     }
 
