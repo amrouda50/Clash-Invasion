@@ -15,6 +15,7 @@ import com.mygdx.claninvasion.model.map.WorldCell;
 import com.mygdx.claninvasion.view.applicationlistener.FireAnimated;
 import com.mygdx.claninvasion.view.applicationlistener.MainGamePageUI;
 import com.mygdx.claninvasion.view.tiledmap.TiledMapStage;
+import com.mygdx.claninvasion.view.utils.EntityPlacer;
 import com.mygdx.claninvasion.view.utils.GameInputProcessor;
 import com.mygdx.claninvasion.view.utils.IsometricTiledMapGameRenderer;
 
@@ -74,6 +75,11 @@ public class MainGamePage implements GamePage, UiUpdatable {
                     } else if (worldCell.getOccupier() == null && EntitySymbol.MINING == mainGamePageUI.getMapClickEntityCreate()) {
                         app.getCurrentPlayer().createNewMining(worldCell);
                     }
+
+                    if (worldCell.getOccupier() != null) {
+                        System.out.println((worldCell.getOccupier().getSymbol()));
+                    }
+
                     System.out.println(worldCell.getMapPosition().getValue0() + " " + worldCell.getMapPosition().getValue1());
 
                 }
@@ -81,13 +87,17 @@ public class MainGamePage implements GamePage, UiUpdatable {
         });
         map = new TmxMapLoader().load(Gdx.files.getLocalStoragePath() + "/TileMap/Tilemap.tmx");
         app.getMap().setTileset(map.getTileSets());
-        renderer = new IsometricTiledMapGameRenderer(map, 1);
+        renderer = new IsometricTiledMapGameRenderer(
+                map,
+                1,
+                new EntityPlacer(app.getGameModel())
+        );
 
         // transform camera position ans scale to be in the center
         app.getCamera().translate(translateCamera);
         app.getCamera().zoom -= -.7;
         renderer.setView(app.getCamera());
-        renderer.render(app.getMap());
+        renderer.render(app.getMap(), true);
         entitiesStage = new TiledMapStage();
         Gdx.input.setInputProcessor(entitiesStage);
         app.getMap().setGraph(32, app.getMap().getCells());

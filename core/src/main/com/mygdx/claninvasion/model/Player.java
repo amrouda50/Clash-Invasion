@@ -3,6 +3,7 @@ package com.mygdx.claninvasion.model;
 import com.mygdx.claninvasion.model.entity.*;
 import com.mygdx.claninvasion.model.gamestate.GameState;
 import com.mygdx.claninvasion.model.map.WorldCell;
+import com.mygdx.claninvasion.model.map.WorldMap;
 import org.javatuples.Pair;
 
 import javax.swing.text.html.parser.Entity;
@@ -61,7 +62,7 @@ public class Player {
     /**
      * Castle of the active player
      */
-    private final Castle castle;
+    private Castle castle;
     private final UUID id;
     private final BlockingQueue<Integer> coinProduceQueue = new LinkedBlockingDeque<>(MAX_GOLDMINE);
     private final ExecutorService executorService = Executors.newFixedThreadPool(MAX_GOLDMINE + 1);
@@ -69,12 +70,15 @@ public class Player {
     public Player(GameModel game) {
         this.id = UUID.randomUUID();
         this.game = game;
-        castle = new Castle(EntitySymbol.CASTEL, new Pair<>(0, 0), this);
         miningFarms = new ArrayList<>();
         soldiers = new ArrayList<>();
         towers = new ArrayList<>();
         wealth = new AtomicInteger(0);
         executorService.execute(this::consumeGold);
+    }
+
+    public void changeCastle(Castle castle) {
+        this.castle = castle;
     }
 
     public void createNewMining(WorldCell cell) {
@@ -152,7 +156,6 @@ public class Player {
      * This checks if the player has lost
      */
     public void looseEntity() {
-
     }
 
     /**
@@ -176,6 +179,21 @@ public class Player {
 
     }
 
+    public void attackAndMove(Pair<Integer, Integer> position) {
+        for (Soldier soldier : soldiers) {
+            soldier.changePosition(position);
+            soldier.attackCastle(opponent.castle);
+        }
+    }
+
+    public void defendAndAttack(Fireable fireable) {
+        for (Tower tower : towers) {
+            for (Soldier soldier : opponent.soldiers) {
+                tower.attack(soldier, fireable);
+            }
+        }
+    }
+
     public UUID getId() {
         return id;
     }
@@ -186,5 +204,21 @@ public class Player {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public WorldMap getMap() {
+        return game.getWorldMap();
+    }
+
+    public ArrayList<Soldier> getSoldiers() {
+        return soldiers;
+    }
+
+    public ArrayList<Tower> getTowers() {
+        return towers;
+    }
+
+    public ArrayList<MiningFarm> getMiningFarms() {
+        return miningFarms;
     }
 }
