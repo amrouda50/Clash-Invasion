@@ -76,7 +76,10 @@ public final class MainGamePageUI implements ApplicationListener {
     }
 
     private String getPlayerTopBar() {
-        return "Turn: " + app.getCurrentPlayer().getName();
+        if (app.getModel().getState() instanceof Building) {
+            return "Turn: " + app.getCurrentPlayer().getName();
+        }
+        return "";
     }
 
     private String getPlayerPhase() {
@@ -84,7 +87,11 @@ public final class MainGamePageUI implements ApplicationListener {
     }
 
     private String getTimerText() {
-        return ((Building)app.getModel().getState()).getCounter() + " seconds";
+        if (app.getModel().getState() instanceof Building) {
+            return ((Building)app.getModel().getState()).getCounter() + " seconds";
+        }
+
+        return "";
     }
 
     private void addTopBar() {
@@ -218,10 +225,7 @@ public final class MainGamePageUI implements ApplicationListener {
                         break;
                     case "Dragon":
                         if (player.canCreateBarbarian()) {
-                            player.trainSoldiers(EntitySymbol.DRAGON, () -> {
-                                System.out.println("New dragon trained");
-                                updatePlayerData(player, table);
-                            });
+                            player.trainSoldiers(EntitySymbol.DRAGON, () -> updatePlayerData(player, table));
                         } else {
                             System.out.println("Not enough money for this action");
                         }
@@ -276,9 +280,7 @@ public final class MainGamePageUI implements ApplicationListener {
     @Override
     public void render() {
         app.getModel().updateState(Gdx.graphics.getDeltaTime(), () -> {
-            if (app.getModel().getState() instanceof Building) {
-                timeLabel.setText(getTimerText());
-            }
+            timeLabel.setText(getTimerText());
         });
         updatePlayerData(app.getModel().getPlayerOne(), tableOne);
         updatePlayerData(app.getModel().getPlayerTwo(), tableTwo);

@@ -18,7 +18,7 @@ import static java.util.concurrent.Executors.newFixedThreadPool;
 public final class Castle extends ArtificialEntity {
     private final Player player;
     private final Stack<Soldier> soldiers;
-    private static int AMOUNT_OF_SOLDIERS = 1;
+    public static int AMOUNT_OF_SOLDIERS = 1;
     private Pair<Integer, Integer> soldierPosition;
 
     public Castle(EntitySymbol symbol, Pair<Integer, Integer> position, Player player) {

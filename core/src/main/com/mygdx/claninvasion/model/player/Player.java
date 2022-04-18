@@ -73,7 +73,7 @@ public class Player implements Winnable {
     private final UUID id;
     private final BlockingQueue<Integer> coinProduceQueue;
     private final ExecutorService executorService;
-    private Color color;
+    private final Color color;
 
     public Player(GameModel game , Color c) {
         this.color = c;
@@ -94,6 +94,10 @@ public class Player implements Winnable {
     }
 
     public MiningFarm createNewMining(WorldCell cell) {
+        if (!canCreateMining()) {
+            System.out.println("Not enough money for this action");
+            return null;
+        }
         MiningFarm farm = (MiningFarm) game.getWorldMap().createMapEntity(EntitySymbol.MINING, cell, coinProduceQueue);
         executorService.execute(farm::startMining);
         miningFarms.add(farm);
@@ -155,10 +159,13 @@ public class Player implements Winnable {
      * This method starts building towers for the active player
      */
     public Tower buildTower(WorldCell cell) {
+         if (!canCreateTower()) {
+             System.out.println("Not enough money for this action");
+             return null;
+         }
          Tower tower = (Tower) game.getWorldMap().createMapEntity(EntitySymbol.TOWER, cell, null);
-         System.out.println(cell.getWorldPosition());
          towers.add(tower);
-        wealth.set(wealth.get() - Tower.COST);
+         wealth.set(wealth.get() - Tower.COST);
          return tower;
     }
 
@@ -292,14 +299,18 @@ public class Player implements Winnable {
         return winningState;
     }
 
+    public void setWinningState(WinningState winningState) {
+        this.winningState = winningState;
+    }
+
     @Override
     public boolean hasWon() {
-        return winningState == WinningState.LOST;
+        return castle.isAlive();
     }
 
     @Override
     public boolean hasLost() {
-        return winningState == WinningState.WON;
+        return !hasWon();
     }
 
     public String getName() {
@@ -323,11 +334,11 @@ public class Player implements Winnable {
     }
 
     public boolean canCreateDragon() {
-        return getWealth() >= Dragon.COST;
+        return getWealth() >= Castle.AMOUNT_OF_SOLDIERS * Dragon.COST;
     }
 
     public boolean canCreateBarbarian() {
-        return getWealth() >= Barbarian.COST;
+        return getWealth() >= Castle.AMOUNT_OF_SOLDIERS * Barbarian.COST;
     }
 
     public boolean canCreateMining() {
