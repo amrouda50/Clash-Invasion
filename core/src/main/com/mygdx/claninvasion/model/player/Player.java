@@ -1,6 +1,8 @@
 package com.mygdx.claninvasion.model.player;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.mygdx.claninvasion.model.GameModel;
 import com.mygdx.claninvasion.model.entity.*;
 import com.mygdx.claninvasion.model.level.*;
@@ -10,10 +12,7 @@ import org.javatuples.Pair;
 
 import java.util.Collections;
 import javax.swing.text.html.parser.Entity;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Stack;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.ReadWriteLock;
@@ -279,10 +278,10 @@ public class Player implements Winnable {
 
     public void attack() {
 
-        ArrayList<Tower> towers = getTowers();
+        ArrayList<Tower> towers = (ArrayList<Tower>) getTowers();
         for (Tower tower : towers) {
             List<Pair<Integer,Integer>> neighbors  =  game.getWorldMap().getNeighborsOfPoint(tower.getPositionX(),tower.getPositionY());
-            tower.attack(neighbors,opponent.soldiers);
+            tower.attack(neighbors, (ArrayList<Soldier>) opponent.soldiers);
         }
     }
 
