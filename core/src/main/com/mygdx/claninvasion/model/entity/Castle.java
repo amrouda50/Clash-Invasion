@@ -44,7 +44,7 @@ public final class Castle extends ArtificialEntity {
         this.health.set(this.health.get() - amount);
     }
 
-    public CompletionStage<Boolean> trainSoldiers(EntitySymbol entitySymbol) {
+    public CompletionStage<Integer> trainSoldiers(EntitySymbol entitySymbol) {
         ExecutorService executor = newFixedThreadPool(2);
         for (int i = 0; i < AMOUNT_OF_SOLDIERS; i++) {
             Soldier soldier;
@@ -59,16 +59,17 @@ public final class Castle extends ArtificialEntity {
             soldiers.add(soldier);
         }
 
-        CompletableFuture<Boolean> supply = CompletableFuture.supplyAsync(() -> {
+        CompletableFuture<Integer> supply = CompletableFuture.supplyAsync(() -> {
+            int value = 0;
             for (Soldier soldier : soldiers) {
                 try {
-                    soldier.train(executor).get();
+                    value += soldier.train(executor).get();
                 } catch (InterruptedException | ExecutionException e) {
                     e.printStackTrace();
                 }
             }
 
-            return true;
+            return value;
         }, executor);
 
         supply.whenComplete((a, b) -> executor.shutdownNow());

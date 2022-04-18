@@ -183,6 +183,8 @@ public final class MainGamePageUI implements ApplicationListener {
     }
 
     private void addPlayerListener(Player player, SelectBox<String> selectBox) {
+        Table table = app.getModel().getActivePlayer().equals(app.getModel().getPlayerOne()) ?
+                tableOne : tableTwo;
         selectBox.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
@@ -212,6 +214,7 @@ public final class MainGamePageUI implements ApplicationListener {
                         if (player.canCreateBarbarian()) {
                             player.trainSoldiers(EntitySymbol.DRAGON, () -> {
                                 System.out.println("New dragon trained");
+                                updatePlayerData(player, table);
                             });
                         } else {
                             System.out.println("Not enough money for this action");
@@ -221,6 +224,7 @@ public final class MainGamePageUI implements ApplicationListener {
                         if (player.canCreateDragon()) {
                             player.trainSoldiers(EntitySymbol.BARBARIAN, () -> {
                                 System.out.println("New barbarian trained");
+                                updatePlayerData(player, table);
                             });
                         } else {
                             System.out.println("Not enough money for this action");
