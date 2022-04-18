@@ -8,11 +8,9 @@ public class AttackTypeSoldier implements AttackType{
     /**
      * Overrides base attack implementation
      * @see AttackType
-     * @return
      */
     @Override
-    public boolean attack() {
-        return false;
+    public void attack() {
     }
 
     @Override

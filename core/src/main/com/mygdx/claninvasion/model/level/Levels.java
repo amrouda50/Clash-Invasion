@@ -21,13 +21,14 @@ public class Levels {
     private static final ArrayList<GameTowerLevel> towerLevels = new ArrayList<>(
             Arrays.asList(
                     // level 0
-                    new GameTowerLevel(0,level0, 200),
+                    new GameTowerLevel(level0, 200),
                     // level 1
-                    new GameTowerLevel(1,level1, 200),
+                    new GameTowerLevel(level1, 200),
                     // level 2
                     new GameTowerLevel(level2, 170),
                     new GameTowerLevel(level3, 190)
                     new GameTowerLevel(2,level2, 170)
+                    new GameTowerLevel(level2, 170)
             )
     );
 

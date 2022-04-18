@@ -1,8 +1,6 @@
 package com.mygdx.claninvasion.model.level;
 
-import org.javatuples.Ennead;
 import org.javatuples.Septet;
-import org.javatuples.Sextet;
 
 /**
  * This class is responsible for determining the
@@ -16,7 +14,7 @@ public class GameTowerLevel extends Level{
     protected int hitsPointBonus;
     public int level;
 
-    public GameTowerLevel(int Level, Septet<Integer, Integer, Integer, Integer, Integer, Integer, Integer> values, int hitsPointBonus) {
+    public GameTowerLevel(Septet<Integer, Integer, Integer, Integer, Integer, Integer, Integer> values, int hitsPointBonus) {
         super(values);
         this.level = level;
         this.hitsPointBonus = hitsPointBonus;

@@ -2,7 +2,7 @@ package com.mygdx.claninvasion.model.entity.attacktype;
 
 public class AttackTypeArcher extends AttackTypeTower {
     @Override
-    public boolean attack() {
+    public void attack() {
         super.attack();
         //return false;
     }
