@@ -1,6 +1,8 @@
 package com.mygdx.claninvasion.model.gamestate;
-
 import com.mygdx.claninvasion.model.GameModel;
+
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * This class is responsible for beginning and
@@ -11,7 +13,23 @@ import com.mygdx.claninvasion.model.GameModel;
  * @author omarashour
  * @author Dinari
  */
-public class BuildingState extends CommonGameState{
+public class BuildingState extends CommonGameState implements Building {
+    private float timeSeconds = 0f;
+    private final float diff = 1f;
+    private int counter = 60;
+    private int totalTime = 0;
+
+    private void setTimer() {
+        Timer time = new Timer();
+        time.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                totalTime++;
+            }
+        }, 1);
+    }
+
+
     public BuildingState(GameModel game) {
         super(game);
     }
@@ -32,5 +50,37 @@ public class BuildingState extends CommonGameState{
         if(this.game.getPhase() == GamePhase.BUILDING) {
             this.game.setPhase(GamePhase.ATTACK);
         }
+    }
+
+    @Override
+    public void initState() {
+        setTimer();
+    }
+
+    @Override
+    public void updateTime(Runnable runnable) {
+        if (counter > 0) {
+            totalTime++;
+            counter--;
+            runnable.run();
+        } else if (counter == 0 && totalTime <= 60) {
+            counter = 30;
+        } else if (totalTime > 60) {
+            changePhase();
+        }
+    }
+
+    @Override
+    public void updateState(float delta, Runnable runnable) {
+        timeSeconds += delta;
+        if (timeSeconds > diff) {
+            timeSeconds -= diff;
+            updateTime(runnable);
+        }
+    }
+
+    @Override
+    public int getCounter() {
+        return counter;
     }
 }

@@ -19,6 +19,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.mygdx.claninvasion.ClanInvasion;
 import com.mygdx.claninvasion.model.entity.EntitySymbol;
+import com.mygdx.claninvasion.model.gamestate.Building;
 import com.mygdx.claninvasion.view.utils.InputClicker;
 import org.javatuples.Pair;
 import org.javatuples.Quartet;
@@ -35,11 +36,6 @@ public class MainGamePageUI implements ApplicationListener {
     private final Skin jsonSkin = new Skin(Gdx.files.internal("skin/skin/uiskin.json"));
     private final OrthographicCamera camera;
     private final ShapeRenderer shapeRenderer;
-    private float timeSeconds = 0f;
-    private float period = 1f;
-    private Timer time;
-    private int counter = 30;
-    private int totalTime = 0;
     private final Label timeLabel;
     private Label phaseLabel;
     private final ClanInvasion app;
@@ -142,16 +138,6 @@ public class MainGamePageUI implements ApplicationListener {
         setPlayerData(tableTwo, playerTwoDropdown, player2Data);
     }
 
-    private void setTimer() {
-        time = new Timer();
-        time.schedule(new TimerTask(){
-            @Override
-            public void run() {
-                totalTime++;
-            }
-        }, 1);
-    }
-
     private void addButtonListeners() {
         playerOneDropdown.addListener(new ChangeListener() {
             @Override
@@ -198,19 +184,7 @@ public class MainGamePageUI implements ApplicationListener {
     }
 
     private String createTimerText() {
-        return counter + " seconds";
-    }
-
-    private void updateTime() {
-        if (counter > 0) {
-            totalTime++;
-            counter--;
-            timeLabel.setText(createTimerText());
-        } else if (counter == 0 && totalTime <= 60) {
-            counter = 30;
-        } else if (totalTime > 60) {
-            changePhase();
-        }
+        return ((Building)app.getModel().getState()).getCounter() + " seconds";
     }
 
     private void changePhase() {
@@ -234,7 +208,7 @@ public class MainGamePageUI implements ApplicationListener {
         addTopBar();
         addBottomBar();
         addButtonListeners();
-        setTimer();
+        app.getModel().getState().initState();
     }
 
     @Override
@@ -244,11 +218,7 @@ public class MainGamePageUI implements ApplicationListener {
 
     @Override
     public void render() {
-        timeSeconds += Gdx.graphics.getDeltaTime();
-        if (timeSeconds > period) {
-            timeSeconds -= period;
-            updateTime();
-        }
+        app.getModel().updateState(Gdx.graphics.getDeltaTime(), () -> timeLabel.setText(createTimerText()));
 
         createBarBackground();
         addSeparationLines();

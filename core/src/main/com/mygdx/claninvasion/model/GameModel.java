@@ -109,6 +109,21 @@ public class GameModel implements GameState {
         gameState.changeState();
     }
 
+    @Override
+    public void initState() {
+        gameState.initState();
+    }
+
+    @Override
+    public GameState getState() {
+        return gameState.getState();
+    }
+
+    @Override
+    public void updateState(float delta, Runnable runnable) {
+        gameState.updateState(delta, runnable);
+    }
+
 
     public Player getActivePlayer() {
         return activePlayer;
@@ -164,5 +179,4 @@ public class GameModel implements GameState {
     public WorldMap getWorldMap() {
         return worldMap;
     }
-
 }

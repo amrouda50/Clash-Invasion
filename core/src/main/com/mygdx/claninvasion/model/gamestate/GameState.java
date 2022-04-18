@@ -30,4 +30,10 @@ public interface GameState {
      * State of the game changer
      */
     void changeState();
+
+    void initState();
+
+    GameState getState();
+
+    void updateState(float delta, Runnable runnable);
 }
