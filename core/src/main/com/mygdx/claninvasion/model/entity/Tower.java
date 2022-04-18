@@ -2,6 +2,7 @@ package com.mygdx.claninvasion.model.entity;
 
 import com.mygdx.claninvasion.model.entity.attacktype.AttackType;
 import com.mygdx.claninvasion.model.entity.attacktype.AttackTypeArcher;
+import com.mygdx.claninvasion.model.entity.attacktype.AttackTypePoison;
 import com.mygdx.claninvasion.model.entity.attacktype.Attacks;
 import com.mygdx.claninvasion.model.level.Level;
 import com.mygdx.claninvasion.model.level.LevelIterator;
@@ -12,7 +13,7 @@ import java.util.concurrent.atomic.AtomicLong;
 import com.mygdx.claninvasion.model.map.WorldCell;
 import org.javatuples.Pair;
 
-import java.util.List;
+import java.util.ArrayList;
 import java.util.concurrent.CompletableFuture;
 
 import static java.util.concurrent.TimeUnit.SECONDS;
@@ -30,6 +31,8 @@ public class Tower extends ArtificialEntity implements Defensible {
     public void setAttackType(Attacks attackType) {
         if(attackType == Attacks.ARCHER) {
             this.attackType = new AttackTypeArcher();
+        } if(attackType == Attacks.POISON) {
+            this.attackType = new AttackTypePoison();
         }
     }
 
@@ -97,7 +100,7 @@ public class Tower extends ArtificialEntity implements Defensible {
         return false;
     }
 
-    public List<Pair<Integer,Integer>> getNeighbors() {
+    public ArrayList<Soldier> getNeighbors() {
         //Implementation to get neighbors from certain point
         return null;
     }

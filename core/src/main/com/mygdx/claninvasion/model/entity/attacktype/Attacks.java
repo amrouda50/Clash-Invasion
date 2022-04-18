@@ -6,5 +6,7 @@ public enum Attacks {
     SPEAR,
     POISON,
     ARCHER,
-    ARTILLERY
+    ARTILLERY,
+    TOWER,
+    SOLDIER
 }

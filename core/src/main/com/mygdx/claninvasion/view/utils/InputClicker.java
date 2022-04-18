@@ -37,7 +37,13 @@ public class InputClicker implements RunnableTouchEvent {
                     if (worldCell.getOccupier() == null && EntitySymbol.TOWER == mainGamePageUI.getChosenSymbol()) {
                         artificialEntity = app.getCurrentPlayer().buildTower(worldCell);
                         Tower tower= (Tower) app.getCurrentPlayer().getTower(worldCell);
-                        tower.setAttackType(Attacks.ARCHER);
+                        if(mainGamePageUI.getChosenAttackTypeForTower() == Attacks.ARCHER) {
+                            tower.setAttackType(Attacks.ARCHER);
+                        } else if(mainGamePageUI.getChosenAttackTypeForTower() == Attacks.POISON) {
+                            tower.setAttackType(Attacks.POISON);
+                        } else {
+                            tower.setAttackType(Attacks.ARCHER);
+                        }
                     } else if (worldCell.getOccupier() == null && EntitySymbol.MINING == mainGamePageUI.getChosenSymbol()) {
                         artificialEntity = app.getCurrentPlayer().createNewMining(worldCell);
                     }

@@ -22,7 +22,7 @@ public class AttackTypeTower implements AttackType{
 
     @Override
     public Attacks getName() {
-        return Attacks.ARCHER;
+        return Attacks.TOWER;
     }
 
 }

@@ -1,6 +1,7 @@
 package com.mygdx.claninvasion.model.entity;
 
 import com.mygdx.claninvasion.model.entity.attacktype.AttackType;
+import com.mygdx.claninvasion.model.entity.attacktype.Attacks;
 import com.mygdx.claninvasion.model.helpers.Direction;
 import com.mygdx.claninvasion.model.level.GameSoldierLevel;
 import com.mygdx.claninvasion.model.level.GameSoldierLevelIterator;
@@ -10,6 +11,7 @@ import com.mygdx.claninvasion.model.map.WorldCell;
 import com.mygdx.claninvasion.view.actors.HealthBar;
 import org.javatuples.Pair;
 
+import java.util.ArrayList;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -29,6 +31,7 @@ public abstract class Soldier extends ArtificialEntity {
     private AtomicBoolean hasTrained = new AtomicBoolean(false);
     private int pos_x;
     private int pos_y;
+    public AttackType attackType;
 
     public Soldier(EntitySymbol entitySymbol, Pair<Integer, Integer> position) {
         super(entitySymbol, position);
@@ -116,5 +119,17 @@ public abstract class Soldier extends ArtificialEntity {
         AttackType attackType;
         GameSoldierLevelIterator level = (GameSoldierLevelIterator) this.level;
 
+    }
+
+    public ArrayList<Tower> getNeighbors() {
+        return null;
+    }
+
+    public AttackType getAttackType() {
+        return attackType;
+    }
+
+    public void setAttackType(AttackType attackType) {
+        this.attackType = attackType;
     }
 }
