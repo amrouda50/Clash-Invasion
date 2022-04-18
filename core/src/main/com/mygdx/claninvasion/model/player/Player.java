@@ -1,5 +1,6 @@
 package com.mygdx.claninvasion.model.player;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.mygdx.claninvasion.model.GameModel;
