@@ -10,6 +10,7 @@ import java.util.concurrent.*;
  * @version 0.01
  */
 public class MiningFarm extends ArtificialEntity implements Runnable, Mineable {
+    public static int COST = 300;
     private BlockingQueue<Integer> coins;
     private final int healthDecreaseRate = 10;
     private static final int HP_OFFSET_X = 20;

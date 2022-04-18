@@ -66,6 +66,9 @@ public class GameModel implements GameState {
         activePlayer = playerOne;
         gameState = new StartGameState(this);
         worldMap = new WorldMap();
+
+        playerOne.setName("Andrei");
+        playerTwo.setName("Omar");
     }
 
     public void reset() {
@@ -111,6 +114,21 @@ public class GameModel implements GameState {
         gameState.changeState();
     }
 
+    @Override
+    public void initState() {
+        gameState.initState();
+    }
+
+    @Override
+    public GameState getState() {
+        return gameState.getState();
+    }
+
+    @Override
+    public void updateState(float delta, Runnable runnable) {
+        gameState.updateState(delta, runnable);
+    }
+
 
     public Player getActivePlayer() {
         return activePlayer;
@@ -124,7 +142,7 @@ public class GameModel implements GameState {
      * Changes the active player
      */
     public void changeActivePlayer() {
-        if (activePlayer.getId().equals(playerOne.getId())) {
+        if (activePlayer.equals(playerOne)) {
             activePlayer = playerTwo;
         } else {
             activePlayer = playerOne;
@@ -166,5 +184,4 @@ public class GameModel implements GameState {
     public WorldMap getWorldMap() {
         return worldMap;
     }
-
 }

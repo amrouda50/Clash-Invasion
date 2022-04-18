@@ -51,6 +51,7 @@ public class MainGamePage implements GamePage, UiUpdatable {
      */
     public MainGamePage(ClanInvasion app) {
         this.app = app;
+        app.getModel().changeState();
         mainGamePageUI = new MainGamePageUI(app);
     }
 

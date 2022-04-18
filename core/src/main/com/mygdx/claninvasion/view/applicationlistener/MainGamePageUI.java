@@ -8,24 +8,22 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.Touchable;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.*;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.mygdx.claninvasion.ClanInvasion;
-import com.mygdx.claninvasion.model.entity.EntitySymbol;
+import com.mygdx.claninvasion.model.entity.*;
+import com.mygdx.claninvasion.model.gamestate.Building;
+import com.mygdx.claninvasion.model.player.Player;
 import com.mygdx.claninvasion.view.utils.InputClicker;
 import org.javatuples.Pair;
 import org.javatuples.Quartet;
 
 import java.util.*;
+import java.util.List;
 
-public class MainGamePageUI implements ApplicationListener {
+public final class MainGamePageUI implements ApplicationListener {
     private final Stage uiStage;
     private final Texture backgroundTexture = new Texture("background/background.jpg");
     private final SelectBox<String> playerOneDropdown;
@@ -35,27 +33,33 @@ public class MainGamePageUI implements ApplicationListener {
     private final Skin jsonSkin = new Skin(Gdx.files.internal("skin/skin/uiskin.json"));
     private final OrthographicCamera camera;
     private final ShapeRenderer shapeRenderer;
-    private float timeSeconds = 0f;
-    private float period = 1f;
-    private Timer time;
-    private int counter = 30;
-    private int totalTime = 0;
     private final Label timeLabel;
-    private Label phaseLabel;
+    private final Label phaseLabel;
+    private final Label turnLabel;
     private final ClanInvasion app;
-    private EntitySymbol choosenSymbol;
+    private EntitySymbol chosenSymbol;
+    private final Table tableOne = new Table(atlasSkin);
+    private final Table tableTwo = new Table(atlasSkin);
 
-    private static final String[] dropdownItems = new String[]{ "Train Barbarian 400$", "Train Dragon 600$", "Building Tower 500%", "Build Goldmine 800$" , "Upgrade Level 1000$"};
+    private static final String[] dropdownItems = new String[]{
+            "Train Barbarian " + Barbarian.COST + "$",
+            "Train Dragon " + Dragon.COST + "$",
+            "Building Tower " + Tower.COST + "$",
+            "Build Goldmine " + MiningFarm.COST + "$" ,
+            "Upgrade Level 1000$"
+    };
 
     public MainGamePageUI(ClanInvasion app) {
         this.app = app;
         camera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         uiStage = new Stage(new StretchViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), camera));
-        timeLabel = new Label(createTimerText(), jsonSkin);
+        timeLabel = new Label(getTimerText(), jsonSkin);
+        turnLabel = new Label(getPlayerTopBar() , jsonSkin);
+        phaseLabel = new Label(getPlayerPhase() , jsonSkin);
         shapeRenderer = new ShapeRenderer();
         playerOneDropdown = new SelectBox<>(jsonSkin);
         playerTwoDropdown = new SelectBox<>(jsonSkin);
-        choosenSymbol = null;
+        chosenSymbol = null;
     }
 
     private void createRectangle(Color color, Quartet<Float, Float, Float, Float> region, float width) {
@@ -71,12 +75,21 @@ public class MainGamePageUI implements ApplicationListener {
         createRectangle(Color.BLACK, new Quartet<>(-100f, 85f, 1100f, 85f), 2);
     }
 
+    private String getPlayerTopBar() {
+        return "Turn: " + app.getCurrentPlayer().getName();
+    }
+
+    private String getPlayerPhase() {
+        return "Phase: " + app.getModel().getPhase();
+    }
+
+    private String getTimerText() {
+        return ((Building)app.getModel().getState()).getCounter() + " seconds";
+    }
+
     private void addTopBar() {
         Table topTable = new Table(atlasSkin);
         topTable.setBounds(-10, Gdx.graphics.getWidth() / 3f, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-
-        Label turnLabel = new Label("Turn: " + app.getCurrentPlayer().getName() , jsonSkin);
-        phaseLabel = new Label("Phase: " + app.getModel().getPhase() , jsonSkin);
 
         turnLabel.setColor(Color.BLACK);
         timeLabel.setColor(Color.BLACK);
@@ -118,104 +131,116 @@ public class MainGamePageUI implements ApplicationListener {
         uiStage.addActor(table);
     }
 
-    private void addBottomBar() {
-        Table tableOne = new Table(atlasSkin);
-        tableOne.setBounds(160, -200, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        List<Pair<String, Color>> player1Data = new ArrayList<>(Arrays.asList(
-                new Pair<>("Player1", Color.RED),
-                new Pair<>("$ 3000", Color.BLACK),
-                new Pair<>("Healthy", Color.BLACK),
-                new Pair<>("10 towers", Color.BLACK),
-                new Pair<>("50 soldiers", Color.BLACK),
-                new Pair<>("Level 0", Color.BLACK)));
-        setPlayerData(tableOne, playerOneDropdown, player1Data);
-
-        Table tableTwo = new Table(atlasSkin);
-        tableTwo.setBounds(-160, -200, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        List<Pair<String, Color>> player2Data = new ArrayList<>(Arrays.asList(
-                new Pair<>("Player2", Color.BLUE),
-                new Pair<>("$ 3000", Color.BLACK),
-                new Pair<>("Healthy", Color.BLACK),
-                new Pair<>("10 towers", Color.BLACK),
-                new Pair<>("50 soldiers", Color.BLACK),
-                new Pair<>("Level 0", Color.BLACK)));
-        setPlayerData(tableTwo, playerTwoDropdown, player2Data);
+    private List<Pair<String, Color>> getPlayerData(Player player) {
+        return new ArrayList<>(Arrays.asList(
+                new Pair<>(player.getName(), Color.RED),
+                new Pair<>(Float.toString(player.getWealth()), Color.BLACK),
+                new Pair<>("Health: " + player.getHealth(), Color.BLACK),
+                new Pair<>(player.getTowers().size() + " towers", Color.BLACK),
+                new Pair<>(player.getTrainingSoldiers().size() + " soldiers", Color.BLACK),
+                new Pair<>("Level "+ player.getCastle().getLevel().getLevelName(), Color.BLACK)));
     }
 
-    private void setTimer() {
-        time = new Timer();
-        time.schedule(new TimerTask(){
-            @Override
-            public void run() {
-                totalTime++;
+    private void parsePlayerDataToView(Player player, Table table, SelectBox<String> box) {
+        List<Pair<String, Color>> player1Data = getPlayerData(player);
+        setPlayerData(table, box, player1Data);
+    }
+
+    private void updatePlayerData(Player player, Table table) {
+        List<Pair<String, Color>> player1Data = getPlayerData(player);
+        int counter = 0;
+        for (int i = 0; i < table.getCells().size; i++) {
+            if (table.getCells().get(i).getActor() instanceof Label) {
+                ((Label) table.getCells().get(i).getActor()).setText(player1Data.get(counter).getValue0());
+                counter++;
             }
-        }, 1);
-    }
-
-    private void addButtonListeners() {
-        playerOneDropdown.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                StringBuilder selected = new StringBuilder(playerOneDropdown.getSelected().split(" ")[1]);
-                System.out.println(selected);
-                if(selected.toString().equals("Tower")){
-                    choosenSymbol = EntitySymbol.TOWER;
-                    InputClicker.enabled = true;
-                }
-                else if(selected.toString().equals("Goldmine")){
-                    choosenSymbol = EntitySymbol.MINING;
-                    InputClicker.enabled = true;
-
-                }
-                else if (selected.toString().equals("Level")){
-
-
-                }
-                else if (selected.toString().equals("Barbarian ")){
-                   // app.getCurrentPlayer().addSoldiers();
-
-                }
-                else if(selected.toString().equals("Dragon")){
-
-                }
-                else if(selected.toString().equals("Level")){
-
-                }
-
-
-            }
-        });
-        playerTwoDropdown.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                System.out.println("Player2: " + " " + playerTwoDropdown.getSelected());
-                InputClicker.enabled = true;
-            }
-        });
-
-        uiStage.setDebugUnderMouse(true);
-        Gdx.input.setInputProcessor(uiStage);
-    }
-
-    private String createTimerText() {
-        return counter + " seconds";
-    }
-
-    private void updateTime() {
-        if (counter > 0) {
-            totalTime++;
-            counter--;
-            timeLabel.setText(createTimerText());
-        } else if (counter == 0 && totalTime <= 60) {
-            counter = 30;
-        } else if (totalTime > 60) {
-            changePhase();
         }
     }
 
-    private void changePhase() {
-        app.getModel().changePhase();
-        phaseLabel.setText("Phase: " + app.getModel().getPhase());
+    private void addBottomBar() {
+        tableOne.setBounds(160, -200, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        Player player1 = app.getModel().getPlayerOne();
+        parsePlayerDataToView(player1, tableOne, playerOneDropdown);
+
+        tableTwo.setBounds(-160, -200, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        Player player2 = app.getModel().getPlayerTwo();
+        parsePlayerDataToView(player2, tableTwo, playerTwoDropdown);
+    }
+
+    private void updateActiveDropdown() {
+        if (app.getModel().getActivePlayer().equals(app.getModel().getPlayerOne())) {
+            playerOneDropdown.setDisabled(false);
+            playerTwoDropdown.setDisabled(true);
+        } else {
+            playerOneDropdown.setDisabled(true);
+            playerTwoDropdown.setDisabled(false);
+        }
+    }
+
+    private void updateTopBar() {
+        phaseLabel.setText(getPlayerPhase());
+        turnLabel.setText(getPlayerTopBar());
+    }
+
+    private void addPlayerListener(Player player, SelectBox<String> selectBox) {
+        Table table = app.getModel().getActivePlayer().equals(app.getModel().getPlayerOne()) ?
+                tableOne : tableTwo;
+        selectBox.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                if (!player.equals(app.getCurrentPlayer())) {
+                    return;
+                }
+                switch (selectBox.getSelected().split(" ")[1]) {
+                    case "Tower":
+                        if (player.canCreateTower()) {
+                            chosenSymbol = EntitySymbol.TOWER;
+                            InputClicker.enabled = true;
+                        } else {
+                            System.out.println("Not enough money for this action");
+                        }
+                        break;
+                    case "Goldmine":
+                        if (player.canCreateMining()) {
+                            chosenSymbol = EntitySymbol.MINING;
+                            InputClicker.enabled = true;
+                        } else {
+                            System.out.println("Not enough money for this action");
+                        }
+                        break;
+                    case "Level":
+                        break;
+                    case "Dragon":
+                        if (player.canCreateBarbarian()) {
+                            player.trainSoldiers(EntitySymbol.DRAGON, () -> {
+                                System.out.println("New dragon trained");
+                                updatePlayerData(player, table);
+                            });
+                        } else {
+                            System.out.println("Not enough money for this action");
+                        }
+                        break;
+                    case "Barbarian":
+                        if (player.canCreateDragon()) {
+                            player.trainSoldiers(EntitySymbol.BARBARIAN, () -> {
+                                System.out.println("New barbarian trained");
+                                updatePlayerData(player, table);
+                            });
+                        } else {
+                            System.out.println("Not enough money for this action");
+                        }
+                        break;
+                }
+            }
+        });
+    }
+
+    private void addButtonListeners() {
+        addPlayerListener(app.getModel().getPlayerOne(), playerOneDropdown);
+        addPlayerListener(app.getModel().getPlayerTwo(), playerTwoDropdown);
+
+        uiStage.setDebugUnderMouse(true);
+        Gdx.input.setInputProcessor(uiStage);
     }
 
     private void createBarBackground() {
@@ -234,7 +259,7 @@ public class MainGamePageUI implements ApplicationListener {
         addTopBar();
         addBottomBar();
         addButtonListeners();
-        setTimer();
+        app.getModel().getState().initState();
     }
 
     @Override
@@ -244,12 +269,15 @@ public class MainGamePageUI implements ApplicationListener {
 
     @Override
     public void render() {
-        timeSeconds += Gdx.graphics.getDeltaTime();
-        if (timeSeconds > period) {
-            timeSeconds -= period;
-            updateTime();
-        }
-
+        app.getModel().updateState(Gdx.graphics.getDeltaTime(), () -> {
+            if (app.getModel().getState() instanceof Building) {
+                timeLabel.setText(getTimerText());
+            }
+        });
+        updatePlayerData(app.getModel().getPlayerOne(), tableOne);
+        updatePlayerData(app.getModel().getPlayerTwo(), tableTwo);
+        updateTopBar();
+        updateActiveDropdown();
         createBarBackground();
         addSeparationLines();
         uiStage.act(Gdx.graphics.getDeltaTime());
@@ -271,7 +299,7 @@ public class MainGamePageUI implements ApplicationListener {
         uiStage.dispose();
     }
 
-    public EntitySymbol getChoosenSymbol() {
-        return choosenSymbol;
+    public EntitySymbol getChosenSymbol() {
+        return chosenSymbol;
     }
 }

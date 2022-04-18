@@ -59,4 +59,17 @@ public abstract class CommonGameState implements GameState  {
     public void changeState() {
         game.setGameState(new BuildingState(game));
     }
+
+    @Override
+    public void initState() {}
+
+    @Override
+    public GameState getState() {
+        return this;
+    }
+
+    @Override
+    public void updateState(float delta, Runnable runnable) {
+        runnable.run();
+    }
 }

@@ -4,8 +4,11 @@ import com.mygdx.claninvasion.model.player.Player;
 import org.javatuples.Pair;
 import org.javatuples.Quartet;
 
+import java.util.Optional;
 import java.util.Stack;
 import java.util.concurrent.*;
+import java.util.function.Predicate;
+
 import static java.util.concurrent.Executors.newFixedThreadPool;
 
 /**
@@ -18,8 +21,8 @@ public final class Castle extends ArtificialEntity {
     private static int AMOUNT_OF_SOLDIERS = 1;
     private Pair<Integer, Integer> soldierPosition;
 
-    public Castle(EntitySymbol symbol,  Pair<Integer, Integer> position, Player player) {
-        super(symbol,  position);
+    public Castle(EntitySymbol symbol, Pair<Integer, Integer> position, Player player) {
+        super(symbol, position);
         soldiers = new Stack<>();
         this.player = player;
         soldierPosition = position;
@@ -32,35 +35,45 @@ public final class Castle extends ArtificialEntity {
     }
 
     /**
-     * @see ArtificialEntity
      * @param amount - amount of injury
+     * @see ArtificialEntity
      */
     @Override
     public void damage(int amount) {
         this.health.set(this.health.get() - amount);
     }
 
-    public CompletionStage<Boolean> trainSoldiers() {
+    public int getSoldiersMoneyCost() {
+        Optional<Integer> sum = soldiers.stream().map(Soldier::getCost).reduce(Integer::sum);
+        return sum.orElse(0);
+    }
+
+    public CompletionStage<Integer> trainSoldiers(EntitySymbol entitySymbol, Predicate<Integer> run) {
         ExecutorService executor = newFixedThreadPool(2);
         for (int i = 0; i < AMOUNT_OF_SOLDIERS; i++) {
-            Soldier soldier = new Soldier(EntitySymbol.BARBARIAN, soldierPosition);
+            Soldier soldier;
+            if (entitySymbol == EntitySymbol.BARBARIAN) {
+                soldier = new Barbarian(EntitySymbol.BARBARIAN, soldierPosition);
+            } else if (entitySymbol == EntitySymbol.DRAGON) {
+                soldier = new Dragon(EntitySymbol.DRAGON, soldierPosition);
+            } else {
+                throw new IllegalArgumentException("No such soldier exists");
+            }
             soldiers.add(soldier);
         }
-
-        CompletableFuture<Boolean> supply = CompletableFuture.supplyAsync(() -> {
+        run.test(getSoldiersMoneyCost());
+        CompletableFuture<Integer> supply = CompletableFuture.supplyAsync(() -> {
+            int value = 0;
             for (Soldier soldier : soldiers) {
                 try {
-                    soldier.train(executor).get();
+                    value += soldier.train(executor).get();
                 } catch (InterruptedException | ExecutionException e) {
                     e.printStackTrace();
                 }
             }
-
-            return true;
+            return value;
         }, executor);
-
         supply.whenComplete((a, b) -> executor.shutdownNow());
-
         return supply;
     }
 
@@ -68,7 +81,8 @@ public final class Castle extends ArtificialEntity {
      * Damage attacked soldier
      * TODO Implement logic
      */
-    public void damageOpponents() {}
+    public void damageOpponents() {
+    }
 
     public Stack<Soldier> getSoldiers() {
         return soldiers;
