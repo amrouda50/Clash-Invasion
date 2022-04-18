@@ -46,6 +46,9 @@ public class MainGamePageUI implements ApplicationListener {
     private final ClanInvasion app;
     private EntitySymbol choosenSymbol;
 
+    private SelectBox<String> AttackTypeDropdown;
+    private static final String[] attackTypeTowers = new String[]{ "Select Attack Type for Tower", "Attack Type Archer 0$", "Attack Type Fire 100$", "Attack Type Artillery 500$"};
+
     private static final String[] dropdownItems = new String[]{ "Train Barbarian 400$", "Train Dragon 600$", "Building Tower 500%", "Build Goldmine 800$" , "Upgrade Level 1000$"};
 
     public MainGamePageUI(ClanInvasion app) {
@@ -56,6 +59,8 @@ public class MainGamePageUI implements ApplicationListener {
         shapeRenderer = new ShapeRenderer();
         playerOneDropdown = new SelectBox<>(jsonSkin);
         playerTwoDropdown = new SelectBox<>(jsonSkin);
+
+        AttackTypeDropdown = new  SelectBox<>(jsonSkin);
         choosenSymbol = null;
     }
 
@@ -153,6 +158,18 @@ public class MainGamePageUI implements ApplicationListener {
         }, 1);
     }
 
+    public void setTowerAttackType(Table table, SelectBox<String> box, String[] attackTypeTowers) {
+        initDropDown(box, attackTypeTowers);
+        List<Label> labels = new ArrayList<>();
+        for (String data : attackTypeTowers) {
+            Label label = new Label(data.toString(), jsonSkin);
+            labels.add(label);
+        }
+        table.add(box);
+        table.row();
+        uiStage.addActor(table);
+    }
+
     private void addButtonListeners() {
         playerOneDropdown.addListener(new ChangeListener() {
             @Override
@@ -162,6 +179,17 @@ public class MainGamePageUI implements ApplicationListener {
                 if(selected.toString().equals("Tower")){
                     choosenSymbol = EntitySymbol.TOWER;
                     InputClicker.enabled = true;
+
+                    Table tableOne = new Table(atlasSkin);
+                    tableOne.setBounds(200, -100, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+                    setTowerAttackType(tableOne,  AttackTypeDropdown, attackTypeTowers);
+                    AttackTypeDropdown.addListener(new ChangeListener() {
+                        @Override
+                        public void changed(ChangeEvent event, Actor actor) {
+                            selected.toString();
+                           tableOne.remove();
+                        }
+                    });
                 }
                 else if(selected.toString().equals("Goldmine")){
                     choosenSymbol = EntitySymbol.MINING;
