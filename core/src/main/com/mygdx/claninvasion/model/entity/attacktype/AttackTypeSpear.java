@@ -20,7 +20,7 @@ public class AttackTypeSpear extends AttackTypeSoldier{
         ArrayList<Soldier> enemies;
         enemies = tower.getNeighbors();
         /*for(Soldier enemy: enemies) {
-            if(tower.checkNeighbors(3)) { //Checks if the neighbor is within 3 radius distance
+            if(enemy.checkNeighbors(3)) { //Checks if the neighbor is within 3 radius distance
                 enemy.damage(5); //Highest damage amount
             }
         }*/
