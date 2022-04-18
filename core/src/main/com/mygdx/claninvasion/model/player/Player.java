@@ -221,12 +221,12 @@ public class Player implements Winnable {
         }
     }
 
-    public void moveSoldier(int index, CyclicBarrier barrier) {
+    public void moveSoldier(int index , Thread x) {
         Soldier soldier = soldiers.get(index);
-        moveSoldier(soldier, barrier);
+        moveSoldier(soldier , x);
     }
 
-    public void moveSoldier(Soldier soldier, CyclicBarrier barrier) {
+    public void moveSoldier(Soldier soldier , Thread x) {
 
         Pair<Integer, Integer> posSrc = new Pair<>(
                 soldier.getPosition().getValue0() ,
@@ -241,7 +241,7 @@ public class Player implements Winnable {
         System.out.println("Source dst"  + positionSrc + "Position dst" + positionDest);
         List<Integer> paths = game.getWorldMap().getGraph()
                 .GetShortestDistance(positionSrc, positionDest, 32 * 32);
-
+        int j = 0;
         for (int i = paths.size() - 1; i > 0; i--) {
             game.getWorldMap().mutate(paths.get(i), paths.get(i - 1));
             Pair<Integer, Integer> newPosition =
@@ -252,6 +252,12 @@ public class Player implements Winnable {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
+            if(j == 4){
+                if(x != null){
+                    x.start();
+                }
+            }
+            j++;
 
         }
     }
