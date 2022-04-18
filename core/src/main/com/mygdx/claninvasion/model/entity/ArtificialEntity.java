@@ -51,7 +51,7 @@ public class ArtificialEntity extends Entity {
     }
 
     public Pair<Float, Float> getHealthBarOffset() {
-        return new Pair<>(-26f , 40f);
+        return new Pair<>(-22f , 43f);
     }
 
     public Pair<Float, Float> getHealthBarSizes() {

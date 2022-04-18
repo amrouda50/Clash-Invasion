@@ -2,6 +2,7 @@ package com.mygdx.claninvasion.view.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.*;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.maps.tiled.*;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -41,6 +42,7 @@ public class MainGamePage implements GamePage, UiUpdatable {
     private final List<HealthBar> hpBars = Collections.synchronizedList(new CopyOnWriteArrayList<>());
     private final MainGamePageUI mainGamePageUI;
     private TiledMap map;
+    private  ShapeRenderer b ;
 
 
 
@@ -60,6 +62,7 @@ public class MainGamePage implements GamePage, UiUpdatable {
     @Override
     public void show() {
         app.getCamera().update();
+        b = new ShapeRenderer();
         inputProcessor = new GameInputProcessor(app.getCamera(), new InputClicker(app ,mainGamePageUI, hpBars));
         map = new TmxMapLoader().load(Gdx.files.getLocalStoragePath() + "/TileMap/Tilemap.tmx");
         app.getMap().setTileset(map.getTileSets());
@@ -130,7 +133,6 @@ public class MainGamePage implements GamePage, UiUpdatable {
         updateAnimated();
         app.getModel().getPlayerOne().removeDead();
         app.getModel().getPlayerTwo().removeDead();
-
         // update actors
         update(delta);
     }
