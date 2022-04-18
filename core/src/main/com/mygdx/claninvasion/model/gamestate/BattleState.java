@@ -33,12 +33,6 @@ public class BattleState extends CommonGameState {
     }
 
     private void setTimer() {
-
-        //    time.schedule(new TimerTask() {
-            //     @Override
-                    //    public void run() {
-        //  System.out.println("Current timer 1 " + totalTime);
-
         Thread tempThread = null;
         int size = game.getPlayerOne().getTrainingSoldiers().size();
         for (int i = size -1; i >= 0 ; i--){
@@ -50,47 +44,6 @@ public class BattleState extends CommonGameState {
             });
         }
         tempThread.start();
-//        Thread t3= new Thread(() ->
-//        {
-//            game.getPlayerOne().addTrainedToMapSoldier();
-//            game.getPlayerOne().moveSoldier(3 , null);
-//        });
-//        Thread t2= new Thread(() ->
-//        {
-//            game.getPlayerOne().addTrainedToMapSoldier();
-//            game.getPlayerOne().moveSoldier(2 , t3);
-//        });
-//        Thread t1= new Thread(() ->
-//        {
-//            game.getPlayerOne().addTrainedToMapSoldier();
-//            game.getPlayerOne().moveSoldier(1 , t2);
-//        });
-//        Thread t = new Thread(() ->
-//         {
-//             game.getPlayerOne().addTrainedToMapSoldier();
-//             game.getPlayerOne().moveSoldier(0 , t1);
-//         });
-//
-//        t.start();
-
-
-
-
-
-        //            game.getPlayerOne().attackCastle(0);
-        //    game.getPlayerOne().attackCastle();
-        //      totalTime++;
-                //    }
-            //  }, delay, 1000);
-//
-//        time.schedule(new TimerTask() {
-//            @Override
-//            public void run() {
-//                game.getPlayerTwo().addTrainedToMapSoldier();
-//                game.getPlayerTwo().moveSoldiers();
-//                game.getPlayerTwo().attackCastle();
-//            }
-//        }, delay, 1000);
     }
 
     @Override

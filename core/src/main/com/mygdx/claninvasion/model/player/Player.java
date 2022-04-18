@@ -238,7 +238,6 @@ public class Player implements Winnable {
         );
         int positionSrc = game.getWorldMap().transformMapPositionToIndex(posSrc);
         int positionDest = game.getWorldMap().transformMapPositionToIndex(posDst);
-        System.out.println("Source dst"  + positionSrc + "Position dst" + positionDest);
         List<Integer> paths = game.getWorldMap().getGraph()
                 .GetShortestDistance(positionSrc, positionDest, 32 * 32);
         int j = 0;
@@ -252,10 +251,8 @@ public class Player implements Winnable {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            if(j == 4){
-                if(x != null){
+            if(j == 2 && x != null){
                     x.start();
-                }
             }
             j++;
 
