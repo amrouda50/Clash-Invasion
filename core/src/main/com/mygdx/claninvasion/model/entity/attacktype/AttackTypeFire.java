@@ -12,6 +12,6 @@ public class AttackTypeFire extends AttackTypeSoldier{
     @Override
     public void attack() {
         super.attack();
-        return false;
+        //return false;
     }
 }

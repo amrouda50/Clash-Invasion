@@ -16,9 +16,9 @@ public class AttackTypeSword extends AttackTypeSoldier{
     public void attack() {
         checkDistance = (checkEnemyDistance() == 1);
         if (checkDistance) {
-            return attackSword;
+            //return attackSword;
         }
-        return false;
+        //return false;
     }
 
     private int checkEnemyDistance() {

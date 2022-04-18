@@ -11,7 +11,7 @@ public class AttackTypeTower implements AttackType{
      */
     @Override
     public void attack() {
-        return false;
+        //return false;
     }
 
     public void checkNeighboringCells() {

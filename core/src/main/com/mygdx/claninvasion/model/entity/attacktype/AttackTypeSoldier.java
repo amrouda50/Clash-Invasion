@@ -11,6 +11,6 @@ public class AttackTypeSoldier implements AttackType{
      */
     @Override
     public void attack() {
-        return false;
+        //return false;
     }
 }

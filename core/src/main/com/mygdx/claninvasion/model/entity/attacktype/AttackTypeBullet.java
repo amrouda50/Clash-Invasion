@@ -12,6 +12,6 @@ public class AttackTypeBullet extends AttackTypeTower {
     @Override
     public void attack() {
         super.attack();
-        return false;
+        //return false;
     }
 }
