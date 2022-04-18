@@ -279,4 +279,13 @@ public class Player implements Winnable {
     public void setName(String name) {
         this.name = name;
     }
+
+    public int getWealth() {
+        return wealth.get();
+    }
+
+    public float getHealth() {
+        return castle.getHealthPercentage();
+    }
+
 }

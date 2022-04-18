@@ -64,6 +64,9 @@ public class GameModel implements GameState {
         activePlayer = playerOne;
         gameState = new StartGameState(this);
         worldMap = new WorldMap();
+
+        playerOne.setName("Andrei");
+        playerTwo.setName("Omar");
     }
 
     public void reset() {

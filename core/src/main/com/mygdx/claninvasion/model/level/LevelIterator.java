@@ -50,6 +50,10 @@ public class LevelIterator<L extends Level> implements Iterator<L> {
         }
     }
 
+    public int getLevelName() {
+        return currentLevelNumber;
+    }
+
     public void reset() {
         currentLevelNumber = 0;
     }
