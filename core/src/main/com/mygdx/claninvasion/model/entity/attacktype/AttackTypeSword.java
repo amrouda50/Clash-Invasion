@@ -23,5 +23,6 @@ public class AttackTypeSword extends AttackTypeSoldier{
 
     private int checkEnemyDistance() {
         //Check all the neighboring cells
+        return 0;
     }
 }
