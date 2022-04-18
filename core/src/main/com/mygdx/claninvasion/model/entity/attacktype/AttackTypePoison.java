@@ -7,8 +7,9 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 /**
- * Poison attack type
- * TODO: Logic part is missing
+ * Poison attack type.
+ * makes area around it poisonous. Has big timeout (will be active for 3 seconds as example ).
+ * It poisons the host itself (everyone is in danger).
  */
 public class AttackTypePoison extends AttackTypeTower{
 

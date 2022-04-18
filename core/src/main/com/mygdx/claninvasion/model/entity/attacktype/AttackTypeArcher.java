@@ -17,7 +17,7 @@ public class AttackTypeArcher extends AttackTypeTower {
         ArrayList<Soldier> enemies;
         enemies = tower.getNeighbors();
        /* for(Soldier enemy: enemies) {
-            enemy.damage(3); //Arbitrary value can change later 
+            enemy.damage(3); //Arbitrary value can change later
         }*/
     }
 

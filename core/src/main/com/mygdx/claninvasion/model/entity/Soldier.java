@@ -112,15 +112,6 @@ public abstract class Soldier extends ArtificialEntity {
     }
 
 
-    /**
-     *  Deciding type of attack of a soldier
-     */
-    public void Attack() {
-        AttackType attackType;
-        GameSoldierLevelIterator level = (GameSoldierLevelIterator) this.level;
-
-    }
-
     public ArrayList<Tower> getNeighbors() {
         return null;
     }
