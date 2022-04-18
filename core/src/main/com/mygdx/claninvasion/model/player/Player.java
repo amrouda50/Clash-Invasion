@@ -1,17 +1,22 @@
 package com.mygdx.claninvasion.model.player;
 
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.mygdx.claninvasion.model.GameModel;
 import com.mygdx.claninvasion.model.entity.*;
 import com.mygdx.claninvasion.model.map.WorldCell;
 import com.mygdx.claninvasion.model.map.WorldMap;
 import org.javatuples.Pair;
 
+import java.awt.*;
 import java.util.Collections;
 import java.util.List;
 import java.util.Stack;
 import java.util.UUID;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
+
+import static java.awt.Color.*;
 
 /**
  * This class is responsible for handling
@@ -68,8 +73,10 @@ public class Player implements Winnable {
     private final UUID id;
     private final BlockingQueue<Integer> coinProduceQueue;
     private final ExecutorService executorService;
+    private Color color;
 
-    public Player(GameModel game) {
+    public Player(GameModel game , Color c) {
+        this.color = c;
         this.id = UUID.randomUUID();
         this.game = game;
         miningFarms = Collections.synchronizedList(new CopyOnWriteArrayList<>());
@@ -149,8 +156,9 @@ public class Player implements Winnable {
      */
     public Tower buildTower(WorldCell cell) {
          Tower tower = (Tower) game.getWorldMap().createMapEntity(EntitySymbol.TOWER, cell, null);
+         System.out.println(cell.getWorldPosition());
          towers.add(tower);
-         wealth.set(wealth.get() - Tower.COST);
+        wealth.set(wealth.get() - Tower.COST);
          return tower;
     }
 
@@ -191,6 +199,7 @@ public class Player implements Winnable {
         while (!castle.getSoldiers().empty()) {
             Soldier soldier = castle.getSoldiers().pop();
             soldiers.add((Soldier) game.getWorldMap().createMapEntity(soldier.getSymbol(), soldier.getPosition(), null));
+            System.out.println("Soldier added " + soldiers.size());
         }
     }
 

@@ -30,9 +30,9 @@ public class EntityPlacer implements Placer {
     }
 
     public void handleMultiPositioned(WorldMap map) {
-        Quartet<Pair<Integer, Integer>, Pair<Integer, Integer>, Pair<Integer, Integer>, Pair<Integer, Integer>>
+        Pair<Integer, Integer>
                 castlePosition = getCastlePositions(castlePositions);
-        Quartet<Pair<Integer, Integer>, Pair<Integer, Integer>, Pair<Integer, Integer>, Pair<Integer, Integer>>
+        Pair<Integer, Integer>
                 reverseCastlePositions = getCastlePositions(castleReversePositions);
 
         Castle player1Castle = new Castle(EntitySymbol.CASTEL, castlePosition, model.getPlayerOne());
@@ -49,35 +49,15 @@ public class EntityPlacer implements Placer {
     }
 
     private void setCastleCellOccupier(WorldMap map, Castle castle) {
-        WorldCell cell = map.getCell(castle.getPositions().getValue0());
-        if (cell == null) {
-            return;
-        }
-        cell.setOccupier(castle);
-        cell = map.getCell(castle.getPositions().getValue1());
-        if (cell == null) {
-            return;
-        }
-        cell.setOccupier(castle);
-        cell = map.getCell(castle.getPositions().getValue2());
-        if (cell == null) {
-            return;
-        }
-        cell.setOccupier(castle);
-        cell = map.getCell(castle.getPositions().getValue3());
-        if (cell == null) {
+        WorldCell cell = map.getCell(castle.getPosition());
+        if (cell == null)  {
             return;
         }
         cell.setOccupier(castle);
     }
 
-    private Quartet<Pair<Integer, Integer>, Pair<Integer, Integer>, Pair<Integer, Integer>, Pair<Integer, Integer>>
-    getCastlePositions(ArrayList<Pair<Integer, Integer>> castlePositions) {
-        Pair<Integer, Integer> bottomRight =  castlePositions.get(5);
-        Pair<Integer, Integer> topLeft = castlePositions.get(4);
-        Pair<Integer, Integer> bottomLeft = new Pair<>(topLeft.getValue0(), bottomRight.getValue1());
-        Pair<Integer, Integer> topRight = new Pair<>( bottomRight.getValue0(), topLeft.getValue1());
-        return new Quartet<>(topLeft, topRight, bottomRight, bottomLeft);
+    private Pair<Integer, Integer> getCastlePositions(ArrayList<Pair<Integer, Integer>> castlePositions) {
+        return castlePositions.get(0);
     }
 
     @Override
@@ -91,7 +71,7 @@ public class EntityPlacer implements Placer {
 
         if (EntitySymbol.CASTEL.sourcePart.equals(trimmedEntityName)) {
             castlePositions.add(position);
-        } else if (EntitySymbol.CASTEL_REVERSED.sourcePart.equals(trimmedEntityName)){
+        } else if (EntitySymbol.CASTEL_REVERSED.sourcePart.equals(trimmedEntityName)) {
             castleReversePositions.add(position);
         } else if (EntitySymbol.TREE.sourcePart.equals(trimmedEntityName)) {
             NaturalEntity entity = new NaturalEntity(EntitySymbol.TREE, position);

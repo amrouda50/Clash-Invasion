@@ -7,7 +7,6 @@ import org.javatuples.Quartet;
 import java.util.Optional;
 import java.util.Stack;
 import java.util.concurrent.*;
-import java.util.function.Function;
 import java.util.function.Predicate;
 
 import static java.util.concurrent.Executors.newFixedThreadPool;
@@ -19,18 +18,14 @@ import static java.util.concurrent.Executors.newFixedThreadPool;
 public final class Castle extends ArtificialEntity {
     private final Player player;
     private final Stack<Soldier> soldiers;
-
-    // topLeft, topRight, bottomRight, bottomLeft
-    private Quartet<Pair<Integer, Integer>, Pair<Integer, Integer>, Pair<Integer, Integer>, Pair<Integer, Integer>> positions;
-    public static int AMOUNT_OF_SOLDIERS = 1;
+    private static int AMOUNT_OF_SOLDIERS = 1;
     private Pair<Integer, Integer> soldierPosition;
 
-    public Castle(EntitySymbol symbol,  Quartet<Pair<Integer, Integer>, Pair<Integer, Integer>, Pair<Integer, Integer>, Pair<Integer, Integer>> positions, Player player) {
-        super(symbol,  positions.getValue0());
-        this.positions = positions;
+    public Castle(EntitySymbol symbol, Pair<Integer, Integer> position, Player player) {
+        super(symbol, position);
         soldiers = new Stack<>();
         this.player = player;
-        soldierPosition = symbol == EntitySymbol.CASTEL ? positions.getValue2() : positions.getValue0();
+        soldierPosition = position;
         soldierPosition = new Pair<>(soldierPosition.getValue0() - 3, soldierPosition.getValue1() - 3);
     }
 
@@ -40,8 +35,8 @@ public final class Castle extends ArtificialEntity {
     }
 
     /**
-     * @see ArtificialEntity
      * @param amount - amount of injury
+     * @see ArtificialEntity
      */
     @Override
     public void damage(int amount) {
@@ -64,11 +59,9 @@ public final class Castle extends ArtificialEntity {
             } else {
                 throw new IllegalArgumentException("No such soldier exists");
             }
-
             soldiers.add(soldier);
         }
         run.test(getSoldiersMoneyCost());
-
         CompletableFuture<Integer> supply = CompletableFuture.supplyAsync(() -> {
             int value = 0;
             for (Soldier soldier : soldiers) {
@@ -78,32 +71,18 @@ public final class Castle extends ArtificialEntity {
                     e.printStackTrace();
                 }
             }
-
             return value;
         }, executor);
-
         supply.whenComplete((a, b) -> executor.shutdownNow());
-
         return supply;
-    }
-
-    public boolean isInsidePosition(Pair<Integer, Integer> pair) {
-        if (pair.equals(positions.getValue0())) return true;
-        if (pair.equals(positions.getValue1())) return true;
-        if (pair.equals(positions.getValue2())) return true;
-        return pair.equals(positions.getValue3());
-    }
-
-    public Quartet<Pair<Integer, Integer>, Pair<Integer, Integer>, Pair<Integer, Integer>, Pair<Integer, Integer>>
-    getPositions() {
-        return positions;
     }
 
     /**
      * Damage attacked soldier
      * TODO Implement logic
      */
-    public void damageOpponents() {}
+    public void damageOpponents() {
+    }
 
     public Stack<Soldier> getSoldiers() {
         return soldiers;
