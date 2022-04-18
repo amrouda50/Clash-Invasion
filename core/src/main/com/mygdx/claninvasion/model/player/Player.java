@@ -174,10 +174,9 @@ public class Player implements Winnable {
      */
     public CompletionStage<Void> trainSoldiers(EntitySymbol entitySymbol)  {
         return castle
-                .trainSoldiers(entitySymbol)
-                .thenApply((val) -> {
-                    wealth.set(wealth.get() - val);
-                    return val;
+                .trainSoldiers(entitySymbol, (cost) -> {
+                    wealth.set( wealth.get() - cost );
+                    return false;
                 })
                 .thenRunAsync(() -> System.out.println("New soldiers were successfully added"));
     }

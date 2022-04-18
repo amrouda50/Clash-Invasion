@@ -76,6 +76,10 @@ public class Soldier extends ArtificialEntity {
         return Soldier.COST;
     }
 
+    public int getCost() {
+        return Soldier.COST;
+    }
+
     /**
      * Train soldier algorithm
      * @return - boolean promise

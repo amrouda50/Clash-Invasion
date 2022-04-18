@@ -43,7 +43,10 @@ public class BattleState extends CommonGameState {
                 game.getPlayerOne().moveSoldier(finalI, finalTempThread);
             });
         }
-        tempThread.start();
+        if(tempThread != null){
+            tempThread.start();
+        }
+
     }
 
     @Override

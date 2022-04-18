@@ -4,8 +4,12 @@ import com.mygdx.claninvasion.model.player.Player;
 import org.javatuples.Pair;
 import org.javatuples.Quartet;
 
+import java.util.Optional;
 import java.util.Stack;
 import java.util.concurrent.*;
+import java.util.function.Function;
+import java.util.function.Predicate;
+
 import static java.util.concurrent.Executors.newFixedThreadPool;
 
 /**
@@ -18,7 +22,7 @@ public final class Castle extends ArtificialEntity {
 
     // topLeft, topRight, bottomRight, bottomLeft
     private Quartet<Pair<Integer, Integer>, Pair<Integer, Integer>, Pair<Integer, Integer>, Pair<Integer, Integer>> positions;
-    private static int AMOUNT_OF_SOLDIERS = 1;
+    public static int AMOUNT_OF_SOLDIERS = 1;
     private Pair<Integer, Integer> soldierPosition;
 
     public Castle(EntitySymbol symbol,  Quartet<Pair<Integer, Integer>, Pair<Integer, Integer>, Pair<Integer, Integer>, Pair<Integer, Integer>> positions, Player player) {
@@ -44,7 +48,12 @@ public final class Castle extends ArtificialEntity {
         this.health.set(this.health.get() - amount);
     }
 
-    public CompletionStage<Integer> trainSoldiers(EntitySymbol entitySymbol) {
+    public int getSoldiersMoneyCost() {
+        Optional<Integer> sum = soldiers.stream().map(Soldier::getCost).reduce(Integer::sum);
+        return sum.orElse(0);
+    }
+
+    public CompletionStage<Integer> trainSoldiers(EntitySymbol entitySymbol, Predicate<Integer> run) {
         ExecutorService executor = newFixedThreadPool(2);
         for (int i = 0; i < AMOUNT_OF_SOLDIERS; i++) {
             Soldier soldier;
@@ -58,6 +67,7 @@ public final class Castle extends ArtificialEntity {
 
             soldiers.add(soldier);
         }
+        run.test(getSoldiersMoneyCost());
 
         CompletableFuture<Integer> supply = CompletableFuture.supplyAsync(() -> {
             int value = 0;
