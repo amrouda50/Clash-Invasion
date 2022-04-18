@@ -4,6 +4,10 @@ import com.mygdx.claninvasion.model.GameModel;
 
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.BrokenBarrierException;
+import java.util.concurrent.CyclicBarrier;
+import java.util.concurrent.LinkedBlockingDeque;
 
 /**
  * This class is responsible for beginning and
@@ -26,24 +30,43 @@ public class BattleState extends CommonGameState {
     }
 
     private void setTimer() {
-        time.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                System.out.println("Current timer 1 " + totalTime);
+        BlockingQueue<Thread> threadBlockingQueue = new LinkedBlockingDeque<>();
+        CyclicBarrier barrier = new CyclicBarrier(2);
+        //    time.schedule(new TimerTask() {
+            //     @Override
+                    //    public void run() {
+        //  System.out.println("Current timer 1 " + totalTime);
+
+        Thread addTrainedSoldiers = new Thread(() -> {
+            while (true) {
+                barrier.reset();
                 game.getPlayerOne().addTrainedToMapSoldier();
-                game.getPlayerOne().moveSoldiers();
+                Thread th = new Thread(() -> {
+                    game.getPlayerOne().moveSoldier(0, barrier);
+                });
 
-                totalTime++;
+                try {
+                    barrier.await();
+                } catch (InterruptedException | BrokenBarrierException e) {
+                    e.printStackTrace();
+                }
             }
-        }, delay, 1000);
+        });
 
-        time.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                game.getPlayerTwo().addTrainedToMapSoldier();
-                game.getPlayerTwo().moveSoldiers();
-            }
-        }, delay, 1000);
+        //            game.getPlayerOne().attackCastle(0);
+        //    game.getPlayerOne().attackCastle();
+        //      totalTime++;
+                //    }
+            //  }, delay, 1000);
+//
+//        time.schedule(new TimerTask() {
+//            @Override
+//            public void run() {
+//                game.getPlayerTwo().addTrainedToMapSoldier();
+//                game.getPlayerTwo().moveSoldiers();
+//                game.getPlayerTwo().attackCastle();
+//            }
+//        }, delay, 1000);
     }
 
     @Override

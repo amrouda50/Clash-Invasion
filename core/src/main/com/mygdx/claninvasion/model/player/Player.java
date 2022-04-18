@@ -175,6 +175,10 @@ public class Player implements Winnable {
     public CompletionStage<Void> trainSoldiers(EntitySymbol entitySymbol)  {
         return castle
                 .trainSoldiers(entitySymbol)
+                .thenApply((val) -> {
+                    wealth.set(wealth.get() - val);
+                    return val;
+                })
                 .thenRunAsync(() -> System.out.println("New soldiers were successfully added"));
     }
 
@@ -200,32 +204,55 @@ public class Player implements Winnable {
                 .thenRunAsync(after);
     }
 
-    public void moveSoldiers() {
+    public void attackCastle(int index) {
+        Soldier soldier = soldiers.get(index);
+        attackCastle(soldier);
+    }
+
+    public void attackCastle(Soldier soldier) {
+        if (soldier.getPosition().equals(opponent.castle.getPosition())) {
+            soldier.attackCastle(opponent.castle);
+        }
+    }
+
+    public void attackCastle() {
         for (Soldier soldier : soldiers) {
-            Pair<Integer, Integer> posSrc = new Pair<>(
-                    soldier.getPosition().getValue0() ,
-                    soldier.getPosition().getValue1()
-                );
-            Pair<Integer, Integer> posDst = new Pair<>(
-               opponent.getCastle().getPosition().getValue0() +1 ,
-               opponent.getCastle().getPosition().getValue1() +1
-            );
-            int positionSrc = game.getWorldMap().transformMapPositionToIndex(posSrc);
-            int positionDest = game.getWorldMap().transformMapPositionToIndex(posDst);
-            List<Integer> paths = game.getWorldMap().getGraph()
-                    .GetShortestDistance( positionSrc, positionDest, 32 * 32);
-            for (int i = paths.size() - 1; i > 0; i--) {
-                game.getWorldMap().mutate(paths.get(i), paths.get(i - 1));
-                Pair<Integer, Integer> newPosition =
-                        game.getWorldMap().transformMapIndexToPosition(paths.get(i) - 1);
-                soldier.changePosition(newPosition);
-                try {
-                    Thread.sleep(300);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+            attackCastle(soldier);
+        }
+    }
+
+    public void moveSoldier(int index, CyclicBarrier barrier) {
+        Soldier soldier = soldiers.get(index);
+        moveSoldier(soldier, barrier);
+    }
+
+    public void moveSoldier(Soldier soldier, CyclicBarrier barrier) {
+
+        Pair<Integer, Integer> posSrc = new Pair<>(
+                soldier.getPosition().getValue0() ,
+                soldier.getPosition().getValue1()
+        );
+        Pair<Integer, Integer> posDst = new Pair<>(
+                opponent.getCastle().getPosition().getValue0() +1 ,
+                opponent.getCastle().getPosition().getValue1() +1
+        );
+        int positionSrc = game.getWorldMap().transformMapPositionToIndex(posSrc);
+        int positionDest = game.getWorldMap().transformMapPositionToIndex(posDst);
+        System.out.println("Source dst"  + positionSrc + "Position dst" + positionDest);
+        List<Integer> paths = game.getWorldMap().getGraph()
+                .GetShortestDistance(positionSrc, positionDest, 32 * 32);
+
+        for (int i = paths.size() - 1; i > 0; i--) {
+            game.getWorldMap().mutate(paths.get(i), paths.get(i - 1));
+            Pair<Integer, Integer> newPosition =
+                    game.getWorldMap().transformMapIndexToPosition(paths.get(i) - 1);
+            soldier.changePosition(newPosition);
+            try {
+                Thread.sleep(300);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
-            System.out.println("done ");
+
         }
     }
 

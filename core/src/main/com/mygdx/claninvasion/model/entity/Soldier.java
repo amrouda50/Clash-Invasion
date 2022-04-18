@@ -14,6 +14,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * @version 0.01
  */
 public class Soldier extends ArtificialEntity {
+    public static int COST = 100;
     private static final int ATTACK = 100;
     private static final int STEP = 1;
     private AtomicBoolean hasTrained = new AtomicBoolean(false);
@@ -65,13 +66,14 @@ public class Soldier extends ArtificialEntity {
         cell.setOccupier(this);
     }
 
-    private boolean trainCall() {
+    private int trainCall() {
         try {
             Thread.sleep(500);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        return hasTrained.getAndSet(true);
+        hasTrained.getAndSet(true);
+        return Soldier.COST;
     }
 
     /**
@@ -79,12 +81,12 @@ public class Soldier extends ArtificialEntity {
      * @return - boolean promise
      * @see CompletableFuture
      */
-    public CompletableFuture<Boolean> train() {
+    public CompletableFuture<Integer> train() {
         return CompletableFuture.supplyAsync(this::trainCall);
     }
 
 
-    public CompletableFuture<Boolean> train(ExecutorService service) {
+    public CompletableFuture<Integer> train(ExecutorService service) {
         return CompletableFuture.supplyAsync(this::trainCall, service);
     }
 }
