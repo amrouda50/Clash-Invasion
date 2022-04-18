@@ -1,7 +1,6 @@
 package com.mygdx.claninvasion.model.entity;
 
 import com.mygdx.claninvasion.model.entity.attacktype.AttackType;
-import com.mygdx.claninvasion.model.entity.attacktype.Attacks;
 import com.mygdx.claninvasion.model.helpers.Direction;
 import com.mygdx.claninvasion.model.level.GameSoldierLevel;
 import com.mygdx.claninvasion.model.level.GameSoldierLevelIterator;
@@ -122,5 +121,9 @@ public abstract class Soldier extends ArtificialEntity {
 
     public void setAttackType(AttackType attackType) {
         this.attackType = attackType;
+    }
+
+    public boolean checkNeighbors(int i) {
+        return false;
     }
 }
