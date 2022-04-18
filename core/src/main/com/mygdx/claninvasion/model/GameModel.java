@@ -6,6 +6,8 @@ import com.mygdx.claninvasion.model.gamestate.StartGameState;
 import com.mygdx.claninvasion.model.map.WorldMap;
 import com.mygdx.claninvasion.model.player.Player;
 
+import java.awt.*;
+
 /**
  * This class is responsible for handling
  * the working of the model package
@@ -56,8 +58,8 @@ public class GameModel implements GameState {
         this.phase = GamePhase.BUILDING;
         this.gameEnded = false;
         this.gamePause = false;
-        playerOne = new Player(this);
-        playerTwo = new Player(this);
+        playerOne = new Player(this , Color.RED);
+        playerTwo = new Player(this ,Color.BLUE );
 
         playerOne.setOpponent(playerTwo);
         playerTwo.setOpponent(playerOne);
@@ -67,8 +69,8 @@ public class GameModel implements GameState {
     }
 
     public void reset() {
-        this.playerOne = new Player(this);
-        this.playerTwo = new Player(this);
+        this.playerOne = new Player(this , Color.RED);
+        this.playerTwo = new Player(this , Color.BLUE );
     }
 
 
