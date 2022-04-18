@@ -262,8 +262,8 @@ public class Player implements Winnable {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            if(j == 2 && x != null){
-                    x.start();
+            if (j == 2 && x != null) {
+                x.start();
             }
             j++;
 

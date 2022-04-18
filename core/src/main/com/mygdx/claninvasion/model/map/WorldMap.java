@@ -108,6 +108,11 @@ public class WorldMap {
     }
 
     public int transformMapPositionToIndex(Pair<Integer, Integer> cellPlace) {
+        try {
+            latch.await();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         WorldCell cell = getCell(cellPlace);
         return worldCells.indexOf(cell);
     }

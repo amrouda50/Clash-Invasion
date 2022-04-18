@@ -1,6 +1,7 @@
 package com.mygdx.claninvasion.model.gamestate;
 
 import com.mygdx.claninvasion.model.GameModel;
+import com.mygdx.claninvasion.model.player.Player;
 import com.mygdx.claninvasion.model.player.WinningState;
 
 import java.util.ArrayList;
@@ -31,18 +32,19 @@ public class BattleState extends CommonGameState {
     public BattleState(GameModel game) {
         super(game);
         changePhase();
-        setTimer();
+        initializePlayerMove(game.getPlayerOne());
+        initializePlayerMove(game.getPlayerTwo());
     }
 
-    private void setTimer() {
+    private void initializePlayerMove(Player player) {
         Thread tempThread = null;
-        int size = game.getPlayerOne().getTrainingSoldiers().size();
+        int size = player.getTrainingSoldiers().size();
         for (int i = size - 1; i >= 0 ; i--) {
             int finalI = i;
             Thread finalTempThread = tempThread;
             tempThread = new Thread(() -> {
-                game.getPlayerOne().addTrainedToMapSoldier();
-                game.getPlayerOne().moveSoldier(finalI, finalTempThread);
+                player.addTrainedToMapSoldier();
+                player.moveSoldier(finalI, finalTempThread);
             });
         }
         if (tempThread != null) {
