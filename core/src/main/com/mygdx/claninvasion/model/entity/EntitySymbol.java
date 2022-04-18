@@ -7,8 +7,8 @@ package com.mygdx.claninvasion.model.entity;
  */
 public enum EntitySymbol {
     BARBARIAN("barbarian", 'B', "Solider", 17),
-    CASTEL("castel", 'C', "castel", 9),
-    CASTEL_REVERSED("castel-reverse", 'C', "castel reverse", 3),
+    CASTEL("blue-castel", 'C', "blue-castel", 23),
+    CASTEL_REVERSED("red-castel", 'C', "red-Castel", 24),
     STONE("Stone", 'S', "stone", 19),
     DRAGON("Dragon", 'D', "dragon", 15),
     TREE("tree", 'T', "Tree", 2) ,

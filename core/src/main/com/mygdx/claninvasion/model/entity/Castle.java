@@ -15,18 +15,14 @@ import static java.util.concurrent.Executors.newFixedThreadPool;
 public final class Castle extends ArtificialEntity {
     private final Player player;
     private final Stack<Soldier> soldiers;
-
-    // topLeft, topRight, bottomRight, bottomLeft
-    private Quartet<Pair<Integer, Integer>, Pair<Integer, Integer>, Pair<Integer, Integer>, Pair<Integer, Integer>> positions;
     private static int AMOUNT_OF_SOLDIERS = 1;
     private Pair<Integer, Integer> soldierPosition;
 
-    public Castle(EntitySymbol symbol,  Quartet<Pair<Integer, Integer>, Pair<Integer, Integer>, Pair<Integer, Integer>, Pair<Integer, Integer>> positions, Player player) {
-        super(symbol,  positions.getValue0());
-        this.positions = positions;
+    public Castle(EntitySymbol symbol,  Pair<Integer, Integer> position, Player player) {
+        super(symbol,  position);
         soldiers = new Stack<>();
         this.player = player;
-        soldierPosition = symbol == EntitySymbol.CASTEL ? positions.getValue2() : positions.getValue0();
+        soldierPosition = position;
         soldierPosition = new Pair<>(soldierPosition.getValue0() - 3, soldierPosition.getValue1() - 3);
     }
 
@@ -66,18 +62,6 @@ public final class Castle extends ArtificialEntity {
         supply.whenComplete((a, b) -> executor.shutdownNow());
 
         return supply;
-    }
-
-    public boolean isInsidePosition(Pair<Integer, Integer> pair) {
-        if (pair.equals(positions.getValue0())) return true;
-        if (pair.equals(positions.getValue1())) return true;
-        if (pair.equals(positions.getValue2())) return true;
-        return pair.equals(positions.getValue3());
-    }
-
-    public Quartet<Pair<Integer, Integer>, Pair<Integer, Integer>, Pair<Integer, Integer>, Pair<Integer, Integer>>
-    getPositions() {
-        return positions;
     }
 
     /**
