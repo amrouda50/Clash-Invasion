@@ -53,4 +53,9 @@ public class BattleState extends CommonGameState {
     public void changeState() {
         this.game.setGameState(new EndGameState(game));
     }
+
+    @Override
+    public boolean isInteractive() {
+        return false;
+    }
 }

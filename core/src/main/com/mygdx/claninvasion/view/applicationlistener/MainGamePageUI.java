@@ -168,6 +168,12 @@ public final class MainGamePageUI implements ApplicationListener {
     }
 
     private void updateActiveDropdown() {
+        if (!app.getModel().isInteractive()) {
+            playerTwoDropdown.setDisabled(true);
+            playerOneDropdown.setDisabled(true);
+            return;
+        }
+
         if (app.getModel().getActivePlayer().equals(app.getModel().getPlayerOne())) {
             playerOneDropdown.setDisabled(false);
             playerTwoDropdown.setDisabled(true);
@@ -183,8 +189,8 @@ public final class MainGamePageUI implements ApplicationListener {
     }
 
     private void addPlayerListener(Player player, SelectBox<String> selectBox) {
-        Table table = app.getModel().getActivePlayer().equals(app.getModel().getPlayerOne()) ?
-                tableOne : tableTwo;
+        Table table = app.getModel().getActivePlayer().equals(app.getModel().getPlayerOne())
+                ? tableOne : tableTwo;
         selectBox.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {

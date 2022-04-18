@@ -129,6 +129,11 @@ public class GameModel implements GameState {
         gameState.updateState(delta, runnable);
     }
 
+    @Override
+    public boolean isInteractive() {
+        return gameState.isInteractive();
+    }
+
 
     public Player getActivePlayer() {
         return activePlayer;
