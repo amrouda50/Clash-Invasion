@@ -1,12 +1,8 @@
 package com.mygdx.claninvasion.model.entity;
 
-import com.badlogic.gdx.physics.box2d.World;
-import com.mygdx.claninvasion.model.Globals;
 import com.mygdx.claninvasion.model.entity.attacktype.AttackType;
 import com.mygdx.claninvasion.model.entity.attacktype.AttackTypeArcher;
 import com.mygdx.claninvasion.model.entity.attacktype.Attacks;
-import com.mygdx.claninvasion.model.level.GameSoldierLevelIterator;
-import com.mygdx.claninvasion.model.level.GameTowerLevel;
 import com.mygdx.claninvasion.model.level.Level;
 import com.mygdx.claninvasion.model.level.LevelIterator;
 import com.mygdx.claninvasion.model.level.Levels;
@@ -16,7 +12,6 @@ import java.util.concurrent.atomic.AtomicLong;
 import com.mygdx.claninvasion.model.map.WorldCell;
 import org.javatuples.Pair;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
@@ -39,14 +34,9 @@ public class Tower extends ArtificialEntity implements Defensible {
     }
 
     public AttackType attackType;
-    int towerLevel;
-    public RomanFort romanFort;
-    public StrategicTower strategicTower;
-    public HillTower hillTower;
-
     public WorldCell worldCell;
 
-    public Tower(EntitySymbol entitySymbol, Pair<Integer, Integer> position, int towerLevel) {
+    public Tower(EntitySymbol entitySymbol, Pair<Integer, Integer> position) {
         super(entitySymbol, position);
 
         level = Levels.createTowerLevelIterator();
@@ -102,6 +92,18 @@ public class Tower extends ArtificialEntity implements Defensible {
     }
 
 
+    public boolean checkNeighbors(int radius) {
+        //Implementation to check the neigbors within a radius
+        return false;
+    }
 
+    public List<Pair<Integer,Integer>> getNeighbors() {
+        //Implementation to get neighbors from certain point
+        return null;
+    }
+
+    public void damageEnemy(Pair<Integer, Integer> neighbor) {
+
+    }
 }
 

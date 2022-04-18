@@ -9,9 +9,5 @@ public class AttackTypeSpear extends AttackTypeSoldier{
      * Overrides base attack implementation
      * @see AttackType
      */
-    @Override
-    public void attack() {
-        super.attack();
-        //return false;
-    }
+
 }

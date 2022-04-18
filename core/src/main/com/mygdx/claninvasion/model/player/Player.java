@@ -293,7 +293,8 @@ public class Player implements Winnable {
         for (Tower tower : towers) {
             List<Pair<Integer,Integer>> neighbors  =  game.getWorldMap().getNeighborsOfPoint(tower.getPositionX(),tower.getPositionY());
             //tower.attack(neighbors, opponent.soldiers);
-            tower.getAttackType().attack();
+            System.out.println("Tower attack type is " + tower.getAttackType().getName());
+            tower.getAttackType().attack(tower);
         }
     }
 

@@ -1,4 +1,6 @@
 package com.mygdx.claninvasion.model.entity.attacktype;
+import com.mygdx.claninvasion.model.entity.Tower;
+
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -17,7 +19,7 @@ public class AttackTypePoison extends AttackTypeTower{
      * @see AttackType
      */
     @Override
-    public void attack() {
+    public void attack(Tower tower) {
         poisonAttackStart = true;
 
         timer.schedule(new TimerTask() {
@@ -26,7 +28,7 @@ public class AttackTypePoison extends AttackTypeTower{
             public void run() {
                 count++;
                 if( count < 3) {
-                    decreaseHealth();
+                    //decreaseHealth();
                 } else {
                     stopTimer();
                 }
