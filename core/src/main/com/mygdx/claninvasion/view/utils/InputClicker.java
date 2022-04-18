@@ -13,20 +13,20 @@ import org.javatuples.Pair;
 
 import java.util.List;
 
-public class InputClicker  implements  RunnableTouchEvent{
-    private ClanInvasion app;
-    private MainGamePageUI mainGamePageUI;
+public class InputClicker  implements  RunnableTouchEvent {
+    private final ClanInvasion app;
+    private final MainGamePageUI mainGamePageUI;
+    private final List<HealthBar> hpBars;
     public static boolean enabled = false;
-    private List<HealthBar> hpBars;
 
-    public  InputClicker(ClanInvasion app , MainGamePageUI mainGamePageUI, List<HealthBar> hpBars) {
+    public InputClicker(ClanInvasion app , MainGamePageUI mainGamePageUI, List<HealthBar> hpBars) {
         this.app = app;
         this.mainGamePageUI = mainGamePageUI;
         this.hpBars = hpBars;
     }
     @Override
     public void run(Vector3 mousePosition) {
-        if(enabled) {
+        if (enabled) {
             Vector2 mouseOrtho = new IsometricToOrthogonalAdapt(new Vector2(mousePosition.x, mousePosition.y)).getPoint();
             Vector3 mouseOrtho3 = new Vector3(mouseOrtho.x + WorldCell.getTransformWidth(), mouseOrtho.y - WorldCell.getTransformWidth(), 0);
 

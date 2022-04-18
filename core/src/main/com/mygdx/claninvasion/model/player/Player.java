@@ -8,6 +8,7 @@ import org.javatuples.Pair;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Stack;
 import java.util.UUID;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -22,6 +23,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 
 public class Player implements Winnable {
+    public static final int INITIAL_WEALTH = 1000;
     public static final int MAX_GOLDMINE = 3;
     /**
      * Opponent of the active player
@@ -73,7 +75,7 @@ public class Player implements Winnable {
         miningFarms = Collections.synchronizedList(new CopyOnWriteArrayList<>());
         soldiers = Collections.synchronizedList(new CopyOnWriteArrayList<>());
         towers = Collections.synchronizedList(new CopyOnWriteArrayList<>());
-        wealth = new AtomicInteger(0);
+        wealth = new AtomicInteger(INITIAL_WEALTH);
         executorService = Executors.newFixedThreadPool(MAX_GOLDMINE + 1);
         coinProduceQueue = new LinkedBlockingDeque<>(MAX_GOLDMINE);
         executorService.execute(this::consumeGold);
@@ -88,6 +90,7 @@ public class Player implements Winnable {
         MiningFarm farm = (MiningFarm) game.getWorldMap().createMapEntity(EntitySymbol.MINING, cell, coinProduceQueue);
         executorService.execute(farm::startMining);
         miningFarms.add(farm);
+        wealth.set(wealth.get() - MiningFarm.COST);
         return farm;
     }
 
@@ -147,6 +150,7 @@ public class Player implements Winnable {
     public Tower buildTower(WorldCell cell) {
          Tower tower = (Tower) game.getWorldMap().createMapEntity(EntitySymbol.TOWER, cell, null);
          towers.add(tower);
+         wealth.set(wealth.get() - Tower.COST);
          return tower;
     }
 
@@ -168,18 +172,22 @@ public class Player implements Winnable {
      * This will add more soldiers
      * to player's army
      */
-    public CompletionStage<Void> addSoldiers()  {
+    public CompletionStage<Void> trainSoldiers(EntitySymbol entitySymbol)  {
         return castle
-                .trainSoldiers()
-                .thenRun(this::addTrainedToMapSoldiers)
+                .trainSoldiers(entitySymbol)
                 .thenRunAsync(() -> System.out.println("New soldiers were successfully added"));
+    }
+
+    public void addTrainedToMapSoldier() {
+        if (castle.getSoldiers().empty()) return;
+        Soldier soldier = castle.getSoldiers().pop();
+        soldiers.add((Soldier) game.getWorldMap().createMapEntity(soldier.getSymbol(), soldier.getPosition(), null));
     }
 
     public void addTrainedToMapSoldiers() {
         while (!castle.getSoldiers().empty()) {
             Soldier soldier = castle.getSoldiers().pop();
             soldiers.add((Soldier) game.getWorldMap().createMapEntity(soldier.getSymbol(), soldier.getPosition(), null));
-            System.out.println("Soldier added " + soldiers.size());
         }
     }
 
@@ -187,8 +195,8 @@ public class Player implements Winnable {
      * This will add more soldiers
      * to player's army
      */
-    public void addSoldiers(Runnable after)  {
-        addSoldiers()
+    public void trainSoldiers(EntitySymbol entitySymbol, Runnable after)  {
+        trainSoldiers(entitySymbol)
                 .thenRunAsync(after);
     }
 
@@ -204,36 +212,20 @@ public class Player implements Winnable {
             );
             int positionSrc = game.getWorldMap().transformMapPositionToIndex(posSrc);
             int positionDest = game.getWorldMap().transformMapPositionToIndex(posDst);
-            List<Integer> paths = game.getWorldMap().getGraph().GetShortestDistance( positionSrc, positionDest, 32*32);
-                for (int i = paths.size() - 1; i > 0; i--) {
-                    game.getWorldMap().mutate(paths.get(i), paths.get(i-1));
-//                    System.out.println("delay " + getMap().getCell(paths.get(i)).getOccupier());
-                    Pair<Integer, Integer> newPosition = game.getWorldMap().transformMapIndexToPosition(paths.get(i) - 1);
-//                    System.out.println("new position" + newPosition);
-                    soldier.changePosition(newPosition);
-                    try {
-                        Thread.sleep(300);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-
-//                    System.out.println("done ");
+            List<Integer> paths = game.getWorldMap().getGraph()
+                    .GetShortestDistance( positionSrc, positionDest, 32 * 32);
+            for (int i = paths.size() - 1; i > 0; i--) {
+                game.getWorldMap().mutate(paths.get(i), paths.get(i - 1));
+                Pair<Integer, Integer> newPosition =
+                        game.getWorldMap().transformMapIndexToPosition(paths.get(i) - 1);
+                soldier.changePosition(newPosition);
+                try {
+                    Thread.sleep(300);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
                 }
             }
-    }
-
-    public void attackAndMove(Pair<Integer, Integer> position) {
-        for (Soldier soldier : soldiers) {
-            soldier.changePosition(position);
-            soldier.attackCastle(opponent.castle);
-        }
-    }
-
-    public void defendAndAttack(Fireable fireable) {
-        for (Tower tower : towers) {
-            for (Soldier soldier : opponent.soldiers) {
-                tower.attack(soldier, fireable);
-            }
+            System.out.println("done ");
         }
     }
 
@@ -288,4 +280,35 @@ public class Player implements Winnable {
         return castle.getHealthPercentage();
     }
 
+    public boolean canCreateTower() {
+        return getWealth() >= Tower.COST;
+    }
+
+    public boolean canCreateDragon() {
+        return getWealth() >= Dragon.COST;
+    }
+
+    public boolean canCreateBarbarian() {
+        return getWealth() >= Barbarian.COST;
+    }
+
+    public boolean canCreateMining() {
+        return getWealth() >= MiningFarm.COST;
+    }
+
+    public boolean canUpdateLevel() {
+        return getWealth() >= 1000;
+    }
+
+    public Stack<Soldier> getTrainingSoldiers() {
+        return castle.getSoldiers();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        return ((Player) obj).id == this.id;
+    }
 }

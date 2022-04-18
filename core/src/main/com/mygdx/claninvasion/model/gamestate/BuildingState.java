@@ -14,13 +14,16 @@ import java.util.TimerTask;
  * @author Dinari
  */
 public class BuildingState extends CommonGameState implements Building {
+    private static final int COUNTER_INIT = 10;
+    private static final int END_PHASE_TIME = 20;
     private float timeSeconds = 0f;
     private final float diff = 1f;
-    private int counter = 60;
+    private int counter = COUNTER_INIT;
     private int totalTime = 0;
+    private Timer time;
 
     private void setTimer() {
-        Timer time = new Timer();
+        time = new Timer();
         time.schedule(new TimerTask() {
             @Override
             public void run() {
@@ -42,16 +45,6 @@ public class BuildingState extends CommonGameState implements Building {
         this.game.setGameState(new BattleState(game));
     }
 
-    /**
-     * Changes to the next phase
-     */
-    @Override
-    public void changePhase() {
-        if(this.game.getPhase() == GamePhase.BUILDING) {
-            this.game.setPhase(GamePhase.ATTACK);
-        }
-    }
-
     @Override
     public void initState() {
         setTimer();
@@ -63,10 +56,17 @@ public class BuildingState extends CommonGameState implements Building {
             totalTime++;
             counter--;
             runnable.run();
-        } else if (counter == 0 && totalTime <= 60) {
-            counter = 30;
-        } else if (totalTime > 60) {
-            changePhase();
+        }
+
+        if (totalTime > END_PHASE_TIME) {
+            time.purge();
+            time.cancel();
+            changeState();
+        }
+
+        if (counter == 0) {
+            changeTurn();
+            counter = COUNTER_INIT;
         }
     }
 
@@ -82,5 +82,10 @@ public class BuildingState extends CommonGameState implements Building {
     @Override
     public int getCounter() {
         return counter;
+    }
+
+    @Override
+    public void changePhase() {
+        game.setPhase(GamePhase.BUILDING);
     }
 }

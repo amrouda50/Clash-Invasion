@@ -44,10 +44,18 @@ public final class Castle extends ArtificialEntity {
         this.health.set(this.health.get() - amount);
     }
 
-    public CompletionStage<Boolean> trainSoldiers() {
+    public CompletionStage<Boolean> trainSoldiers(EntitySymbol entitySymbol) {
         ExecutorService executor = newFixedThreadPool(2);
         for (int i = 0; i < AMOUNT_OF_SOLDIERS; i++) {
-            Soldier soldier = new Soldier(EntitySymbol.BARBARIAN, soldierPosition);
+            Soldier soldier;
+            if (entitySymbol == EntitySymbol.BARBARIAN) {
+                soldier = new Barbarian(EntitySymbol.BARBARIAN, soldierPosition);
+            } else if (entitySymbol == EntitySymbol.DRAGON) {
+                soldier = new Dragon(EntitySymbol.DRAGON, soldierPosition);
+            } else {
+                throw new IllegalArgumentException("No such soldier exists");
+            }
+
             soldiers.add(soldier);
         }
 

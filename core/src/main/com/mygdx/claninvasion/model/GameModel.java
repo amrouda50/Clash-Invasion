@@ -140,7 +140,7 @@ public class GameModel implements GameState {
      * Changes the active player
      */
     public void changeActivePlayer() {
-        if (activePlayer.getId().equals(playerOne.getId())) {
+        if (activePlayer.equals(playerOne)) {
             activePlayer = playerTwo;
         } else {
             activePlayer = playerOne;
