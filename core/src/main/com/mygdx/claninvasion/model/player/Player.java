@@ -1,22 +1,18 @@
 package com.mygdx.claninvasion.model.player;
 
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.graphics.Color;
 import com.mygdx.claninvasion.model.GameModel;
 import com.mygdx.claninvasion.model.entity.*;
 import com.mygdx.claninvasion.model.map.WorldCell;
 import com.mygdx.claninvasion.model.map.WorldMap;
 import org.javatuples.Pair;
 
-import java.awt.*;
 import java.util.Collections;
 import java.util.List;
 import java.util.Stack;
 import java.util.UUID;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
-
-import static java.awt.Color.*;
 
 /**
  * This class is responsible for handling
@@ -359,5 +355,9 @@ public class Player implements Winnable {
             return false;
         }
         return ((Player) obj).id == this.id;
+    }
+
+    public Color getColor() {
+        return color;
     }
 }
