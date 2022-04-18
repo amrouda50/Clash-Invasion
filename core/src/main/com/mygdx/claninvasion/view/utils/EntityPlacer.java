@@ -50,6 +50,9 @@ public class EntityPlacer implements Placer {
 
     private void setCastleCellOccupier(WorldMap map, Castle castle) {
         WorldCell cell = map.getCell(castle.getPosition());
+        if (cell == null)  {
+            return;
+        }
         cell.setOccupier(castle);
     }
 

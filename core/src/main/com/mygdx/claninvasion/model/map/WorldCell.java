@@ -1,5 +1,6 @@
 package com.mygdx.claninvasion.model.map;
 
+import com.mygdx.claninvasion.model.entity.Soldier;
 import org.javatuples.Pair;
 import org.javatuples.Quartet;
 
@@ -10,6 +11,9 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.mygdx.claninvasion.model.adapters.IsometricToOrthogonalAdapt;
 import com.mygdx.claninvasion.model.entity.Entity;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /** World Cell represents the entity position at the current time.
  */
@@ -23,7 +27,7 @@ public class WorldCell {
     /**
      * Entity which occupies the place
      */
-    private Entity occupier;
+    private List<Entity> occupier;
     /**
      * Texture for drawing
      */
@@ -54,6 +58,7 @@ public class WorldCell {
     }
 
     private void init(Pair<Float, Float> worldPos, Pair<Integer, Integer> mapPos, TextureRegion textureRegion) {
+        occupier = new ArrayList<>();
         worldPosition = new IsometricToOrthogonalAdapt(worldPos).getPoint();
         mapPosition = mapPos;
         texture = textureRegion;
@@ -99,7 +104,7 @@ public class WorldCell {
      * @param newOccupier - entity which will be at this place
      */
     public void changeOccupier(Entity newOccupier) {
-        this.occupier = newOccupier;
+        this.occupier.set(0,  newOccupier);
     }
 
     /**
@@ -124,15 +129,29 @@ public class WorldCell {
     }
 
     public Entity getOccupier() {
-        return occupier;
+        if (occupier.size() == 0) {
+            return null;
+        }
+        return occupier.get(0);
     }
 
     public boolean hasOccupier() {
         return occupier != null;
     }
 
+    public void setOccupier(Entity occupier, boolean multiple) {
+        if (multiple) {
+            this.occupier.add(occupier);
+        } else if (this.occupier.size() > 0) {
+            this.occupier.set(0, occupier);
+        } else {
+            this.occupier.add(occupier);
+        }
+
+    }
+
     public void setOccupier(Entity occupier) {
-        this.occupier = occupier;
+        this.setOccupier(occupier, occupier instanceof Soldier);
     }
 
     public TextureRegion getTexture() {
@@ -151,19 +170,6 @@ public class WorldCell {
      */
     public static int getTransformWidth() {
         return WorldCell.WIDTH + (WorldCell.WIDTH  / 2);
-    }
-
-    /**
-     * @param x - Adds an Entity to the Occupier variable of the worldCell
-     * 
-     **/
-    public void addEntity(Entity x) {
-        if (x.getSymbol() == null) {
-            removeEntity();
-        } else {
-            this.occupier = x;
-        }
-      //  System.out.println(x.getEntitySymbol());
     }
 
     /**
