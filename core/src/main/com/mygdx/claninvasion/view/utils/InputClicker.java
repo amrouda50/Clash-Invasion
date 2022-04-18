@@ -6,19 +6,22 @@ import com.mygdx.claninvasion.ClanInvasion;
 import com.mygdx.claninvasion.model.adapters.IsometricToOrthogonalAdapt;
 import com.mygdx.claninvasion.model.entity.ArtificialEntity;
 import com.mygdx.claninvasion.model.entity.EntitySymbol;
+import com.mygdx.claninvasion.model.entity.MiningFarm;
+import com.mygdx.claninvasion.model.entity.Tower;
+import com.mygdx.claninvasion.model.entity.attacktype.Attacks;
 import com.mygdx.claninvasion.model.map.WorldCell;
 import com.mygdx.claninvasion.view.actors.HealthBar;
-import com.mygdx.claninvasion.view.screens.MainGamePage;
+import com.mygdx.claninvasion.view.applicationlistener.MainGamePageUI;
 import org.javatuples.Pair;
 
 public class InputClicker implements RunnableTouchEvent {
     private final ClanInvasion app;
-    private final MainGamePage page;
+    private final MainGamePageUI mainGamePageUI;
     public static boolean enabled = false;
 
-    public InputClicker(ClanInvasion app , MainGamePage mainGame) {
+    public InputClicker(ClanInvasion app , MainGamePageUI mainGamePageUI) {
         this.app = app;
-        this.page = mainGame;
+        this.mainGamePageUI = mainGamePageUI;
     }
 
     @Override
@@ -31,9 +34,11 @@ public class InputClicker implements RunnableTouchEvent {
                 if (worldCell.contains(mouseOrtho3)) {
                     HealthBar healthBar = new HealthBar(app.getCurrentPlayer().getColor());
                     ArtificialEntity artificialEntity = null;
-                    if (worldCell.getOccupier() == null && EntitySymbol.TOWER == page.getChosenSymbol()) {
+                    if (worldCell.getOccupier() == null && EntitySymbol.TOWER == mainGamePageUI.getChosenSymbol()) {
                         artificialEntity = app.getCurrentPlayer().buildTower(worldCell);
-                    } else if (worldCell.getOccupier() == null && EntitySymbol.MINING == page.getChosenSymbol()) {
+                        Tower tower= (Tower) app.getCurrentPlayer().getTower(worldCell);
+                        tower.setAttackType(Attacks.ARCHER);
+                    } else if (worldCell.getOccupier() == null && EntitySymbol.MINING == mainGamePageUI.getChoosenSymbol()) {
                         artificialEntity = app.getCurrentPlayer().createNewMining(worldCell);
                     }
 

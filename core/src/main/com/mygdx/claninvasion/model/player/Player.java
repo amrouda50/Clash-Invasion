@@ -207,6 +207,14 @@ public class Player implements Winnable {
     }
 
     public void removeDeadMiningFarm() {
+    public Entity getTower(WorldCell cell) {
+        if(cell.hasOccupier()) {
+            return cell.getOccupier();
+        }
+        return null;
+    }
+
+    public void removeDead() {
         for (MiningFarm farm : miningFarms) {
             if (!farm.isAlive()) {
                 miningFarms.remove(farm);
@@ -284,7 +292,7 @@ public class Player implements Winnable {
         System.out.println("Towers have started to attack");
         for (Tower tower : towers) {
             List<Pair<Integer,Integer>> neighbors  =  game.getWorldMap().getNeighborsOfPoint(tower.getPositionX(),tower.getPositionY());
-            tower.attack(neighbors, opponent.soldiers);
+            //tower.attack(neighbors, opponent.soldiers);
         }
     }
 

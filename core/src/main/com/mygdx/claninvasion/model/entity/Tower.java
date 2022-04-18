@@ -3,6 +3,8 @@ package com.mygdx.claninvasion.model.entity;
 import com.badlogic.gdx.physics.box2d.World;
 import com.mygdx.claninvasion.model.Globals;
 import com.mygdx.claninvasion.model.entity.attacktype.AttackType;
+import com.mygdx.claninvasion.model.entity.attacktype.AttackTypeArcher;
+import com.mygdx.claninvasion.model.entity.attacktype.Attacks;
 import com.mygdx.claninvasion.model.level.GameSoldierLevelIterator;
 import com.mygdx.claninvasion.model.level.GameTowerLevel;
 import com.mygdx.claninvasion.model.level.Level;
@@ -25,6 +27,17 @@ public class Tower extends ArtificialEntity implements Defensible {
     public static int COST = 200;
 
     public Level level;
+
+    public AttackType getAttackType() {
+        return attackType;
+    }
+
+    public void setAttackType(Attacks attackType) {
+        if(attackType == Attacks.ARCHER) {
+            this.attackType = new AttackTypeArcher();
+        }
+    }
+
     public AttackType attackType;
     int towerLevel;
     public RomanFort romanFort;
@@ -88,11 +101,7 @@ public class Tower extends ArtificialEntity implements Defensible {
         artificialEntity.setDecreaseHealth(85);
     }
 
-    public void attack(List<Pair<Integer,Integer>> neighbors, List<Soldier> soldiers) {
-            if(towerLevel == 0) {
-                System.out.println("Tower level is level0."); //Assuming Roman Fort is tower level 0 as it could not be confirmed
-            }
-    }
+
 
 }
 
