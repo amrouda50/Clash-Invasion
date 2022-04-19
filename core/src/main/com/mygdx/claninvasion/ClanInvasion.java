@@ -13,6 +13,7 @@ import com.mygdx.claninvasion.view.screens.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 
 /**
  * Application entrance class.
@@ -52,14 +53,18 @@ public class ClanInvasion extends Game {
         font = new BitmapFont();
         addMusic();
 
-        this.gamePages = new ArrayList<>(
-                Arrays.asList(
-                        new GameEndedPage(this),
-                        new MainGamePage(this),
-                        new ConfigureGameScreen(this),
-                        new LoadingScreen(this),
-                        new SplashScreen(this)
-                )
+        this.gamePages = Globals.DEBUG
+        ? new ArrayList<>(
+            Collections.singletonList(new MainGamePage(this))
+        )
+        : new ArrayList<>(
+            Arrays.asList(
+                new GameEndedPage(this),
+                new MainGamePage(this),
+                new ConfigureGameScreen(this),
+                new LoadingScreen(this),
+                new SplashScreen(this)
+            )
         );
 
         initScreens();
@@ -79,7 +84,7 @@ public class ClanInvasion extends Game {
 
     private void addMusic() {
         music = Gdx.audio.newMusic(Gdx.files.internal("music/SplashScreenMusic.mp3"));
-        music.setVolume(1.0f);
+        music.setVolume(0.f);
         music.setLooping(true);
         music.play();
     }

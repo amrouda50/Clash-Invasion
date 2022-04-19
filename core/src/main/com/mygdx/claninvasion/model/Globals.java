@@ -14,6 +14,11 @@ public class Globals {
      * Initial virtual height of the screen
      */
     public static final int V_HEIGHT = 420;
+    /**
+     * Change to true if you want to debug main screen page
+     */
+    public static final boolean DEBUG = true;
+    // private static final boolean DEGUG = false;
 
     private Globals() {
     }

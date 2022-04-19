@@ -7,6 +7,7 @@ import com.badlogic.gdx.maps.tiled.*;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.mygdx.claninvasion.ClanInvasion;
+import com.mygdx.claninvasion.model.Globals;
 import com.mygdx.claninvasion.model.entity.*;
 import com.mygdx.claninvasion.view.actors.HealthBar;
 import com.mygdx.claninvasion.view.applicationlistener.FireAnimated;
@@ -61,7 +62,11 @@ public class MainGamePage implements GamePage, UiUpdatable {
      */
     @Override
     public void show() {
-        app.getModel().changePhase();
+        if (Globals.DEBUG) {
+            app.getModel().changeState();
+        } else {
+            app.getModel().changePhase();
+        }
 
         app.getCamera().update();
         inputProcessor = new GameInputProcessor(app.getCamera(), new InputClicker(app ,mainGamePageUI, hpBars));
