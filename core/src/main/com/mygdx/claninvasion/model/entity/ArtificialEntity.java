@@ -19,6 +19,7 @@ import org.javatuples.Pair;
  */
 public abstract class ArtificialEntity extends Entity {
     protected AtomicInteger health;
+    protected int initHealth;
     protected HealthBar hpBar;
     protected LevelIterator<? extends Level> level;
     protected AtomicInteger reactionTime;
@@ -29,12 +30,14 @@ public abstract class ArtificialEntity extends Entity {
         super(entitySymbol, position);
         level = Levels.createLevelIterator();
         init();
+        initHealth = health.get();
     }
 
     ArtificialEntity(LevelIterator<Level> levelIterator) {
         super();
         level = levelIterator;
         init();
+        initHealth = health.get();
     }
 
     private void init() {
@@ -115,11 +118,13 @@ public abstract class ArtificialEntity extends Entity {
     }
 
     public float getHealthPercentage() {
-        return (health.get() / (float) level.current().getMaxHealth()) * 100;
+        return health.get() < 0
+                ? 0 :
+                (health.get() / (float) initHealth) * 100;
     }
 
     public AtomicLong getPercentage() {
-        return new AtomicLong((health.get() / (long) level.current().getMaxHealth()) * 100);
+        return new AtomicLong(health.get() / (long) initHealth * 100);
     }
 
     public boolean isAlive() {

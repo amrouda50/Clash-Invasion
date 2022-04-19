@@ -14,7 +14,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * @version 0.01
  */
 public abstract class Soldier extends ArtificialEntity {
-    private static final int ATTACK = 100;
+    private static final int ATTACK = 5;
     private static final int STEP = 1;
     private AtomicBoolean hasTrained = new AtomicBoolean(false);
 

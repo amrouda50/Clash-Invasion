@@ -142,7 +142,7 @@ public final class MainGamePageUI implements ApplicationListener {
         return new ArrayList<>(Arrays.asList(
                 new Pair<>(player.getName(), player.getColor()),
                 new Pair<>(Float.toString(player.getWealth()), Color.BLACK),
-                new Pair<>("Health: " + player.getHealth(), Color.BLACK),
+                new Pair<>("Health: " + (int)player.getHealth(), Color.BLACK),
                 new Pair<>(player.getTowers().size() + " towers", Color.BLACK),
                 new Pair<>(player.getTrainingSoldiers().size() + " soldiers", Color.BLACK),
                 new Pair<>("Level " + player.getCastle().getLevel().getLevelName(), Color.BLACK)));

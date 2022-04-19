@@ -19,6 +19,7 @@ public class EndGameState extends CommonGameState {
     public EndGameState(GameModel game) {
         super(game);
         this.game.setGameEnded(true);
+        System.out.println("Game ended");
     }
 
     /**

@@ -6,6 +6,7 @@ import org.javatuples.Pair;
 import java.util.Optional;
 import java.util.Stack;
 import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Predicate;
 
 import static java.util.concurrent.Executors.newFixedThreadPool;
@@ -22,6 +23,8 @@ public final class Castle extends ArtificialEntity {
 
     public Castle(EntitySymbol symbol, Pair<Integer, Integer> position, Player player) {
         super(symbol, position);
+        health = new AtomicInteger(level.current().getMaxHealth() + 1000);
+        initHealth = health.get();
         soldiers = new Stack<>();
         this.player = player;
         soldierPosition = position;

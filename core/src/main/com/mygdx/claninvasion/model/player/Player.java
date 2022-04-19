@@ -226,9 +226,7 @@ public class Player implements Winnable {
     }
 
     public void attackCastle(Soldier soldier) {
-        if (soldier.getPosition().equals(opponent.castle.getPosition())) {
-            soldier.attackCastle(opponent.castle);
-        }
+        soldier.attackCastle(opponent.castle);
     }
 
     public void attackCastle() {
@@ -311,6 +309,16 @@ public class Player implements Winnable {
                 soldier.changePosition(newPosition);
                 return paths.get(paths.size() - 2);
             }
+        } catch (ArrayIndexOutOfBoundsException e) {
+            synchronized (sync) {
+                try {
+                    Thread.sleep(movingSpeed);
+                } catch (InterruptedException interruptedException) {
+                    interruptedException.printStackTrace();
+                }
+            }
+            moveSoldier(soldier, positionSrc, positionDest, movingSpeed, ++callTimes);
+            return positionSrc;
         } catch (InterruptedException e) {
             e.printStackTrace();
             return positionSrc;
@@ -348,7 +356,7 @@ public class Player implements Winnable {
 
     @Override
     public boolean hasWon() {
-        return castle.isAlive();
+        return isAlive();
     }
 
     @Override
@@ -394,6 +402,14 @@ public class Player implements Winnable {
 
     public Stack<Soldier> getTrainingSoldiers() {
         return castle.getSoldiers();
+    }
+
+    public Player getOpponent() {
+        return opponent;
+    }
+
+    public boolean isAlive() {
+        return castle.isAlive();
     }
 
     @Override
