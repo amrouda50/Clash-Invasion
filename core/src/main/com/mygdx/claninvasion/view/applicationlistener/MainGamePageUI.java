@@ -24,22 +24,22 @@ import java.util.*;
 import java.util.List;
 
 public final class MainGamePageUI implements ApplicationListener {
-    private final Stage uiStage;
-    private final Texture backgroundTexture = new Texture("background/background.jpg");
-    private final SelectBox<String> playerOneDropdown;
-    private final SelectBox<String> playerTwoDropdown;
+    private Stage uiStage;
+    private Texture backgroundTexture = new Texture("background/background.jpg");
+    private SelectBox<String> playerOneDropdown;
+    private SelectBox<String> playerTwoDropdown;
     private final TextureAtlas atlas = new TextureAtlas("skin/skin/uiskin.atlas");
     private final Skin atlasSkin = new Skin(atlas);
     private final Skin jsonSkin = new Skin(Gdx.files.internal("skin/skin/uiskin.json"));
     private final OrthographicCamera camera;
-    private final ShapeRenderer shapeRenderer;
-    private final Label timeLabel;
-    private final Label phaseLabel;
-    private final Label turnLabel;
-    private final ClanInvasion app;
+    private ShapeRenderer shapeRenderer;
+    private Label timeLabel;
+    private Label phaseLabel;
+    private Label turnLabel;
+    private ClanInvasion app;
     private EntitySymbol chosenSymbol;
-    private final Table tableOne = new Table(atlasSkin);
-    private final Table tableTwo = new Table(atlasSkin);
+    private Table tableTwo;
+    private Table tableOne;
 
     private static final String[] dropdownItems = new String[]{
             "Train Barbarian " + Barbarian.COST + "$",
@@ -52,6 +52,9 @@ public final class MainGamePageUI implements ApplicationListener {
     public MainGamePageUI(ClanInvasion app) {
         this.app = app;
         camera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+    }
+
+    private void init() {
         uiStage = new Stage(new StretchViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), camera));
         timeLabel = new Label(getTimerText(), jsonSkin);
         turnLabel = new Label(getPlayerTopBar() , jsonSkin);
@@ -59,6 +62,8 @@ public final class MainGamePageUI implements ApplicationListener {
         shapeRenderer = new ShapeRenderer();
         playerOneDropdown = new SelectBox<>(jsonSkin);
         playerTwoDropdown = new SelectBox<>(jsonSkin);
+        tableOne = new Table(atlasSkin);
+        tableTwo = new Table(atlasSkin);
         chosenSymbol = null;
     }
 
@@ -266,6 +271,7 @@ public final class MainGamePageUI implements ApplicationListener {
 
     @Override
     public void create() {
+        init();
         addTopBar();
         addBottomBar();
         addButtonListeners();
@@ -280,6 +286,7 @@ public final class MainGamePageUI implements ApplicationListener {
     @Override
     public void render() {
         app.getModel().updateState(Gdx.graphics.getDeltaTime(), () -> timeLabel.setText(getTimerText()));
+        app.getModel().endGame(app::changeScreen);
         updatePlayerData(app.getModel().getPlayerOne(), tableOne);
         updatePlayerData(app.getModel().getPlayerTwo(), tableTwo);
         updateTopBar();

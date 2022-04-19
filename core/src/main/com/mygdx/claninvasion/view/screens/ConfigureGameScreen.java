@@ -2,6 +2,7 @@ package com.mygdx.claninvasion.view.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -9,29 +10,43 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.mygdx.claninvasion.ClanInvasion;
 import com.mygdx.claninvasion.model.Globals;
+import com.mygdx.claninvasion.model.player.Player;
 import com.mygdx.claninvasion.view.actors.GameButton;
 import com.mygdx.claninvasion.view.actors.LabeledTextField;
 
 public class ConfigureGameScreen implements GamePage, UiUpdatable {
     private final ClanInvasion app;
     private final Stage stage;
-//    private Image background;
     private GameButton confirmButton;
     private LabeledTextField playerOneField;
     private LabeledTextField playerTwoField;
     private LabeledTextField mapSizeField;
+    private final Player playerOne;
+    private final Player playerTwo;
+    private final OrthographicCamera camera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
 
     public ConfigureGameScreen(ClanInvasion app) {
         this.app = app;
-        stage = new Stage(new StretchViewport(Globals.V_WIDTH, Globals.V_HEIGHT, app.getCamera()));
+        stage = new Stage(new StretchViewport(Globals.V_WIDTH, Globals.V_HEIGHT, camera));
+        playerOne = app.getModel().getPlayerOne();
+        playerTwo = app.getModel().getPlayerTwo();
     }
 
     @Override
     public void show() {
         initView();
-        confirmButton.addClickListener(app::changeScreen);
+        initEvents();
+        confirmButton.addClickListener(() -> {
+            app.getModel().changeState();
+            app.changeScreen();
+        });
         Gdx.input.setInputProcessor(stage);
+    }
+
+    void initEvents() {
+        playerOneField.onInput(playerOne::setName);
+        playerTwoField.onInput(playerTwo::setName);
     }
 
 
@@ -39,7 +54,7 @@ public class ConfigureGameScreen implements GamePage, UiUpdatable {
         TextureAtlas atlas = new TextureAtlas("skin/skin/uiskin.atlas");
         Skin skin = new Skin(atlas);
         Table table = new Table(skin);
-        table.setOrigin(app.getCamera().position.x, app.getCamera().position.y);
+        table.setOrigin(camera.position.x, camera.position.y);
         table.setFillParent(true);
 
         playerOneField = new LabeledTextField(skin, "Enter player 1 name");

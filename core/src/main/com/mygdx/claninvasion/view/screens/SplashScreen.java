@@ -2,7 +2,9 @@ package com.mygdx.claninvasion.view.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -25,23 +27,23 @@ import static com.badlogic.gdx.scenes.scene2d.actions.Actions.*;
  */
 public class SplashScreen implements GamePage, UiUpdatable {
     private final ClanInvasion app;
-    private final Stage stage;
+    private Stage stage;
     private Image splash;
     private Image background;
     private GameButton startGameButton;
     private GameButton endGameButton;
-    private Music music;
+    private final OrthographicCamera camera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
     /**
      * @param app - app instance
      */
     public SplashScreen(final ClanInvasion app) {
         this.app = app;
-        stage = new Stage(new FillViewport(Globals.V_WIDTH, Globals.V_HEIGHT, app.getCamera()));
-        Gdx.input.setInputProcessor(stage);
     }
 
     private void initSplash() {
+        stage = new Stage(new FillViewport(Globals.V_WIDTH, Globals.V_HEIGHT, camera));
+        Gdx.input.setInputProcessor(stage);
         Texture splashTexture = new Texture(Gdx.files.internal("splash/clashmenulogo-WhiteBackground.png"));
         splash = new Image(splashTexture);
 
@@ -53,7 +55,6 @@ public class SplashScreen implements GamePage, UiUpdatable {
         splash.setPosition((stage.getWidth() / 1000) - 170, (stage.getHeight() / 1000) - 100);
         stage.addActor(background);
         stage.addActor(splash);
-        addMusic();
         addButtons();
         addActionListeners();
 
@@ -79,13 +80,6 @@ public class SplashScreen implements GamePage, UiUpdatable {
         endGameButton.addClickListener(() -> Gdx.app.exit());
     }
 
-
-    private void addMusic() {
-        music = Gdx.audio.newMusic(Gdx.files.internal("music/SplashScreenMusic.mp3"));
-        music.setVolume(1.0f);
-        music.setLooping(true);
-        music.play();
-    }
 
     /**
      * Is fired once the page becomes active in application
@@ -161,6 +155,5 @@ public class SplashScreen implements GamePage, UiUpdatable {
     @Override
     public void dispose() {
         stage.dispose();
-        music.dispose();
     }
 }

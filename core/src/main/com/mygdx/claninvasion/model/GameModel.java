@@ -65,9 +65,6 @@ public class GameModel implements GameState {
         activePlayer = playerTwo;
         gameState = new StartGameState(this);
         worldMap = new WorldMap();
-
-        playerOne.setName("Andrei");
-        playerTwo.setName("Omar");
     }
 
     public void reset() {
@@ -126,6 +123,11 @@ public class GameModel implements GameState {
     @Override
     public void updateState(float delta, Runnable runnable) {
         gameState.updateState(delta, runnable);
+    }
+
+    @Override
+    public void endGame(Runnable runnable) {
+        gameState.endGame(runnable);
     }
 
     @Override

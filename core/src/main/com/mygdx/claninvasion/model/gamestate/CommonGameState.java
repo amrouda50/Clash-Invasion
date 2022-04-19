@@ -77,4 +77,7 @@ public abstract class CommonGameState implements GameState  {
     public boolean isInteractive() {
         return true;
     }
+
+    @Override
+    public void endGame(Runnable runnable) {}
 }

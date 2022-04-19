@@ -35,7 +35,7 @@ public class BattleState extends CommonGameState {
             tempThread = new Thread(() -> {
                 player.addTrainedToMapSoldier();
                 player.moveSoldier(finalI, finalTempThread);
-                while (player.getOpponent().isAlive()) {
+                while (player.getOpponent().isAlive() && player.isAlive()) {
                     player.attackCastle(finalI);
                     try {
                         Thread.sleep(100);
