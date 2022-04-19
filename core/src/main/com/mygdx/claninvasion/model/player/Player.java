@@ -237,11 +237,6 @@ public class Player implements Winnable {
         }
     }
 
-//    public void moveSoldier(int index , Thread x) {
-//        Soldier soldier = soldiers.get(index);
-//        moveSoldier(soldier , x);
-//    }
-
     final Object sync = new Object();
 
     public void moveSoldier(int index , Thread upcoming) {
@@ -258,15 +253,16 @@ public class Player implements Winnable {
         int positionSrc = game.getWorldMap().transformMapPositionToIndex(posSrc);
         int positionDest = game.getWorldMap().transformMapPositionToIndex(posDst);
         int counter = 0;
+        int movingSpeed = 200;
         while (positionSrc != positionDest) {
-            positionSrc = moveSoldier(soldier, positionSrc, positionDest, 0);
+            positionSrc = moveSoldier(soldier, positionSrc, positionDest, movingSpeed, 0);
             if (counter == 2 && upcoming != null) {
                 upcoming.start();
             }
             counter++;
             synchronized (sync) {
                 try {
-                    Thread.sleep( 200 );
+                    Thread.sleep( movingSpeed );
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -274,30 +270,38 @@ public class Player implements Winnable {
         }
     }
 
-    public  int moveSoldier(Soldier soldier, int positionSrc, int positionDest, int callTimes) {
+    public int moveSoldier(Soldier soldier, int positionSrc, int positionDest, int movingSpeed, int callTimes) {
         try {
             getMap().getLatch().waitTillZero();
-            game.getWorldMap().setGraph(32);
+            game.getWorldMap().setGraph();
             List<Integer> paths = game.getWorldMap().getGraph()
-                    .getShortestDistance(positionSrc, positionDest, 32 * 32);
+                    .getShortestDistance(
+                            positionSrc,
+                            positionDest,
+                            game.getWorldMap().getGraphSize() * game.getWorldMap().getGraphSize()
+                    );
             if (paths == null) {
                 System.out.println("Paths is null. No moving can be made. Waiting...");
                 if (callTimes > 100) {
                     throw new RuntimeException("Paths is null. Exiting...");
                 }
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
+                synchronized (sync) {
+                    try {
+                        Thread.sleep(movingSpeed);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                 }
-                moveSoldier(soldier, positionSrc, positionDest, ++callTimes);
+                moveSoldier(soldier, positionSrc, positionDest, movingSpeed, ++callTimes);
                 return positionSrc;
             } else {
                 if (getColor() == Color.RED && game.getWorldMap().getCell(paths.get(paths.size() - 2)).hasOccupier()) {
-                    try {
-                        Thread.sleep(500);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
+                    synchronized (sync) {
+                        try {
+                            Thread.sleep(movingSpeed);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
                     }
                 }
 
@@ -311,25 +315,6 @@ public class Player implements Winnable {
             e.printStackTrace();
             return positionSrc;
         }
-
-
-
-//        int j = 0;
-//        for (int i = paths.size() - 1; i > 0; i--) {
-//            try {
-//                Thread.sleep(300);
-//            } catch (InterruptedException e) {
-//                e.printStackTrace();
-//            }
-//            game.getWorldMap().mutate(paths.get(paths.size() - 1), paths.get(paths.size() - 1 - 1));
-//            Pair<Integer, Integer> newPosition =
-//                    game.getWorldMap().transformMapIndexToPosition(paths.get(paths.size() - 1) - 1);
-//            soldier.changePosition(newPosition);
-//            if (j == 2 && x != null) {
-//                x.start();
-//            }
-//            j++;
-//        }
     }
 
     public UUID getId() {

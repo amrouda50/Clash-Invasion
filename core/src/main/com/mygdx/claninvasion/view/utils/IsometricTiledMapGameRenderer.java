@@ -244,9 +244,6 @@ public class IsometricTiledMapGameRenderer extends BatchTiledMapRenderer {
             } else if (map != null && layer.getName().equals(ENTITIES_LAYER)) {
                 WorldCell worldCell = map.getCell(position);
                 chooser.place(region, position, worldCell);
-//                if (worldCell != null && entity != null) {
-//                    worldCell.addEntity(entity);
-//                }
             } else if (map != null) {
                 throw new UnknownTiledMapLayerException(layer);
             }

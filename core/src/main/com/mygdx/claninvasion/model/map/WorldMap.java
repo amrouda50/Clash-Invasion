@@ -32,7 +32,7 @@ public class WorldMap {
     private ReusableCountLatch latch = new ReusableCountLatch(1);
 
     public WorldMap() {
-        this.worldCells = Collections.synchronizedList(new CopyOnWriteArrayList<>());
+        this.worldCells = new ArrayList<>();
     }
 
     public void restart() {
@@ -114,7 +114,9 @@ public class WorldMap {
 
     public int transformMapPositionToIndex(Pair<Integer, Integer> cellPlace) {
         try {
+            System.out.println("latch not zero " + latch.getCount());
             latch.waitTillZero();
+            System.out.println("latch zero " + latch.getCount());
             WorldCell cell = getCell(cellPlace);
             return worldCells.indexOf(cell);
         } catch (InterruptedException e) {
@@ -257,6 +259,14 @@ public class WorldMap {
 
     public Graph getGraph() {
         return this.G;
+    }
+
+    public int getGraphSize() {
+        return 32;
+    }
+
+    public void setGraph() {
+        setGraph(getGraphSize());
     }
 
     public void setGraph(int size) {

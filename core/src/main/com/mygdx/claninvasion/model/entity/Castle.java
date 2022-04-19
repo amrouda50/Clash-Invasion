@@ -2,7 +2,6 @@ package com.mygdx.claninvasion.model.entity;
 
 import com.mygdx.claninvasion.model.player.Player;
 import org.javatuples.Pair;
-import org.javatuples.Quartet;
 
 import java.util.Optional;
 import java.util.Stack;
@@ -26,7 +25,15 @@ public final class Castle extends ArtificialEntity {
         soldiers = new Stack<>();
         this.player = player;
         soldierPosition = position;
-        soldierPosition = new Pair<>(soldierPosition.getValue0() - 3, soldierPosition.getValue1() - 3);
+    }
+
+    private Pair<Integer, Integer> generateRandomSoldierPosition() {
+        int randomX = ThreadLocalRandom.current().nextInt(-1,0);
+        int randomY = ThreadLocalRandom.current().nextInt(-1, 0);
+        return new Pair<>(
+                soldierPosition.getValue0() + randomX,
+                soldierPosition.getValue1() + randomY
+        );
     }
 
     @Override
@@ -54,9 +61,9 @@ public final class Castle extends ArtificialEntity {
         for (int i = 0; i < AMOUNT_OF_SOLDIERS; i++) {
             Soldier soldier;
             if (entitySymbol == EntitySymbol.BARBARIAN) {
-                soldier = new Barbarian(EntitySymbol.BARBARIAN, soldierPosition);
+                soldier = new Barbarian(EntitySymbol.BARBARIAN, generateRandomSoldierPosition());
             } else if (entitySymbol == EntitySymbol.DRAGON) {
-                soldier = new Dragon(EntitySymbol.DRAGON, soldierPosition);
+                soldier = new Dragon(EntitySymbol.DRAGON, generateRandomSoldierPosition());
             } else {
                 throw new IllegalArgumentException("No such soldier exists");
             }

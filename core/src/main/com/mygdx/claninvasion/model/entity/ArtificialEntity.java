@@ -17,7 +17,7 @@ import org.javatuples.Pair;
  * @version 0.01
  * TODO Some requirements will be needed
  */
-public class ArtificialEntity extends Entity {
+public abstract class ArtificialEntity extends Entity {
     protected AtomicInteger health;
     protected HealthBar hpBar;
     protected LevelIterator<? extends Level> level;
