@@ -115,7 +115,7 @@ public class MainGamePage implements GamePage, UiUpdatable {
         }
 
         app.getCamera().update();
-        inputProcessor.onRender();
+
         renderer.setView(app.getCamera());
         renderer.render(app.getMap());
 
@@ -129,6 +129,7 @@ public class MainGamePage implements GamePage, UiUpdatable {
 
         // render game page ui
         mainGamePageUI.render();
+        inputProcessor.onRender();
 
         // render animated object (fireballs, arrows, etc.)
         updateAnimated();
