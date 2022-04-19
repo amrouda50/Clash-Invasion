@@ -76,6 +76,9 @@ public class WorldMap {
 
     public Entity createMapEntity(EntitySymbol symbol, Pair<Integer, Integer> position, Object obj) {
         WorldCell cell = getCell(position);
+//        if (cell == null) {
+//            cell = getCell(transformMapPositionToIndex(position));
+//        }
         return createMapEntity(symbol, cell, obj);
     }
 
@@ -233,6 +236,9 @@ public class WorldMap {
         TiledMapTileLayer.Cell cell = entitiesLayer.getCell(coordinates.getValue0(), coordinates.getValue1());
         entitiesLayer.setCell(coordinates.getValue0(), coordinates.getValue1(), null);
         entitiesLayer.setCell(coordinatedDist.getValue0(), coordinatedDist.getValue1(), cell);
+        Entity entity = cell1.getOccupier();
+        cell1.setOccupier(null);
+        cell2.setOccupier(entity);
     }
 
     public void mutate(int index1, int index2) {
@@ -250,9 +256,9 @@ public class WorldMap {
         return this.G;
     }
 
-    public void setGraph(int size, List<WorldCell> worldCells) {
+    public void setGraph(int size) {
         System.out.println(size);
-        this.G = new Graph(size, worldCells);
+        this.G = new Graph(size, this);
     }
 
     //    /** Change the containment of the c1 (possible decease

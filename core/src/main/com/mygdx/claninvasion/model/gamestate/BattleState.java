@@ -4,16 +4,6 @@ import com.mygdx.claninvasion.model.GameModel;
 import com.mygdx.claninvasion.model.player.Player;
 import com.mygdx.claninvasion.model.player.WinningState;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.BrokenBarrierException;
-import java.util.concurrent.CyclicBarrier;
-import java.util.concurrent.LinkedBlockingDeque;
-import java.util.concurrent.atomic.AtomicInteger;
-
 /**
  * This class is responsible for beginning and
  * ending of the

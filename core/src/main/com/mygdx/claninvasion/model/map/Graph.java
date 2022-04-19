@@ -2,73 +2,78 @@ package com.mygdx.claninvasion.model.map;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
-import java.util.List;
 
 public class Graph {
-    ArrayList<ArrayList<Integer> > adj ;
-    List<WorldCell> worldCells;
-    int size;
-    int arraysize ;
-    public Graph(int size , List<WorldCell> worldCells){
+    private ArrayList<ArrayList<Integer>> adj;
+    private final WorldMap map;
+    private final int size;
+    private final int arraysize;
+
+    public Graph(int size , WorldMap map) {
         this.size = size*size;
         this.arraysize = size;
         adj = new ArrayList<>(this.size);
-        for (int i = 0; i < this.size; i++){
+        for (int i = 0; i < this.size; i++) {
             adj.add(new ArrayList<>(this.size));
         }
-        this.worldCells = worldCells;
 
-        for(int i = 0 ; i < this.size ; i ++){
+        this.map = map;
+
+        for (int i = 0; i < this.size ; i ++) {
             this.addEdgesToSurroundingBlock(i);
         }
     }
-    public void addEdgesToSurroundingBlock(int coordinate){
+
+    public void addEdgesToSurroundingBlock(int coordinate) {
         int x = convertCoordinateToX(coordinate);
         int y = convertCoordinateToY(coordinate);
-        if(y -  1 >= 0 && this.worldCells.get(((x * arraysize) + y) -  1).getOccupier() == null  ){
-            AddLeftBlockCoordinate(coordinate ,((x * arraysize) + y) -  1 );
+        if(y -  1 >= 0 && map.getCell(((x * arraysize) + y) -  1).getOccupier() == null  ) {
+            addLeftBlockCoordinate(coordinate ,((x * arraysize) + y) -  1 );
         }
 
-        if( y +  1 < arraysize && this.worldCells.get(((x * arraysize) + y) +  1).getOccupier() == null){
-            AddRightBlockCoordinate(coordinate , ((x * arraysize) + y) +  1);
-        }
-        if(((x * arraysize) + y) +  arraysize < adj.size() && this.worldCells.get(((x * arraysize) + y) +  arraysize).getOccupier() == null){
-            AddLowerBlockCoordinate(  coordinate , ((x * arraysize) + y) +  arraysize );
+        if( y +  1 < arraysize && map.getCell(((x * arraysize) + y) +  1).getOccupier() == null) {
+            addRightBlockCoordinate(coordinate , ((x * arraysize) + y) +  1);
         }
 
-        if( ((x * arraysize ) + y) - arraysize >= 0 && this.worldCells.get(((x * arraysize) + y) -  arraysize).getOccupier() == null){
-            AddUpperBlockCoordinate(coordinate ,  ((x * arraysize ) + y) - arraysize);
+        if(((x * arraysize) + y) +  arraysize < adj.size() && map.getCell(((x * arraysize) + y) +  arraysize).getOccupier() == null){
+            addLowerBlockCoordinate(  coordinate , ((x * arraysize) + y) +  arraysize );
+        }
+
+        if( ((x * arraysize ) + y) - arraysize >= 0 && map.getCell(((x * arraysize) + y) -  arraysize).getOccupier() == null){
+            addUpperBlockCoordinate(coordinate ,  ((x * arraysize ) + y) - arraysize);
         }
 
 
     }
 
-    public void AddUpperBlockCoordinate(int coordinate , int addedElement ){
+    public void addUpperBlockCoordinate(int coordinate , int addedElement ) {
         adj.get(coordinate).add(addedElement);
     }
-    public void AddLowerBlockCoordinate(int coordinate , int addedElement){
-        adj.get(coordinate).add(addedElement );
-    }
-    public void AddLeftBlockCoordinate(int coordinate , int addedElement){ adj.get(coordinate).add(addedElement); }
-    public void AddRightBlockCoordinate(int coordinate , int addedElement){
+
+    public void addLowerBlockCoordinate(int coordinate , int addedElement) {
         adj.get(coordinate).add(addedElement );
     }
 
+    public void addLeftBlockCoordinate(int coordinate , int addedElement) {
+        adj.get(coordinate).add(addedElement);
+    }
 
-    public int convertCoordinateToX( int coordinate ){
+    public void addRightBlockCoordinate(int coordinate , int addedElement) {
+        adj.get(coordinate).add(addedElement );
+    }
 
+
+    public int convertCoordinateToX( int coordinate ) {
         return   coordinate / (arraysize);
-
     }
-    public int convertCoordinateToY( int coordinate){
+
+    public int convertCoordinateToY( int coordinate) {
         return (coordinate   % (arraysize)) ;
     }
 
     // A utility function to print the adjacency list
     // representation of graph
-    public void
-    printGraph()
-    {
+    public void printGraph() {
         for (int i = 0; i < adj.size(); i++) {
             System.out.println("\nAdjacency list of vertex"
                     + i);
@@ -86,8 +91,7 @@ public class Graph {
 
     // function to print the shortest distance and path
     // between source vertex and destination vertex
-    public LinkedList<Integer> GetShortestDistance(int s, int dest, int v)
-    {
+    public LinkedList<Integer> getShortestDistance(int s, int dest, int v) {
         // predecessor[i] array stores predecessor of
         // i and distance array stores distance of i
         // from s
@@ -95,8 +99,7 @@ public class Graph {
         int[] dist = new int[v];
 
         if (!BFS(adj, s, dest, v, pred, dist)) {
-            System.out.println("Given source and destination" +
-                    "are not connected");
+            System.out.println("Given source and destination" + "are not connected");
             return null;
         }
 
@@ -120,8 +123,7 @@ public class Graph {
     // of each vertex in array pred
     // and its distance from source in array dist
     private static boolean BFS(ArrayList<ArrayList<Integer>> adj, int src,
-                               int dest, int v, int[] pred, int[] dist)
-    {
+                               int dest, int v, int[] pred, int[] dist) {
         // a queue to maintain queue of vertices whose
         // adjacency list is to be scanned as per normal
         // BFS algorithm using LinkedList of Integer type

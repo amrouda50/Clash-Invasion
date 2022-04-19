@@ -80,7 +80,7 @@ public class MainGamePage implements GamePage, UiUpdatable {
         renderer.render(app.getMap(), true);
         entitiesStage = new TiledMapStage();
         Gdx.input.setInputProcessor(entitiesStage);
-        app.getMap().setGraph(32, app.getMap().getCells());
+        app.getMap().setGraph(32);
         //fireTower();
         mainGamePageUI.create();
     }
