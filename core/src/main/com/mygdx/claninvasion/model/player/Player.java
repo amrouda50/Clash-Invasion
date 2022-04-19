@@ -199,7 +199,8 @@ public class Player implements Winnable {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        soldiers.add((Soldier) game.getWorldMap().createMapEntity(soldier.getSymbol(), soldier.getPosition(), null));
+        Soldier soldier1 = (Soldier) game.getWorldMap().createMapEntity(soldier.getSymbol(), soldier.getPosition(), null);
+        soldiers.add(soldier1);
     }
 
     public void addTrainedToMapSoldiers() {
@@ -273,13 +274,12 @@ public class Player implements Winnable {
         }
     }
 
-    CountDownLatch latch = new CountDownLatch(1);
-
-    public int moveSoldier(Soldier soldier, int positionSrc, int positionDest, int callTimes) {
+    public  int moveSoldier(Soldier soldier, int positionSrc, int positionDest, int callTimes) {
+        try {
+            getMap().getLatch().await();
             game.getWorldMap().setGraph(32);
             List<Integer> paths = game.getWorldMap().getGraph()
                     .getShortestDistance(positionSrc, positionDest, 32 * 32);
-
             if (paths == null) {
                 System.out.println("Paths is null. No moving can be made. Waiting...");
                 if (callTimes > 100) {
@@ -290,9 +290,10 @@ public class Player implements Winnable {
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-                return moveSoldier(soldier, positionSrc, positionDest, ++callTimes);
+                moveSoldier(soldier, positionSrc, positionDest, ++callTimes);
+                return positionSrc;
             } else {
-                if ( getColor() == Color.RED && game.getWorldMap().getCell(paths.get(paths.size() - 2)).hasOccupier()) {
+                if (getColor() == Color.RED && game.getWorldMap().getCell(paths.get(paths.size() - 2)).hasOccupier()) {
                     try {
                         Thread.sleep(500);
                     } catch (InterruptedException e) {
@@ -306,6 +307,12 @@ public class Player implements Winnable {
                 soldier.changePosition(newPosition);
                 return paths.get(paths.size() - 2);
             }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+            return positionSrc;
+        }
+
+
 
 //        int j = 0;
 //        for (int i = paths.size() - 1; i > 0; i--) {

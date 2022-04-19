@@ -53,9 +53,7 @@ public class WorldMap {
 
     public Entity createMapEntity(EntitySymbol symbol, WorldCell worldCell, Object obj) {
         TiledMapTileLayer.Cell cell = new TiledMapTileLayer.Cell();
-
-        TiledMapTileSet tileSet = tilesets.getTileSet(symbol.tsx);
-        cell.setTile(tileSet.getTile(symbol.id));
+        cell.setTile(tilesets.getTile(symbol.id));
 
         Entity entity = EntitiesCreators.createEntity(symbol, worldCell.getMapPosition(), obj);
         occupyPosition(worldCell, entity, cell);
@@ -104,20 +102,22 @@ public class WorldMap {
     public WorldCell getCell(int index) {
         try {
             latch.await();
+            return worldCells.get(index);
         } catch (InterruptedException e) {
             e.printStackTrace();
+            throw new RuntimeException("World cell is out of range");
         }
-        return worldCells.get(index);
     }
 
     public int transformMapPositionToIndex(Pair<Integer, Integer> cellPlace) {
         try {
             latch.await();
+            WorldCell cell = getCell(cellPlace);
+            return worldCells.indexOf(cell);
         } catch (InterruptedException e) {
             e.printStackTrace();
+            throw new RuntimeException("Latch failed in transform. Exiting...");
         }
-        WorldCell cell = getCell(cellPlace);
-        return worldCells.indexOf(cell);
     }
 
     public Pair<Integer, Integer> transformMapIndexToPosition(int index) {
@@ -264,24 +264,4 @@ public class WorldMap {
     public CountDownLatch getLatch() {
         return latch;
     }
-
-    //    /** Change the containment of the c1 (possible decease
-    //     * of the entity which populated it)
-    //     * @param cell - cell to remove the entity
-    //     */
-   /* public void mutate(WorldCell cell) {
-        AtomicReference<Pair<Integer, Integer>> coordinates = new AtomicReference<>(cell.getMapPosition());
-        Timer.schedule(new Timer.Task() {
-            int i = 7;
-            int count = 0;
-            @Override
-            public void run() {
-                TiledMapTileLayer.Cell cell = entitiesLayer.getCell(coordinates.get().getValue0() + count, coordinates.get().getValue1());
-                entitiesLayer.setCell(i + count, 4, null);
-                entitiesLayer.setCell(i + 1 + count, 4, cell);
-                count++;
-            }
-        }, 2, 1, 20);
-
-    }*/
 }
