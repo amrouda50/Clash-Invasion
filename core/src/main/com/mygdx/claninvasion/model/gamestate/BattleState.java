@@ -27,19 +27,20 @@ public class BattleState extends CommonGameState {
     }
 
     private void initializePlayerMove(Player player) {
-        Thread tempThread = null;
-        int size = player.getTrainingSoldiers().size();
-        for (int i = size - 1; i >= 0 ; i--) {
-            int finalI = i;
-            Thread finalTempThread = tempThread;
-            tempThread = new Thread(() -> {
-                player.addTrainedToMapSoldier();
-                player.moveSoldier(finalI, finalTempThread);
-            });
-        }
-        if (tempThread != null) {
-            tempThread.start();
-        }
+            Thread tempThread = null;
+            int size = player.getTrainingSoldiers().size();
+            for (int i = size - 1; i >= 0 ; i--) {
+                int finalI = i;
+                Thread finalTempThread = tempThread;
+                tempThread = new Thread(() -> {
+                    player.addTrainedToMapSoldier();
+                    player.moveSoldier(finalI, finalTempThread);
+
+                });
+            }
+            if (tempThread != null) {
+                tempThread.start();
+            }
     }
 
     @Override
@@ -58,8 +59,8 @@ public class BattleState extends CommonGameState {
 
     @Override
     public void updateState(float delta, Runnable runnable) {
-        Boolean noSoldiers1 = game.getPlayerOne().getSoldiers().size() == 0;
-        Boolean noSoldiers2 = game.getPlayerTwo().getSoldiers().size() == 0;
+        Boolean noSoldiers1 = game.getPlayerOne().getTrainingSoldiers().size() == 0 && game.getPlayerOne().getSoldiers().size() == 0;
+        Boolean noSoldiers2 = game.getPlayerTwo().getTrainingSoldiers().size() == 0 && game.getPlayerTwo().getSoldiers().size() == 0;
         if (noSoldiers1 && noSoldiers2) {
             battleStateChangeVariants = BattleStateChangeVariants.BUILDING;
         }

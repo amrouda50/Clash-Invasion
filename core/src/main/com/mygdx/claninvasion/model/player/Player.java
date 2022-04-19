@@ -193,8 +193,12 @@ public class Player implements Winnable {
     }
 
     public void addTrainedToMapSoldier() {
-        if (castle.getSoldiers().empty()) return;
         Soldier soldier = castle.getSoldiers().pop();
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         soldiers.add((Soldier) game.getWorldMap().createMapEntity(soldier.getSymbol(), soldier.getPosition(), null));
     }
 
@@ -237,7 +241,9 @@ public class Player implements Winnable {
 //        moveSoldier(soldier , x);
 //    }
 
-    public synchronized void moveSoldier(int index , Thread upcoming) {
+    final Object sync = new Object();
+
+    public void moveSoldier(int index , Thread upcoming) {
         Soldier soldier = getSoldiers().get(index);
 
         Pair<Integer, Integer> posSrc = new Pair<>(
@@ -245,40 +251,61 @@ public class Player implements Winnable {
                 soldier.getPosition().getValue1()
         );
         Pair<Integer, Integer> posDst = new Pair<>(
-                opponent.getCastle().getPosition().getValue0() +1 ,
-                opponent.getCastle().getPosition().getValue1() +1
+                opponent.getCastle().getPosition().getValue0() + index + 1 ,
+                opponent.getCastle().getPosition().getValue1() + index + 1
         );
         int positionSrc = game.getWorldMap().transformMapPositionToIndex(posSrc);
         int positionDest = game.getWorldMap().transformMapPositionToIndex(posDst);
         int counter = 0;
         while (positionSrc != positionDest) {
-            positionSrc = moveSoldier(soldier, positionSrc, positionDest);
-            System.out.println(positionSrc);
+            positionSrc = moveSoldier(soldier, positionSrc, positionDest, 0);
             if (counter == 2 && upcoming != null) {
                 upcoming.start();
             }
-
             counter++;
+            synchronized (sync) {
+                try {
+                    Thread.sleep( 200 );
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
         }
     }
 
-    public synchronized int moveSoldier(Soldier soldier, int positionSrc, int positionDest) {
-        try {
-            Thread.sleep( 200 );
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        game.getWorldMap().setGraph(32);
-        List<Integer> paths = game.getWorldMap().getGraph()
-                .getShortestDistance(positionSrc, positionDest, 32 * 32);
-        if (paths == null) {
-            throw new RuntimeException("Paths is null. No moving can be made");
-        }
-        game.getWorldMap().mutate(paths.get(paths.size() - 1), paths.get(paths.size() - 1 - 1));
-        Pair<Integer, Integer> newPosition =
-                game.getWorldMap().transformMapIndexToPosition(paths.get(paths.size() - 1) - 1);
-        soldier.changePosition(newPosition);
-        return paths.get(paths.size() - 2);
+    CountDownLatch latch = new CountDownLatch(1);
+
+    public int moveSoldier(Soldier soldier, int positionSrc, int positionDest, int callTimes) {
+            game.getWorldMap().setGraph(32);
+            List<Integer> paths = game.getWorldMap().getGraph()
+                    .getShortestDistance(positionSrc, positionDest, 32 * 32);
+
+            if (paths == null) {
+                System.out.println("Paths is null. No moving can be made. Waiting...");
+                if (callTimes > 100) {
+                    throw new RuntimeException("Paths is null. Exiting...");
+                }
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                return moveSoldier(soldier, positionSrc, positionDest, ++callTimes);
+            } else {
+                if ( getColor() == Color.RED && game.getWorldMap().getCell(paths.get(paths.size() - 2)).hasOccupier()) {
+                    try {
+                        Thread.sleep(500);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                game.getWorldMap().mutate(paths.get(paths.size() - 1), paths.get(paths.size() - 2));
+                Pair<Integer, Integer> newPosition =
+                        game.getWorldMap().transformMapIndexToPosition(paths.get(paths.size() - 2));
+                soldier.changePosition(newPosition);
+                return paths.get(paths.size() - 2);
+            }
 
 //        int j = 0;
 //        for (int i = paths.size() - 1; i > 0; i--) {

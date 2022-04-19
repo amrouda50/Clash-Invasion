@@ -76,9 +76,9 @@ public class WorldMap {
 
     public Entity createMapEntity(EntitySymbol symbol, Pair<Integer, Integer> position, Object obj) {
         WorldCell cell = getCell(position);
-//        if (cell == null) {
-//            cell = getCell(transformMapPositionToIndex(position));
-//        }
+        if (cell == null) {
+            cell = getCell(transformMapPositionToIndex(position));
+        }
         return createMapEntity(symbol, cell, obj);
     }
 
@@ -259,6 +259,10 @@ public class WorldMap {
     public void setGraph(int size) {
         System.out.println(size);
         this.G = new Graph(size, this);
+    }
+
+    public CountDownLatch getLatch() {
+        return latch;
     }
 
     //    /** Change the containment of the c1 (possible decease

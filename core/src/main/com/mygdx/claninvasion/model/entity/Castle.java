@@ -50,6 +50,7 @@ public final class Castle extends ArtificialEntity {
 
     public CompletionStage<Integer> trainSoldiers(EntitySymbol entitySymbol, Predicate<Integer> run) {
         ExecutorService executor = newFixedThreadPool(2);
+        int money = 0;
         for (int i = 0; i < AMOUNT_OF_SOLDIERS; i++) {
             Soldier soldier;
             if (entitySymbol == EntitySymbol.BARBARIAN) {
@@ -60,8 +61,9 @@ public final class Castle extends ArtificialEntity {
                 throw new IllegalArgumentException("No such soldier exists");
             }
             soldiers.add(soldier);
+            money += soldier.getCost();
         }
-        run.test(getSoldiersMoneyCost());
+        run.test(money);
         CompletableFuture<Integer> supply = CompletableFuture.supplyAsync(() -> {
             int value = 0;
             for (Soldier soldier : soldiers) {

@@ -73,11 +73,11 @@ public class Soldier extends ArtificialEntity {
             e.printStackTrace();
         }
         hasTrained.getAndSet(true);
-        return Soldier.COST;
+        return COST;
     }
 
     public int getCost() {
-        return Soldier.COST;
+        return COST;
     }
 
     /**
