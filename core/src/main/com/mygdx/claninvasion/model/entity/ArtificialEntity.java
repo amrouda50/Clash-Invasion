@@ -15,7 +15,6 @@ import org.javatuples.Pair;
  * Artificial entities are all entities except unmoving ones
  * @author Dinari
  * @version 0.01
- * TODO Some requirements will be needed
  */
 public abstract class ArtificialEntity extends Entity {
     protected AtomicInteger health;
@@ -51,6 +50,10 @@ public abstract class ArtificialEntity extends Entity {
         bar.setDimensions(getHealthBarSizes());
         bar.setPositionOffset(getHealthBarOffset());
         hpBar = bar;
+    }
+
+    public HealthBar getHealthBar() {
+        return hpBar;
     }
 
     public Pair<Float, Float> getHealthBarOffset() {

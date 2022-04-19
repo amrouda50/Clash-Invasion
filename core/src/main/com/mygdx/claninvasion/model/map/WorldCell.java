@@ -73,15 +73,15 @@ public class WorldCell {
     /**
      * @return - isometric point of the left-top side of the cell
      */
-    public Vector2 getworldIsoPoint() {
-        return worldIsoPoint;
+    public Vector2 getWorldIsoPoint() {
+        return worldIsoPoint.cpy();
     }
 
     /**
      * @return - isometric vector of the left-top side of the cell in 3d space (might be useful)
      */
     public Vector3 getWorldIsoPointV3() {
-        return new Vector3(getworldIsoPoint().x, getworldIsoPoint().y, 0);
+        return new Vector3(getWorldIsoPoint().x, getWorldIsoPoint().y, 0);
     }
 
     /**
@@ -165,7 +165,7 @@ public class WorldCell {
      * @return - isometric point of the right-bottom side of the cell
      */
     public Vector2 getWorldIsoPoint1() {
-        return worldIsoPoint1;
+        return worldIsoPoint1.cpy();
     }
 
     /**

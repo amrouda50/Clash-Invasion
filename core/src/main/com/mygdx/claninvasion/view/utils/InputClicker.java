@@ -16,14 +16,13 @@ import java.util.List;
 public class InputClicker  implements  RunnableTouchEvent {
     private final ClanInvasion app;
     private final MainGamePageUI mainGamePageUI;
-    private final List<HealthBar> hpBars;
     public static boolean enabled = false;
 
-    public InputClicker(ClanInvasion app , MainGamePageUI mainGamePageUI, List<HealthBar> hpBars) {
+    public InputClicker(ClanInvasion app , MainGamePageUI mainGamePageUI) {
         this.app = app;
         this.mainGamePageUI = mainGamePageUI;
-        this.hpBars = hpBars;
     }
+
     @Override
     public void run(Vector3 mousePosition) {
         if (enabled && app.getModel().isInteractive()) {
@@ -43,7 +42,6 @@ public class InputClicker  implements  RunnableTouchEvent {
                     if (artificialEntity != null) {
                         healthBar.setCoordinates(new Pair<>(worldCell.getWorldIsoPoint1().x , worldCell.getWorldIsoPoint1().y));
                         artificialEntity.setHealthBar(healthBar);
-                        hpBars.add(healthBar);
                     }
 
                     if (worldCell.getOccupier() != null) {

@@ -16,6 +16,7 @@ import com.mygdx.claninvasion.ClanInvasion;
 import com.mygdx.claninvasion.model.entity.*;
 import com.mygdx.claninvasion.model.gamestate.Building;
 import com.mygdx.claninvasion.model.player.Player;
+import com.mygdx.claninvasion.view.actors.HealthBar;
 import com.mygdx.claninvasion.view.utils.InputClicker;
 import org.javatuples.Pair;
 import org.javatuples.Quartet;
@@ -229,25 +230,35 @@ public final class MainGamePageUI implements ApplicationListener {
                     case "Level":
                         break;
                     case "Dragon":
-                        if (player.canCreateBarbarian()) {
-                            player.trainSoldiers(EntitySymbol.DRAGON, () -> updatePlayerData(player, table));
-                        } else {
-                            System.out.println("Not enough money for this action");
-                        }
+                        createDragon(player, table);
                         break;
                     case "Barbarian":
-                        if (player.canCreateDragon()) {
-                            player.trainSoldiers(EntitySymbol.BARBARIAN, () -> {
-                                System.out.println("New barbarian trained");
-                                updatePlayerData(player, table);
-                            });
-                        } else {
-                            System.out.println("Not enough money for this action");
-                        }
+                        createBarbarian(player, table);
                         break;
                 }
             }
         });
+    }
+
+    private void createBarbarian(Player player, Table table) {
+        if (player.canCreateBarbarian()) {
+            player.trainSoldiers(EntitySymbol.DRAGON, () ->
+                    updatePlayerData(player, table)
+            );
+        } else {
+            System.out.println("Not enough money for this action");
+        }
+    }
+
+    private void createDragon(Player player, Table table) {
+        if (player.canCreateDragon()) {
+            player.trainSoldiers(EntitySymbol.BARBARIAN, () -> {
+                System.out.println("New barbarian trained");
+                updatePlayerData(player, table);
+            });
+        } else {
+            System.out.println("Not enough money for this action");
+        }
     }
 
     private void addButtonListeners() {

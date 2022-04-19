@@ -237,7 +237,7 @@ public class IsometricTiledMapGameRenderer extends BatchTiledMapRenderer {
                         xy,
                         position,
                         region,
-                        calculatedXY.getValue0() + "" + calculatedXY.getValue1()
+                        calculatedXY.getValue1() + "," + calculatedXY.getValue1()
                 );
                 worldCell.setTileCell(cell);
                 map.addCell(worldCell);

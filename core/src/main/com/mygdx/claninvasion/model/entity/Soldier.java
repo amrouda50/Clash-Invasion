@@ -4,6 +4,7 @@ import com.mygdx.claninvasion.model.helpers.Direction;
 import com.mygdx.claninvasion.model.level.GameSoldierLevelIterator;
 import com.mygdx.claninvasion.model.level.Levels;
 import com.mygdx.claninvasion.model.map.WorldCell;
+import com.mygdx.claninvasion.view.actors.HealthBar;
 import org.javatuples.Pair;
 
 import java.util.concurrent.*;
@@ -16,7 +17,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public abstract class Soldier extends ArtificialEntity {
     private static final int ATTACK = 5;
     private static final int STEP = 1;
-    private AtomicBoolean hasTrained = new AtomicBoolean(false);
+    private final AtomicBoolean hasTrained = new AtomicBoolean(false);
 
     public Soldier(EntitySymbol entitySymbol, Pair<Integer, Integer> position) {
         super(entitySymbol, position);
@@ -28,16 +29,13 @@ public abstract class Soldier extends ArtificialEntity {
      * @param castle - opponents castle
      * @see Castle
      */
-    public boolean attackCastle(Castle castle) {
+    public void attackCastle(Castle castle) {
         float distance = getVec2Position().dst(castle.getVec2Position().x, castle.getVec2Position().y);
 
         GameSoldierLevelIterator level = (GameSoldierLevelIterator) this.level;
         if (distance < level.current().getVisibleArea()) {
             castle.damage(ATTACK + level.current().getAttackIncrease());
-            return true;
         }
-
-        return false;
     }
 
     /**
@@ -59,12 +57,6 @@ public abstract class Soldier extends ArtificialEntity {
         }
     }
 
-    public void move(WorldCell cell) {
-        position = position.setAt0(cell.getMapPosition().getValue0());
-        position = position.setAt1(cell.getMapPosition().getValue1());
-        cell.setOccupier(this);
-    }
-
     private int trainCall() {
         try {
             Thread.sleep(500);
@@ -76,6 +68,16 @@ public abstract class Soldier extends ArtificialEntity {
     }
 
     public abstract int getCost();
+
+    @Override
+    public Pair<Float, Float> getHealthBarOffset() {
+        return new Pair<>(-22f , 20f);
+    }
+
+    @Override
+    public Pair<Float, Float> getHealthBarSizes() {
+        return new Pair<>(14f, 5f);
+    }
 
     /**
      * Train soldier algorithm

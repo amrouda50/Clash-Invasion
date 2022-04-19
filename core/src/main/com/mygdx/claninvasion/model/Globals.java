@@ -18,7 +18,7 @@ public class Globals {
      * Change to true if you want to debug main screen page
      */
     public static final boolean DEBUG = true;
-    // private static final boolean DEGUG = false;
+    //public static final boolean DEBUG = false;
 
     private Globals() {
     }
