@@ -8,6 +8,7 @@ import com.mygdx.claninvasion.model.entity.Entity;
 import com.mygdx.claninvasion.model.entity.EntitySymbol;
 import com.mygdx.claninvasion.model.entity.Soldier;
 import com.mygdx.claninvasion.model.entity.Tower;
+import javafixes.concurrency.ReusableCountLatch;
 import org.javatuples.Pair;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -28,19 +29,21 @@ public class WorldMap {
     private TiledMapTileLayer entitiesLayer;
     private Graph G;
     private TiledMapTileSets tilesets;
-    private CountDownLatch latch = new CountDownLatch(1);
+    private ReusableCountLatch latch = new ReusableCountLatch(1);
 
     public WorldMap() {
         this.worldCells = Collections.synchronizedList(new CopyOnWriteArrayList<>());
     }
 
     public void restart() {
-        latch = new CountDownLatch(1);
+        if (latch.getCount() == 0) {
+            latch.increment();
+        }
         worldCells.clear();
     }
 
     public void finish() {
-        latch.countDown();
+        latch.decrement();
     }
 
     public void addCell(WorldCell worldCell) {
@@ -101,7 +104,7 @@ public class WorldMap {
 
     public WorldCell getCell(int index) {
         try {
-            latch.await();
+            latch.waitTillZero();
             return worldCells.get(index);
         } catch (InterruptedException e) {
             e.printStackTrace();
@@ -111,7 +114,7 @@ public class WorldMap {
 
     public int transformMapPositionToIndex(Pair<Integer, Integer> cellPlace) {
         try {
-            latch.await();
+            latch.waitTillZero();
             WorldCell cell = getCell(cellPlace);
             return worldCells.indexOf(cell);
         } catch (InterruptedException e) {
@@ -261,7 +264,7 @@ public class WorldMap {
         this.G = new Graph(size, this);
     }
 
-    public CountDownLatch getLatch() {
+    public ReusableCountLatch getLatch() {
         return latch;
     }
 }
