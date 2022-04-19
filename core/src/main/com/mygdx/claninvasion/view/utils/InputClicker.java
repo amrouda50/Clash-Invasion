@@ -26,7 +26,7 @@ public class InputClicker  implements  RunnableTouchEvent {
     }
     @Override
     public void run(Vector3 mousePosition) {
-        if (enabled) {
+        if (enabled && app.getModel().isInteractive()) {
             Vector2 mouseOrtho = new IsometricToOrthogonalAdapt(new Vector2(mousePosition.x, mousePosition.y)).getPoint();
             Vector3 mouseOrtho3 = new Vector3(mouseOrtho.x + WorldCell.getTransformWidth(), mouseOrtho.y - WorldCell.getTransformWidth(), 0);
 

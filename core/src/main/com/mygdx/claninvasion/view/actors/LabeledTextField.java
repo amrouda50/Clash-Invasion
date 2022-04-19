@@ -4,10 +4,15 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.scenes.scene2d.Event;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
+
+import java.util.function.Consumer;
 
 /**
  * Composition of the label and text-field libgdx api's
@@ -51,6 +56,16 @@ public class LabeledTextField {
     private void labelStyleInit() {
         labelStyle.font = font;
         labelStyle.fontColor = new Color(0, 0, 0, 1);
+    }
+
+    public void onInput(Consumer<String> consumer) {
+        textField.addListener(new InputListener() {
+            @Override
+            public boolean keyTyped(InputEvent event, char character) {
+                consumer.accept(textField.getText());
+                return super.keyTyped(event, character);
+            }
+        });
     }
 
     /**

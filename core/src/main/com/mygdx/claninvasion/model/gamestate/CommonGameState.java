@@ -72,4 +72,12 @@ public abstract class CommonGameState implements GameState  {
     public void updateState(float delta, Runnable runnable) {
         runnable.run();
     }
+
+    @Override
+    public boolean isInteractive() {
+        return true;
+    }
+
+    @Override
+    public void endGame(Runnable runnable) {}
 }

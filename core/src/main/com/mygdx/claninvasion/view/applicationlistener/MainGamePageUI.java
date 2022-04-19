@@ -24,22 +24,22 @@ import java.util.*;
 import java.util.List;
 
 public final class MainGamePageUI implements ApplicationListener {
-    private final Stage uiStage;
-    private final Texture backgroundTexture = new Texture("background/background.jpg");
-    private final SelectBox<String> playerOneDropdown;
-    private final SelectBox<String> playerTwoDropdown;
+    private Stage uiStage;
+    private Texture backgroundTexture = new Texture("background/background.jpg");
+    private SelectBox<String> playerOneDropdown;
+    private SelectBox<String> playerTwoDropdown;
     private final TextureAtlas atlas = new TextureAtlas("skin/skin/uiskin.atlas");
     private final Skin atlasSkin = new Skin(atlas);
     private final Skin jsonSkin = new Skin(Gdx.files.internal("skin/skin/uiskin.json"));
     private final OrthographicCamera camera;
-    private final ShapeRenderer shapeRenderer;
-    private final Label timeLabel;
-    private final Label phaseLabel;
-    private final Label turnLabel;
-    private final ClanInvasion app;
+    private ShapeRenderer shapeRenderer;
+    private Label timeLabel;
+    private Label phaseLabel;
+    private Label turnLabel;
+    private ClanInvasion app;
     private EntitySymbol chosenSymbol;
-    private final Table tableOne = new Table(atlasSkin);
-    private final Table tableTwo = new Table(atlasSkin);
+    private Table tableTwo;
+    private Table tableOne;
 
     private static final String[] dropdownItems = new String[]{
             "Train Barbarian " + Barbarian.COST + "$",
@@ -52,6 +52,9 @@ public final class MainGamePageUI implements ApplicationListener {
     public MainGamePageUI(ClanInvasion app) {
         this.app = app;
         camera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+    }
+
+    private void init() {
         uiStage = new Stage(new StretchViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), camera));
         timeLabel = new Label(getTimerText(), jsonSkin);
         turnLabel = new Label(getPlayerTopBar() , jsonSkin);
@@ -59,6 +62,8 @@ public final class MainGamePageUI implements ApplicationListener {
         shapeRenderer = new ShapeRenderer();
         playerOneDropdown = new SelectBox<>(jsonSkin);
         playerTwoDropdown = new SelectBox<>(jsonSkin);
+        tableOne = new Table(atlasSkin);
+        tableTwo = new Table(atlasSkin);
         chosenSymbol = null;
     }
 
@@ -76,7 +81,10 @@ public final class MainGamePageUI implements ApplicationListener {
     }
 
     private String getPlayerTopBar() {
-        return "Turn: " + app.getCurrentPlayer().getName();
+        if (app.getModel().getState() instanceof Building) {
+            return "Turn: " + app.getCurrentPlayer().getName();
+        }
+        return "";
     }
 
     private String getPlayerPhase() {
@@ -84,7 +92,11 @@ public final class MainGamePageUI implements ApplicationListener {
     }
 
     private String getTimerText() {
-        return ((Building)app.getModel().getState()).getCounter() + " seconds";
+        if (app.getModel().getState() instanceof Building) {
+            return ((Building)app.getModel().getState()).getCounter() + " seconds";
+        }
+
+        return "";
     }
 
     private void addTopBar() {
@@ -133,12 +145,12 @@ public final class MainGamePageUI implements ApplicationListener {
 
     private List<Pair<String, Color>> getPlayerData(Player player) {
         return new ArrayList<>(Arrays.asList(
-                new Pair<>(player.getName(), Color.RED),
+                new Pair<>(player.getName(), player.getColor()),
                 new Pair<>(Float.toString(player.getWealth()), Color.BLACK),
-                new Pair<>("Health: " + player.getHealth(), Color.BLACK),
+                new Pair<>("Health: " + (int)player.getHealth(), Color.BLACK),
                 new Pair<>(player.getTowers().size() + " towers", Color.BLACK),
                 new Pair<>(player.getTrainingSoldiers().size() + " soldiers", Color.BLACK),
-                new Pair<>("Level "+ player.getCastle().getLevel().getLevelName(), Color.BLACK)));
+                new Pair<>("Level " + player.getCastle().getLevel().getLevelName(), Color.BLACK)));
     }
 
     private void parsePlayerDataToView(Player player, Table table, SelectBox<String> box) {
@@ -168,6 +180,12 @@ public final class MainGamePageUI implements ApplicationListener {
     }
 
     private void updateActiveDropdown() {
+        if (!app.getModel().isInteractive()) {
+            playerTwoDropdown.setDisabled(true);
+            playerOneDropdown.setDisabled(true);
+            return;
+        }
+
         if (app.getModel().getActivePlayer().equals(app.getModel().getPlayerOne())) {
             playerOneDropdown.setDisabled(false);
             playerTwoDropdown.setDisabled(true);
@@ -183,8 +201,8 @@ public final class MainGamePageUI implements ApplicationListener {
     }
 
     private void addPlayerListener(Player player, SelectBox<String> selectBox) {
-        Table table = app.getModel().getActivePlayer().equals(app.getModel().getPlayerOne()) ?
-                tableOne : tableTwo;
+        Table table = app.getModel().getActivePlayer().equals(app.getModel().getPlayerOne())
+                ? tableOne : tableTwo;
         selectBox.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
@@ -212,10 +230,7 @@ public final class MainGamePageUI implements ApplicationListener {
                         break;
                     case "Dragon":
                         if (player.canCreateBarbarian()) {
-                            player.trainSoldiers(EntitySymbol.DRAGON, () -> {
-                                System.out.println("New dragon trained");
-                                updatePlayerData(player, table);
-                            });
+                            player.trainSoldiers(EntitySymbol.DRAGON, () -> updatePlayerData(player, table));
                         } else {
                             System.out.println("Not enough money for this action");
                         }
@@ -256,6 +271,7 @@ public final class MainGamePageUI implements ApplicationListener {
 
     @Override
     public void create() {
+        init();
         addTopBar();
         addBottomBar();
         addButtonListeners();
@@ -269,11 +285,8 @@ public final class MainGamePageUI implements ApplicationListener {
 
     @Override
     public void render() {
-        app.getModel().updateState(Gdx.graphics.getDeltaTime(), () -> {
-            if (app.getModel().getState() instanceof Building) {
-                timeLabel.setText(getTimerText());
-            }
-        });
+        app.getModel().updateState(Gdx.graphics.getDeltaTime(), () -> timeLabel.setText(getTimerText()));
+        app.getModel().endGame(app::changeScreen);
         updatePlayerData(app.getModel().getPlayerOne(), tableOne);
         updatePlayerData(app.getModel().getPlayerTwo(), tableTwo);
         updateTopBar();

@@ -13,11 +13,6 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
-interface Placer {
-    void placeRender(WorldMap map);
-    void place(TextureRegion region, Pair<Integer, Integer> position, WorldCell cell);
-}
-
 public class EntityPlacer implements Placer {
     private final GameModel model;
     private final ArrayList<Pair<Integer, Integer>> castleReversePositions;
@@ -35,8 +30,8 @@ public class EntityPlacer implements Placer {
         Pair<Integer, Integer>
                 reverseCastlePositions = getCastlePositions(castleReversePositions);
 
-        Castle player1Castle = new Castle(EntitySymbol.CASTEL, castlePosition, model.getPlayerOne());
-        Castle player2Castle = new Castle(EntitySymbol.CASTEL_REVERSED, reverseCastlePositions, model.getPlayerTwo());
+        Castle player1Castle = new Castle(EntitySymbol.CASTEL_REVERSED, reverseCastlePositions, model.getPlayerOne());
+        Castle player2Castle = new Castle(EntitySymbol.CASTEL, castlePosition, model.getPlayerTwo());
 
         setCastleCellOccupier(map, player1Castle);
         setCastleCellOccupier(map, player2Castle);

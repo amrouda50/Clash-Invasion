@@ -34,6 +34,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
  */
 public class MainGamePage implements GamePage, UiUpdatable {
     private static final Vector2 translateCamera = new Vector2(280, -200);
+    private static final Vector2 translateCameraBack = new Vector2(-280,200);
     private IsometricTiledMapGameRenderer renderer;
     private GameInputProcessor inputProcessor;
     private final ClanInvasion app;
@@ -42,7 +43,6 @@ public class MainGamePage implements GamePage, UiUpdatable {
     private final List<HealthBar> hpBars = Collections.synchronizedList(new CopyOnWriteArrayList<>());
     private final MainGamePageUI mainGamePageUI;
     private TiledMap map;
-    private  ShapeRenderer b ;
 
 
 
@@ -51,7 +51,6 @@ public class MainGamePage implements GamePage, UiUpdatable {
      */
     public MainGamePage(ClanInvasion app) {
         this.app = app;
-        app.getModel().changeState();
         mainGamePageUI = new MainGamePageUI(app);
     }
 
@@ -62,8 +61,9 @@ public class MainGamePage implements GamePage, UiUpdatable {
      */
     @Override
     public void show() {
+        app.getModel().changePhase();
+
         app.getCamera().update();
-        b = new ShapeRenderer();
         inputProcessor = new GameInputProcessor(app.getCamera(), new InputClicker(app ,mainGamePageUI, hpBars));
         map = new TmxMapLoader().load(Gdx.files.getLocalStoragePath() + "/TileMap/Tilemap.tmx");
         app.getMap().setTileset(map.getTileSets());
@@ -80,7 +80,7 @@ public class MainGamePage implements GamePage, UiUpdatable {
         renderer.render(app.getMap(), true);
         entitiesStage = new TiledMapStage();
         Gdx.input.setInputProcessor(entitiesStage);
-        app.getMap().setGraph(32, app.getMap().getCells());
+        app.getMap().setGraph(32);
         //fireTower();
         mainGamePageUI.create();
     }
@@ -206,6 +206,10 @@ public class MainGamePage implements GamePage, UiUpdatable {
     public void dispose() {
         entitiesStage.dispose();
         mainGamePageUI.dispose();
+
+        // transform camera position back
+        app.getCamera().translate(translateCameraBack);
+        app.getCamera().zoom = 1;
     }
 
     /**

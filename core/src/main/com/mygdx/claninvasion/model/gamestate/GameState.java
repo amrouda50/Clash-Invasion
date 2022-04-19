@@ -36,4 +36,7 @@ public interface GameState {
     GameState getState();
 
     void updateState(float delta, Runnable runnable);
+    void endGame(Runnable runnable);
+
+    boolean isInteractive();
 }

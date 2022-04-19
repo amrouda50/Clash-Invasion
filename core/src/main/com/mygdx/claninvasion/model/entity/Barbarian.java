@@ -11,4 +11,9 @@ public class Barbarian extends Soldier {
     public Barbarian(EntitySymbol entitySymbol, Pair<Integer, Integer> position) {
         super(entitySymbol, position);
     }
+
+    @Override
+    public int getCost() {
+        return COST;
+    }
 }

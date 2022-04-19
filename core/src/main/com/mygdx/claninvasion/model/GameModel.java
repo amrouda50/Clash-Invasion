@@ -1,12 +1,11 @@
 package com.mygdx.claninvasion.model;
 
+import com.badlogic.gdx.graphics.Color;
 import com.mygdx.claninvasion.model.gamestate.GamePhase;
 import com.mygdx.claninvasion.model.gamestate.GameState;
 import com.mygdx.claninvasion.model.gamestate.StartGameState;
 import com.mygdx.claninvasion.model.map.WorldMap;
 import com.mygdx.claninvasion.model.player.Player;
-
-import java.awt.*;
 
 /**
  * This class is responsible for handling
@@ -63,12 +62,9 @@ public class GameModel implements GameState {
 
         playerOne.setOpponent(playerTwo);
         playerTwo.setOpponent(playerOne);
-        activePlayer = playerOne;
+        activePlayer = playerTwo;
         gameState = new StartGameState(this);
         worldMap = new WorldMap();
-
-        playerOne.setName("Andrei");
-        playerTwo.setName("Omar");
     }
 
     public void reset() {
@@ -127,6 +123,16 @@ public class GameModel implements GameState {
     @Override
     public void updateState(float delta, Runnable runnable) {
         gameState.updateState(delta, runnable);
+    }
+
+    @Override
+    public void endGame(Runnable runnable) {
+        gameState.endGame(runnable);
+    }
+
+    @Override
+    public boolean isInteractive() {
+        return gameState.isInteractive();
     }
 
 

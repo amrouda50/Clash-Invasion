@@ -8,6 +8,7 @@ import com.mygdx.claninvasion.model.entity.Entity;
 import com.mygdx.claninvasion.model.entity.EntitySymbol;
 import com.mygdx.claninvasion.model.entity.Soldier;
 import com.mygdx.claninvasion.model.entity.Tower;
+import javafixes.concurrency.ReusableCountLatch;
 import org.javatuples.Pair;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -28,19 +29,21 @@ public class WorldMap {
     private TiledMapTileLayer entitiesLayer;
     private Graph G;
     private TiledMapTileSets tilesets;
-    private CountDownLatch latch = new CountDownLatch(1);
+    private ReusableCountLatch latch = new ReusableCountLatch(1);
 
     public WorldMap() {
-        this.worldCells = Collections.synchronizedList(new CopyOnWriteArrayList<>());
+        this.worldCells = new ArrayList<>();
     }
 
     public void restart() {
-        latch = new CountDownLatch(1);
+        if (latch.getCount() == 0) {
+            latch.increment();
+        }
         worldCells.clear();
     }
 
     public void finish() {
-        latch.countDown();
+        latch.decrement();
     }
 
     public void addCell(WorldCell worldCell) {
@@ -53,9 +56,7 @@ public class WorldMap {
 
     public Entity createMapEntity(EntitySymbol symbol, WorldCell worldCell, Object obj) {
         TiledMapTileLayer.Cell cell = new TiledMapTileLayer.Cell();
-
-        TiledMapTileSet tileSet = tilesets.getTileSet(symbol.tsx);
-        cell.setTile(tileSet.getTile(symbol.id));
+        cell.setTile(tilesets.getTile(symbol.id));
 
         Entity entity = EntitiesCreators.createEntity(symbol, worldCell.getMapPosition(), obj);
         occupyPosition(worldCell, entity, cell);
@@ -76,6 +77,9 @@ public class WorldMap {
 
     public Entity createMapEntity(EntitySymbol symbol, Pair<Integer, Integer> position, Object obj) {
         WorldCell cell = getCell(position);
+        if (cell == null) {
+            cell = getCell(transformMapPositionToIndex(position));
+        }
         return createMapEntity(symbol, cell, obj);
     }
 
@@ -100,16 +104,25 @@ public class WorldMap {
 
     public WorldCell getCell(int index) {
         try {
-            latch.await();
+            latch.waitTillZero();
+            return worldCells.get(index);
         } catch (InterruptedException e) {
             e.printStackTrace();
+            throw new RuntimeException("World cell is out of range");
         }
-        return worldCells.get(index);
     }
 
     public int transformMapPositionToIndex(Pair<Integer, Integer> cellPlace) {
-        WorldCell cell = getCell(cellPlace);
-        return worldCells.indexOf(cell);
+        try {
+            System.out.println("latch not zero " + latch.getCount());
+            latch.waitTillZero();
+            System.out.println("latch zero " + latch.getCount());
+            WorldCell cell = getCell(cellPlace);
+            return worldCells.indexOf(cell);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+            throw new RuntimeException("Latch failed in transform. Exiting...");
+        }
     }
 
     public Pair<Integer, Integer> transformMapIndexToPosition(int index) {
@@ -228,6 +241,9 @@ public class WorldMap {
         TiledMapTileLayer.Cell cell = entitiesLayer.getCell(coordinates.getValue0(), coordinates.getValue1());
         entitiesLayer.setCell(coordinates.getValue0(), coordinates.getValue1(), null);
         entitiesLayer.setCell(coordinatedDist.getValue0(), coordinatedDist.getValue1(), cell);
+        Entity entity = cell1.getOccupier();
+        cell1.setOccupier(null);
+        cell2.setOccupier(entity);
     }
 
     public void mutate(int index1, int index2) {
@@ -245,28 +261,20 @@ public class WorldMap {
         return this.G;
     }
 
-    public void setGraph(int size, List<WorldCell> worldCells) {
-        System.out.println(size);
-        this.G = new Graph(size, worldCells);
+    public int getGraphSize() {
+        return 32;
     }
 
-    //    /** Change the containment of the c1 (possible decease
-    //     * of the entity which populated it)
-    //     * @param cell - cell to remove the entity
-    //     */
-   /* public void mutate(WorldCell cell) {
-        AtomicReference<Pair<Integer, Integer>> coordinates = new AtomicReference<>(cell.getMapPosition());
-        Timer.schedule(new Timer.Task() {
-            int i = 7;
-            int count = 0;
-            @Override
-            public void run() {
-                TiledMapTileLayer.Cell cell = entitiesLayer.getCell(coordinates.get().getValue0() + count, coordinates.get().getValue1());
-                entitiesLayer.setCell(i + count, 4, null);
-                entitiesLayer.setCell(i + 1 + count, 4, cell);
-                count++;
-            }
-        }, 2, 1, 20);
+    public void setGraph() {
+        setGraph(getGraphSize());
+    }
 
-    }*/
+    public void setGraph(int size) {
+        System.out.println(size);
+        this.G = new Graph(size, this);
+    }
+
+    public ReusableCountLatch getLatch() {
+        return latch;
+    }
 }

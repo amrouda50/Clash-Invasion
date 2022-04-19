@@ -2,11 +2,11 @@ package com.mygdx.claninvasion.model.entity;
 
 import com.mygdx.claninvasion.model.player.Player;
 import org.javatuples.Pair;
-import org.javatuples.Quartet;
 
 import java.util.Optional;
 import java.util.Stack;
 import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Predicate;
 
 import static java.util.concurrent.Executors.newFixedThreadPool;
@@ -18,15 +18,25 @@ import static java.util.concurrent.Executors.newFixedThreadPool;
 public final class Castle extends ArtificialEntity {
     private final Player player;
     private final Stack<Soldier> soldiers;
-    private static int AMOUNT_OF_SOLDIERS = 1;
+    public static int AMOUNT_OF_SOLDIERS = 1;
     private Pair<Integer, Integer> soldierPosition;
 
     public Castle(EntitySymbol symbol, Pair<Integer, Integer> position, Player player) {
         super(symbol, position);
+        health = new AtomicInteger(level.current().getMaxHealth() + 1000);
+        initHealth = health.get();
         soldiers = new Stack<>();
         this.player = player;
         soldierPosition = position;
-        soldierPosition = new Pair<>(soldierPosition.getValue0() - 3, soldierPosition.getValue1() - 3);
+    }
+
+    private Pair<Integer, Integer> generateRandomSoldierPosition() {
+        int randomX = ThreadLocalRandom.current().nextInt(-1,0);
+        int randomY = ThreadLocalRandom.current().nextInt(-1, 0);
+        return new Pair<>(
+                soldierPosition.getValue0() + randomX,
+                soldierPosition.getValue1() + randomY
+        );
     }
 
     @Override
@@ -50,18 +60,20 @@ public final class Castle extends ArtificialEntity {
 
     public CompletionStage<Integer> trainSoldiers(EntitySymbol entitySymbol, Predicate<Integer> run) {
         ExecutorService executor = newFixedThreadPool(2);
+        int money = 0;
         for (int i = 0; i < AMOUNT_OF_SOLDIERS; i++) {
             Soldier soldier;
             if (entitySymbol == EntitySymbol.BARBARIAN) {
-                soldier = new Barbarian(EntitySymbol.BARBARIAN, soldierPosition);
+                soldier = new Barbarian(EntitySymbol.BARBARIAN, generateRandomSoldierPosition());
             } else if (entitySymbol == EntitySymbol.DRAGON) {
-                soldier = new Dragon(EntitySymbol.DRAGON, soldierPosition);
+                soldier = new Dragon(EntitySymbol.DRAGON, generateRandomSoldierPosition());
             } else {
                 throw new IllegalArgumentException("No such soldier exists");
             }
             soldiers.add(soldier);
+            money += soldier.getCost();
         }
-        run.test(getSoldiersMoneyCost());
+        run.test(money);
         CompletableFuture<Integer> supply = CompletableFuture.supplyAsync(() -> {
             int value = 0;
             for (Soldier soldier : soldiers) {

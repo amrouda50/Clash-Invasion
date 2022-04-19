@@ -1,6 +1,6 @@
 package com.mygdx.claninvasion.model.map;
 
-import com.mygdx.claninvasion.model.entity.Soldier;
+import com.mygdx.claninvasion.model.entity.*;
 import org.javatuples.Pair;
 import org.javatuples.Quartet;
 
@@ -10,7 +10,6 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.mygdx.claninvasion.model.adapters.IsometricToOrthogonalAdapt;
-import com.mygdx.claninvasion.model.entity.Entity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -136,7 +135,11 @@ public class WorldCell {
     }
 
     public boolean hasOccupier() {
-        return occupier != null;
+        return !occupier.isEmpty() && occupier.get(0) != null;
+    }
+
+    public boolean hasArtificialOccupier() {
+        return !occupier.isEmpty() && (occupier.get(0) instanceof Soldier);
     }
 
     public void setOccupier(Entity occupier, boolean multiple) {

@@ -1,16 +1,8 @@
 package com.mygdx.claninvasion.model.gamestate;
 
 import com.mygdx.claninvasion.model.GameModel;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.BrokenBarrierException;
-import java.util.concurrent.CyclicBarrier;
-import java.util.concurrent.LinkedBlockingDeque;
-import java.util.concurrent.atomic.AtomicInteger;
+import com.mygdx.claninvasion.model.player.Player;
+import com.mygdx.claninvasion.model.player.WinningState;
 
 /**
  * This class is responsible for beginning and
@@ -21,36 +13,78 @@ import java.util.concurrent.atomic.AtomicInteger;
  * @author Dinari
  */
 public class BattleState extends CommonGameState {
-    private int totalTime = 0;
-    private final int delay = 1;
-    private final Timer time;
+    public enum BattleStateChangeVariants {
+        BUILDING,
+        END_GAME,
+    }
+    private BattleStateChangeVariants battleStateChangeVariants = null;
 
     public BattleState(GameModel game) {
         super(game);
         changePhase();
-        time = new Timer();
-        setTimer();
+        initializePlayerMove(game.getPlayerOne());
+        initializePlayerMove(game.getPlayerTwo());
     }
 
-    private void setTimer() {
+    private void initializePlayerMove(Player player) {
         Thread tempThread = null;
-        int size = game.getPlayerOne().getTrainingSoldiers().size();
-        for (int i = size -1; i >= 0 ; i--){
+        int size = player.getTrainingSoldiers().size();
+        for (int i = size - 1; i >= 0 ; i--) {
             int finalI = i;
             Thread finalTempThread = tempThread;
             tempThread = new Thread(() -> {
-                game.getPlayerOne().addTrainedToMapSoldier();
-                game.getPlayerOne().moveSoldier(finalI, finalTempThread);
+                player.addTrainedToMapSoldier();
+                player.moveSoldier(finalI, finalTempThread);
+                while (player.getOpponent().isAlive() && player.isAlive()) {
+                    player.attackCastle(finalI);
+                    try {
+                        Thread.sleep(100);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
             });
         }
-        if(tempThread != null){
+        if (tempThread != null) {
             tempThread.start();
         }
-
     }
 
     @Override
     public void changeState() {
-        this.game.setGameState(new EndGameState(game));
+        if (BattleStateChangeVariants.BUILDING == battleStateChangeVariants) {
+            this.game.setGameState(new BuildingState(game));
+        } else if (BattleStateChangeVariants.END_GAME == battleStateChangeVariants) {
+            this.game.setGameState(new EndGameState(game));
+        }
+    }
+
+    @Override
+    public boolean isInteractive() {
+        return false;
+    }
+
+    @Override
+    public void updateState(float delta, Runnable runnable) {
+        Boolean noSoldiers1 = game.getPlayerOne().getTrainingSoldiers().size() == 0 && game.getPlayerOne().getSoldiers().size() == 0;
+        Boolean noSoldiers2 = game.getPlayerTwo().getTrainingSoldiers().size() == 0 && game.getPlayerTwo().getSoldiers().size() == 0;
+        if (noSoldiers1 && noSoldiers2) {
+            battleStateChangeVariants = BattleStateChangeVariants.BUILDING;
+        }
+
+        if (game.getPlayerOne().hasLost()) {
+            game.getPlayerOne().setWinningState(WinningState.LOST);
+            game.getPlayerTwo().setWinningState(WinningState.WON);
+            battleStateChangeVariants = BattleStateChangeVariants.END_GAME;
+        }
+
+        if (game.getPlayerTwo().hasLost()) {
+            game.getPlayerTwo().setWinningState(WinningState.WON);
+            game.getPlayerOne().setWinningState(WinningState.LOST);
+            battleStateChangeVariants = BattleStateChangeVariants.END_GAME;
+        }
+
+        changeState();
+        runnable.run();
     }
 }

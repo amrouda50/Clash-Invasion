@@ -2,6 +2,7 @@ package com.mygdx.claninvasion.view.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -23,33 +24,37 @@ import static com.badlogic.gdx.scenes.scene2d.actions.Actions.*;
  */
 public class LoadingScreen implements GamePage {
     private Image animated;
-    private final Stage stage;
+    private Stage stage;
     private final ClanInvasion app;
-    private Sound Sound;
+    private Sound sound;
     private float elapsedTime = 0f;
-    private final RepeatAction loadingAction = forever(sequence(alpha(0f), fadeIn(0.6f)));
+    private RepeatAction loadingAction;
+    private final OrthographicCamera camera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
     /**
      * @param app - app instance
      */
     public LoadingScreen(final ClanInvasion app) {
         this.app = app;
-        stage = new Stage(new FillViewport(Globals.V_WIDTH, Globals.V_HEIGHT, app.getCamera()));
-        Gdx.input.setInputProcessor(stage);
     }
 
+    private void initActions() {
+        loadingAction = forever(sequence(alpha(0f), fadeIn(0.6f)));
+    }
 
     private void initAnimation() {
+        stage = new Stage(new FillViewport(Globals.V_WIDTH, Globals.V_HEIGHT, camera));
+        Gdx.input.setInputProcessor(stage);
         Texture texture = new Texture(Gdx.files.internal("LoadingscreenAnimation/Loading-Screen-icon0.png"));
         animated = new Image(texture);
         animated.setSize(200, 200);
         animated.setPosition((stage.getWidth() / 2) - 100, stage.getHeight() / 4);
 
         stage.addActor(animated);
-        Sound = Gdx.audio.newSound(Gdx.files.internal("SoundEffects/LoadingScreen.ogg"));
-        long id = Sound.play(1.0f);
-        Sound.setPitch(id, 2);
-        Sound.setLooping(id, false);
+        sound = Gdx.audio.newSound(Gdx.files.internal("SoundEffects/LoadingScreen.ogg"));
+        long id = sound.play(1.0f);
+        sound.setPitch(id, 2);
+        sound.setLooping(id, false);
     }
 
     /**
@@ -58,7 +63,8 @@ public class LoadingScreen implements GamePage {
      */
     @Override
     public void show() {
-        this.initAnimation();
+        initActions();
+        initAnimation();
 
         animated.addAction(loadingAction);
     }
@@ -136,6 +142,6 @@ public class LoadingScreen implements GamePage {
      */
     @Override
     public void dispose() {
-     Sound.dispose();
+     sound.dispose();
     }
 }

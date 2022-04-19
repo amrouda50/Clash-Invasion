@@ -1,22 +1,18 @@
 package com.mygdx.claninvasion.model.player;
 
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.graphics.Color;
 import com.mygdx.claninvasion.model.GameModel;
 import com.mygdx.claninvasion.model.entity.*;
 import com.mygdx.claninvasion.model.map.WorldCell;
 import com.mygdx.claninvasion.model.map.WorldMap;
 import org.javatuples.Pair;
 
-import java.awt.*;
 import java.util.Collections;
 import java.util.List;
 import java.util.Stack;
 import java.util.UUID;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
-
-import static java.awt.Color.*;
 
 /**
  * This class is responsible for handling
@@ -73,7 +69,7 @@ public class Player implements Winnable {
     private final UUID id;
     private final BlockingQueue<Integer> coinProduceQueue;
     private final ExecutorService executorService;
-    private Color color;
+    private final Color color;
 
     public Player(GameModel game , Color c) {
         this.color = c;
@@ -94,6 +90,10 @@ public class Player implements Winnable {
     }
 
     public MiningFarm createNewMining(WorldCell cell) {
+        if (!canCreateMining()) {
+            System.out.println("Not enough money for this action");
+            return null;
+        }
         MiningFarm farm = (MiningFarm) game.getWorldMap().createMapEntity(EntitySymbol.MINING, cell, coinProduceQueue);
         executorService.execute(farm::startMining);
         miningFarms.add(farm);
@@ -155,10 +155,13 @@ public class Player implements Winnable {
      * This method starts building towers for the active player
      */
     public Tower buildTower(WorldCell cell) {
+         if (!canCreateTower()) {
+             System.out.println("Not enough money for this action");
+             return null;
+         }
          Tower tower = (Tower) game.getWorldMap().createMapEntity(EntitySymbol.TOWER, cell, null);
-         System.out.println(cell.getWorldPosition());
          towers.add(tower);
-        wealth.set(wealth.get() - Tower.COST);
+         wealth.set(wealth.get() - Tower.COST);
          return tower;
     }
 
@@ -190,9 +193,14 @@ public class Player implements Winnable {
     }
 
     public void addTrainedToMapSoldier() {
-        if (castle.getSoldiers().empty()) return;
         Soldier soldier = castle.getSoldiers().pop();
-        soldiers.add((Soldier) game.getWorldMap().createMapEntity(soldier.getSymbol(), soldier.getPosition(), null));
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        Soldier soldier1 = (Soldier) game.getWorldMap().createMapEntity(soldier.getSymbol(), soldier.getPosition(), null);
+        soldiers.add(soldier1);
     }
 
     public void addTrainedToMapSoldiers() {
@@ -218,9 +226,7 @@ public class Player implements Winnable {
     }
 
     public void attackCastle(Soldier soldier) {
-        if (soldier.getPosition().equals(opponent.castle.getPosition())) {
-            soldier.attackCastle(opponent.castle);
-        }
+        soldier.attackCastle(opponent.castle);
     }
 
     public void attackCastle() {
@@ -229,41 +235,93 @@ public class Player implements Winnable {
         }
     }
 
-    public void moveSoldier(int index , Thread x) {
-        Soldier soldier = soldiers.get(index);
-        moveSoldier(soldier , x);
-    }
+    final Object sync = new Object();
 
-    public void moveSoldier(Soldier soldier , Thread x) {
+    public void moveSoldier(int index , Thread upcoming) {
+        Soldier soldier = getSoldiers().get(index);
 
         Pair<Integer, Integer> posSrc = new Pair<>(
                 soldier.getPosition().getValue0() ,
                 soldier.getPosition().getValue1()
         );
         Pair<Integer, Integer> posDst = new Pair<>(
-                opponent.getCastle().getPosition().getValue0() +1 ,
-                opponent.getCastle().getPosition().getValue1() +1
+                opponent.getCastle().getPosition().getValue0() + index + 1 ,
+                opponent.getCastle().getPosition().getValue1() + index + 1
         );
         int positionSrc = game.getWorldMap().transformMapPositionToIndex(posSrc);
         int positionDest = game.getWorldMap().transformMapPositionToIndex(posDst);
-        List<Integer> paths = game.getWorldMap().getGraph()
-                .GetShortestDistance(positionSrc, positionDest, 32 * 32);
-        int j = 0;
-        for (int i = paths.size() - 1; i > 0; i--) {
-            game.getWorldMap().mutate(paths.get(i), paths.get(i - 1));
-            Pair<Integer, Integer> newPosition =
-                    game.getWorldMap().transformMapIndexToPosition(paths.get(i) - 1);
-            soldier.changePosition(newPosition);
-            try {
-                Thread.sleep(300);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+        int counter = 0;
+        int movingSpeed = 200;
+        while (positionSrc != positionDest) {
+            positionSrc = moveSoldier(soldier, positionSrc, positionDest, movingSpeed, 0);
+            if (counter == 2 && upcoming != null) {
+                upcoming.start();
             }
-            if(j == 2 && x != null){
-                    x.start();
+            counter++;
+            synchronized (sync) {
+                try {
+                    Thread.sleep( movingSpeed );
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
-            j++;
+        }
+    }
 
+    public int moveSoldier(Soldier soldier, int positionSrc, int positionDest, int movingSpeed, int callTimes) {
+        try {
+            getMap().getLatch().waitTillZero();
+            game.getWorldMap().setGraph();
+            List<Integer> paths = game.getWorldMap().getGraph()
+                    .getShortestDistance(
+                            positionSrc,
+                            positionDest,
+                            game.getWorldMap().getGraphSize() * game.getWorldMap().getGraphSize()
+                    );
+            if (paths == null) {
+                System.out.println("Paths is null. No moving can be made. Waiting...");
+                if (callTimes > 100) {
+                    throw new RuntimeException("Paths is null. Exiting...");
+                }
+                synchronized (sync) {
+                    try {
+                        Thread.sleep(movingSpeed);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+                moveSoldier(soldier, positionSrc, positionDest, movingSpeed, ++callTimes);
+                return positionSrc;
+            } else {
+                if (getColor() == Color.RED && game.getWorldMap().getCell(paths.get(paths.size() - 2)).hasOccupier()) {
+                    synchronized (sync) {
+                        try {
+                            Thread.sleep(movingSpeed);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+
+                game.getWorldMap().mutate(paths.get(paths.size() - 1), paths.get(paths.size() - 2));
+                Pair<Integer, Integer> newPosition =
+                        game.getWorldMap().transformMapIndexToPosition(paths.get(paths.size() - 2));
+                soldier.changePosition(newPosition);
+                return paths.get(paths.size() - 2);
+            }
+        } catch (ArrayIndexOutOfBoundsException e) {
+            synchronized (sync) {
+                try {
+                    Thread.sleep(movingSpeed);
+                } catch (InterruptedException interruptedException) {
+                    interruptedException.printStackTrace();
+                }
+            }
+            moveSoldier(soldier, positionSrc, positionDest, movingSpeed, ++callTimes);
+            return positionSrc;
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+            return positionSrc;
         }
     }
 
@@ -292,14 +350,18 @@ public class Player implements Winnable {
         return winningState;
     }
 
+    public void setWinningState(WinningState winningState) {
+        this.winningState = winningState;
+    }
+
     @Override
     public boolean hasWon() {
-        return winningState == WinningState.LOST;
+        return isAlive();
     }
 
     @Override
     public boolean hasLost() {
-        return winningState == WinningState.WON;
+        return !hasWon();
     }
 
     public String getName() {
@@ -323,11 +385,11 @@ public class Player implements Winnable {
     }
 
     public boolean canCreateDragon() {
-        return getWealth() >= Dragon.COST;
+        return getWealth() >= Castle.AMOUNT_OF_SOLDIERS * Dragon.COST;
     }
 
     public boolean canCreateBarbarian() {
-        return getWealth() >= Barbarian.COST;
+        return getWealth() >= Castle.AMOUNT_OF_SOLDIERS * Barbarian.COST;
     }
 
     public boolean canCreateMining() {
@@ -342,11 +404,23 @@ public class Player implements Winnable {
         return castle.getSoldiers();
     }
 
+    public Player getOpponent() {
+        return opponent;
+    }
+
+    public boolean isAlive() {
+        return castle.isAlive();
+    }
+
     @Override
     public boolean equals(Object obj) {
         if (obj == null) {
             return false;
         }
         return ((Player) obj).id == this.id;
+    }
+
+    public Color getColor() {
+        return color;
     }
 }
