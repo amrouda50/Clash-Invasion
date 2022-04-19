@@ -120,9 +120,9 @@ public class MainGamePage implements GamePage, UiUpdatable {
     }
 
     private <T extends ArtificialEntity>
-    void createHealthBars(List<T> containers) {
+    void createHealthBars(List<T> containers, Color color) {
         for (T container : containers) {
-            HealthBar healthBar = new HealthBar();
+            HealthBar healthBar = new HealthBar(color);
             for (WorldCell cell : app.getMap().getCells()) {
                 if (cell.hasArtificialOccupier() && container.getId().equals(((ArtificialEntity)cell.getOccupier()).getId())) {
                     Vector2 coordinate = cell.getWorldIsoPoint1();
@@ -137,8 +137,14 @@ public class MainGamePage implements GamePage, UiUpdatable {
     }
 
     private void createHealthBars() {
-        createHealthBars(app.getModel().getPlayerOne().getSoldiers());
-        createHealthBars(app.getModel().getPlayerTwo().getSoldiers());
+        createHealthBars(
+                app.getModel().getPlayerOne().getSoldiers(),
+                app.getModel().getPlayerOne().getColor()
+        );
+        createHealthBars(
+                app.getModel().getPlayerTwo().getSoldiers(),
+                app.getModel().getPlayerTwo().getColor()
+        );
     }
 
     private void renderHealthBars() {
