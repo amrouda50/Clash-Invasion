@@ -242,7 +242,7 @@ public final class MainGamePageUI implements ApplicationListener {
 
     private void createBarbarian(Player player, Table table) {
         if (player.canCreateBarbarian()) {
-            player.trainSoldiers(EntitySymbol.DRAGON, () ->
+            player.trainSoldiers(EntitySymbol.BARBARIAN, () ->
                     updatePlayerData(player, table)
             );
         } else {
@@ -252,7 +252,7 @@ public final class MainGamePageUI implements ApplicationListener {
 
     private void createDragon(Player player, Table table) {
         if (player.canCreateDragon()) {
-            player.trainSoldiers(EntitySymbol.BARBARIAN, () -> {
+            player.trainSoldiers(EntitySymbol.DRAGON, () -> {
                 System.out.println("New barbarian trained");
                 updatePlayerData(player, table);
             });
