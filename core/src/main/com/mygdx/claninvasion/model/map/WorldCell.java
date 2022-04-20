@@ -135,7 +135,7 @@ public class WorldCell {
     }
 
     public boolean hasOccupier() {
-        return !occupier.isEmpty() && occupier.get(0) != null;
+        return occupier != null && !occupier.isEmpty() && occupier.get(0) != null;
     }
 
     public boolean hasArtificialOccupier() {

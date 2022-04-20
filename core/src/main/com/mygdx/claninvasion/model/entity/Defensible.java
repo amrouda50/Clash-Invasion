@@ -13,5 +13,5 @@ public interface Defensible {
     /**
      * @param artificialEntity - attacking entity
      */
-    CompletableFuture<Boolean> attack(ArtificialEntity artificialEntity, Fireable fireable);
+    void attack(ArtificialEntity artificialEntity);
 }

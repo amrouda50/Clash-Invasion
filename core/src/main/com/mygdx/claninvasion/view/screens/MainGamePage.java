@@ -93,15 +93,15 @@ public class MainGamePage implements GamePage, UiUpdatable {
         ArrayList<Tower> towers = app.getMap().getTowers();
         ArrayList<Soldier> soldiers = app.getMap().getSoldiers();
         if (towers.size() > 0 && soldiers.size() > 0) {
-            Tower tower = towers.get(0);
-            tower.attack(soldiers.get(0), (src, dest) -> CompletableFuture.supplyAsync(() -> {
-                Vector2 positionSrc = app.getMap().transformMapPositionToIso(src);
-                Vector2 positionDest = app.getMap().transformMapPositionToIso(dest);
-                FireAnimated animated = new FireAnimated(positionSrc,
-                        positionDest, (SpriteBatch) renderer.getBatch());
-                fireballs.add(animated);
-                return true;
-            }));
+//            Tower tower = towers.get(0);
+//            tower.attack(soldiers.get(0), (src, dest) -> CompletableFuture.supplyAsync(() -> {
+//                Vector2 positionSrc = app.getMap().transformMapPositionToIso(src);
+//                Vector2 positionDest = app.getMap().transformMapPositionToIso(dest);
+//                FireAnimated animated = new FireAnimated(positionSrc,
+//                        positionDest, (SpriteBatch) renderer.getBatch());
+//                fireballs.add(animated);
+//                return true;
+//            }));
         }
     }
 
@@ -118,17 +118,22 @@ public class MainGamePage implements GamePage, UiUpdatable {
     private <T extends ArtificialEntity>
     void createHealthBars(List<T> containers, Color color) {
         for (T container : containers) {
-            HealthBar healthBar = new HealthBar(color);
-            for (WorldCell cell : app.getMap().getCells()) {
-                if (cell.hasArtificialOccupier() && container.getId().equals(((ArtificialEntity)cell.getOccupier()).getId())) {
-                    Vector2 coordinate = cell.getWorldIsoPoint1();
-                    healthBar.setProjectionMatrix(app.getCamera().combined);
-                    healthBar
-                        .setCoordinates(new Pair<>(coordinate.x, coordinate.y));
+                HealthBar healthBar = container.getHealthBar() == null
+                        ? new HealthBar(color)
+                        : container.getHealthBar();
+                for (WorldCell cell : app.getMap().getCells()) {
+                    if (cell.hasOccupier() && cell.hasArtificialOccupier()
+                            && container.getId().equals(((ArtificialEntity)cell.getOccupier()).getId())) {
+                        Vector2 coordinate = cell.getWorldIsoPoint1();
+                        healthBar.setProjectionMatrix(app.getCamera().combined);
+                        healthBar
+                                .setCoordinates(new Pair<>(coordinate.x, coordinate.y));
+                    }
                 }
-            }
 
-            container.setHealthBar(healthBar);
+                if (container.getHealthBar() == null) {
+                    container.setHealthBar(healthBar);
+                }
         }
     }
 
@@ -185,8 +190,9 @@ public class MainGamePage implements GamePage, UiUpdatable {
         renderer.setView(app.getCamera());
         renderer.render(app.getMap());
 
-        app.getModel().getPlayerOne().removeDead();
-        app.getModel().getPlayerTwo().removeDead();
+        app.getModel().getPlayerOne().removeDeadMiningFarm();
+        app.getModel().getPlayerTwo().removeDeadMiningFarm();
+
         // update actors
         update(delta);
 

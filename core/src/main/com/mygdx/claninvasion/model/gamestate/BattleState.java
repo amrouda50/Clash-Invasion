@@ -40,8 +40,12 @@ public class BattleState extends CommonGameState {
             tempThread = new Thread(() -> {
                 player.addTrainedToMapSoldier();
                 player.moveSoldier(finalI, finalTempThread);
-                while (player.getOpponent().isAlive() && player.isAlive()) {
-                    player.attackCastle(finalI);
+                boolean iterate = player.getOpponent().isAlive() && player.isAlive();
+                while (iterate) {
+                    iterate = player.attackCastle(finalI);
+                    if (!iterate) {
+                        break;
+                    }
                     try {
                         Thread.sleep(100);
                     } catch (InterruptedException e) {
@@ -63,6 +67,7 @@ public class BattleState extends CommonGameState {
             this.game.setGameState(new EndGameState(game));
         }
     }
+
     ScheduledExecutorService scheduledExecutorService =
             Executors.newScheduledThreadPool(1);
 
@@ -101,6 +106,10 @@ public class BattleState extends CommonGameState {
     public void updateState(float delta, Runnable runnable) {
         Boolean noSoldiers1 = game.getPlayerOne().getTrainingSoldiers().size() == 0 && game.getPlayerOne().getSoldiers().size() == 0;
         Boolean noSoldiers2 = game.getPlayerTwo().getTrainingSoldiers().size() == 0 && game.getPlayerTwo().getSoldiers().size() == 0;
+
+        game.getPlayerOne().removeDeadSoldiers();
+        game.getPlayerTwo().removeDeadSoldiers();
+
         if (noSoldiers1 && noSoldiers2) {
             battleStateChangeVariants = BattleStateChangeVariants.BUILDING;
         }
