@@ -1,8 +1,12 @@
 package com.mygdx.claninvasion.model.gamestate;
 
 import com.mygdx.claninvasion.model.GameModel;
+import com.mygdx.claninvasion.model.entity.Soldier;
+import com.mygdx.claninvasion.model.entity.Tower;
 import com.mygdx.claninvasion.model.player.Player;
 import com.mygdx.claninvasion.model.player.WinningState;
+import java.util.List;
+import java.util.concurrent.*;
 
 /**
  * This class is responsible for beginning and
@@ -24,6 +28,7 @@ public class BattleState extends CommonGameState {
         changePhase();
         initializePlayerMove(game.getPlayerOne());
         initializePlayerMove(game.getPlayerTwo());
+        fireTower(game.getPlayerOne());
     }
 
     private void initializePlayerMove(Player player) {
@@ -58,10 +63,38 @@ public class BattleState extends CommonGameState {
             this.game.setGameState(new EndGameState(game));
         }
     }
+    ScheduledExecutorService scheduledExecutorService =
+            Executors.newScheduledThreadPool(1);
 
     @Override
     public boolean isInteractive() {
         return false;
+    }
+
+    private void fireTower(Player player) {
+        List<Tower> towers = player.getTowers();
+        List<Soldier> soldiers = player.getOpponent().getSoldiers();
+
+        new Thread(() -> {
+            while (true) {
+                for (Tower tower : towers) {
+                    scheduledExecutorService
+                            .schedule(() -> {
+                                for (Soldier soldier : soldiers) {
+                                    if (!tower.canFire(soldier)) {
+                                        break;
+                                    }
+                                    tower.attack(soldier);
+                                }
+                            }, 200, TimeUnit.MILLISECONDS);
+                    try {
+                        scheduledExecutorService.awaitTermination(300, TimeUnit.MILLISECONDS);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }).start();
     }
 
     @Override

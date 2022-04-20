@@ -6,8 +6,6 @@ import org.javatuples.Pair;
 
 import java.util.concurrent.CompletableFuture;
 
-import static java.util.concurrent.TimeUnit.SECONDS;
-
 public class Tower extends ArtificialEntity implements Defensible {
     public static int COST = 200;
     public Tower(EntitySymbol entitySymbol, Pair<Integer, Integer> position) {
@@ -29,6 +27,25 @@ public class Tower extends ArtificialEntity implements Defensible {
         super.heal();
     }
 
+    public static int RADIUS = 2;
+
+    public boolean canFire(ArtificialEntity entity) {
+        float distance = getVec2Position().dst(
+                entity.getVec2Position().x,
+                entity.getVec2Position().y
+        );
+
+        return distance <= RADIUS;
+    }
+
+
+    public void attack(ArtificialEntity artificialEntity) {
+        if (!artificialEntity.isAlive()) {
+            return;
+        }
+        artificialEntity.setDecreaseHealth(10);
+        System.out.println("Descresing.. Current is" + artificialEntity.getHealth() + ", Entity " + artificialEntity);
+    }
 
     @Override
     public CompletableFuture<Boolean> attack(ArtificialEntity artificialEntity, Fireable fire) {
@@ -37,21 +54,31 @@ public class Tower extends ArtificialEntity implements Defensible {
                 artificialEntity.getVec2Position().y
         );
 
-        if (distance > 2) {
-            return CompletableFuture.supplyAsync(() -> false);
-        }
+//        if (distance > 2) {
+//            return CompletableFuture.supplyAsync(() -> false);
+//        }
 
-        if (!artificialEntity.isAlive()) {
-            return CompletableFuture.supplyAsync(() -> false);
-        }
+//        if (!artificialEntity.isAlive()) {
+//            System.out.println("Exited...");
+//            return CompletableFuture.supplyAsync(() -> false);
+//        }
 
-        CompletableFuture<Boolean> future = CompletableFuture
-                .supplyAsync(() -> fire.fire(position, artificialEntity.position).join());
-        future
-                .orTimeout(3, SECONDS)
-                .thenAccept(a -> artificialEntity.damage(100))
-                .thenAccept(a -> System.out.println("Attack by tower was completed"))
-                .completeExceptionally(new RuntimeException("Could not finish the defend method"));
-        return future;
+//        CompletableFuture<Boolean> future = CompletableFuture
+//                .supplyAsync(() ->{
+//                    try {
+//                        Thread.sleep(400);
+//                    } catch (InterruptedException e) {
+//                        e.printStackTrace();
+//                    }
+//                    return true;
+//                });
+//        future
+//                .thenAccept(a -> artificialEntity.damage(100))
+//                .thenAccept(a -> System.out.println("Attack by tower was completed: " +
+//                        artificialEntity.getHealth() + ", Entity " + artificialEntity))
+//                .completeExceptionally(new RuntimeException("Could not finish the defend method"));
+//        return future;
+
+        return null;
     }
 }

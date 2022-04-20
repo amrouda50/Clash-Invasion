@@ -108,14 +108,10 @@ public class MainGamePage implements GamePage, UiUpdatable {
     private <T extends ArtificialEntity>
     void renderHealthBars(List<T> containers) {
         List<HealthBar> healthBars = containers.stream().map(ArtificialEntity::getHealthBar).collect(Collectors.toList());
-        if (healthBars.size() > 0) {
-            System.out.println(">");
-        }
         for (HealthBar healthBar : healthBars) {
             if (healthBar != null) {
                 healthBar.rendering(app.getCamera().combined);
             }
-
         }
     }
 
@@ -189,11 +185,6 @@ public class MainGamePage implements GamePage, UiUpdatable {
         renderer.setView(app.getCamera());
         renderer.render(app.getMap());
 
-        // render game page ui
-        mainGamePageUI.render();
-
-        // render animated object (fireballs, arrows, etc.)
-        updateAnimated();
         app.getModel().getPlayerOne().removeDead();
         app.getModel().getPlayerTwo().removeDead();
         // update actors
@@ -201,6 +192,12 @@ public class MainGamePage implements GamePage, UiUpdatable {
 
         // render health bars
         renderHealthBars();
+
+        // render animated object (fireballs, arrows, etc.)
+        updateAnimated();
+
+        // render game page ui
+        mainGamePageUI.render();
     }
 
 
