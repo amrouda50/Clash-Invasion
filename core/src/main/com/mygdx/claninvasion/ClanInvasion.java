@@ -50,7 +50,7 @@ public class ClanInvasion extends Game {
         camera = new OrthographicCamera();
         camera.setToOrtho(false, Globals.V_WIDTH, Globals.V_HEIGHT);
         font = new BitmapFont();
-        addMusic();
+        //addMusic();
 
         this.gamePages = new ArrayList<>(
                 Arrays.asList(

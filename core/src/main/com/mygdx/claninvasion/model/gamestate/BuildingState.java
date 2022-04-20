@@ -1,5 +1,6 @@
 package com.mygdx.claninvasion.model.gamestate;
 import com.mygdx.claninvasion.model.GameModel;
+import com.mygdx.claninvasion.view.utils.InputClicker;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -14,8 +15,8 @@ import java.util.TimerTask;
  * @author Dinari
  */
 public class BuildingState extends CommonGameState implements Building {
-    private static final int COUNTER_INIT = 10;
-    private static final int END_PHASE_TIME = 20;
+    private static final int COUNTER_INIT = 20;
+    private static final int END_PHASE_TIME = COUNTER_INIT*2;
     private float timeSeconds = 0f;
     private final float diff = 1f;
     private int counter = COUNTER_INIT;
@@ -66,6 +67,7 @@ public class BuildingState extends CommonGameState implements Building {
         }
 
         if (counter == 0) {
+            InputClicker.enabled = false;
             changeTurn();
             counter = COUNTER_INIT;
         }
