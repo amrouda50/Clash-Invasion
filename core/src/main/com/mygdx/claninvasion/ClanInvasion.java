@@ -84,9 +84,17 @@ public class ClanInvasion extends Game {
 
     private void addMusic() {
         music = Gdx.audio.newMusic(Gdx.files.internal("music/SplashScreenMusic.mp3"));
-        music.setVolume(0.f);
+        music.setVolume(0.3f);
         music.setLooping(true);
         music.play();
+    }
+
+    public void changeVolume() {
+        if (music.getVolume() == 0) {
+            music.setVolume(0.3f);
+        } else {
+            music.setVolume(0.0f);
+        }
     }
 
     /** Used to change the screen one after the other.

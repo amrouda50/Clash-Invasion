@@ -11,9 +11,7 @@ import com.mygdx.claninvasion.view.actors.HealthBar;
 import com.mygdx.claninvasion.view.applicationlistener.MainGamePageUI;
 import org.javatuples.Pair;
 
-import java.util.List;
-
-public class InputClicker  implements  RunnableTouchEvent {
+public class InputClicker implements RunnableTouchEvent {
     private final ClanInvasion app;
     private final MainGamePageUI mainGamePageUI;
     public static boolean enabled = false;

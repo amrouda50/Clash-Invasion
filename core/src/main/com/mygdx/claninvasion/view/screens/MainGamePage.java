@@ -17,13 +17,11 @@ import com.mygdx.claninvasion.view.utils.EntityPlacer;
 import com.mygdx.claninvasion.view.utils.GameInputProcessor;
 import com.mygdx.claninvasion.view.utils.IsometricTiledMapGameRenderer;
 import com.mygdx.claninvasion.view.utils.InputClicker;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import org.javatuples.Pair;
 
 
 import java.util.*;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.stream.Collectors;
 
@@ -68,7 +66,7 @@ public class MainGamePage implements GamePage, UiUpdatable {
         }
 
         app.getCamera().update();
-        inputProcessor = new GameInputProcessor(app.getCamera(), new InputClicker(app ,mainGamePageUI));
+        inputProcessor = new GameInputProcessor(app.getCamera(), new InputClicker(app ,mainGamePageUI), app);
         map = new TmxMapLoader().load(Gdx.files.getLocalStoragePath() + "/TileMap/Tilemap.tmx");
         app.getMap().setTileset(map.getTileSets());
         renderer = new IsometricTiledMapGameRenderer(
@@ -92,7 +90,7 @@ public class MainGamePage implements GamePage, UiUpdatable {
     private void fireTower() {
         ArrayList<Tower> towers = app.getMap().getTowers();
         ArrayList<Soldier> soldiers = app.getMap().getSoldiers();
-        if (towers.size() > 0 && soldiers.size() > 0) {
+//        if (towers.size() > 0 && soldiers.size() > 0) {
 //            Tower tower = towers.get(0);
 //            tower.attack(soldiers.get(0), (src, dest) -> CompletableFuture.supplyAsync(() -> {
 //                Vector2 positionSrc = app.getMap().transformMapPositionToIso(src);
@@ -102,7 +100,7 @@ public class MainGamePage implements GamePage, UiUpdatable {
 //                fireballs.add(animated);
 //                return true;
 //            }));
-        }
+//        }
     }
 
     private <T extends ArtificialEntity>

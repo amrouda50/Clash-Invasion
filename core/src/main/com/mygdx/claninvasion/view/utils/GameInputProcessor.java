@@ -5,11 +5,8 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
-import com.mygdx.claninvasion.model.adapters.IsometricToOrthogonalAdapt;
-import com.mygdx.claninvasion.model.map.WorldCell;
-import com.mygdx.claninvasion.model.map.WorldMap;
+import com.mygdx.claninvasion.ClanInvasion;
 
 /**
  * Represents an event handler for libgdx input
@@ -26,13 +23,16 @@ public class GameInputProcessor implements InputProcessor {
 
     private final RunnableTouchEvent onTouchEvent;
 
+    private final ClanInvasion app;
+
     /**
      * @param camera - camera of the application
      * @param event - event for click listeners
      */
-    public GameInputProcessor(Camera camera, RunnableTouchEvent event) {
+    public GameInputProcessor(Camera camera, RunnableTouchEvent event, ClanInvasion app) {
         this.camera = camera;
         onTouchEvent = event;
+        this.app = app;
     }
 
     @Override
@@ -83,6 +83,10 @@ public class GameInputProcessor implements InputProcessor {
             translate.y -= 4;
         } else if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
             translate.y += 4;
+        }
+
+        if (Gdx.input.isKeyPressed(Input.Keys.M)) {
+             app.changeVolume();
         }
 
         if (Gdx.input.justTouched()) {

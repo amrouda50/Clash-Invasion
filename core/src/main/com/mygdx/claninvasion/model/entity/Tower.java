@@ -27,7 +27,7 @@ public class Tower extends ArtificialEntity implements Defensible {
         super.heal();
     }
 
-    public static int RADIUS = 2;
+    public static int RADIUS = 4;
 
     public boolean canFire(ArtificialEntity entity) {
         float distance = getVec2Position().dst(
@@ -44,7 +44,7 @@ public class Tower extends ArtificialEntity implements Defensible {
         if (!artificialEntity.isAlive()) {
             return;
         }
-        artificialEntity.setDecreaseHealth(50);
+        artificialEntity.setDecreaseHealth(85);
         System.out.println("Descresing.. Current is" + artificialEntity.getHealth() + ", Entity " + artificialEntity);
     }
 }
