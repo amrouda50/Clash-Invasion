@@ -437,13 +437,16 @@ public class Player implements Winnable {
     }
 
     public void levelUp() {
-        System.out.println("Tower level is:" + gameTowerLevelIterator.getLevelName());
-        System.out.println("Tower creation time is" + gameTowerLevelIterator.current().getCreationTime());
+        //System.out.println("Tower level is:" + gameTowerLevelIterator.getLevelName());
+        //System.out.println("Tower creation time is" + gameTowerLevelIterator.current().getCreationTime());
         if (gameTowerLevelIterator.hasNext()) {
-            gameTowerLevelIterator.next();
+            try {
             if (createTowerLevelIterator().hasNext()) {
-                System.out.println("Tower value will change now");
-               Tower.creationTime = createTowerLevelIterator().next().getCreationTime();
+               Tower.creationTime = gameTowerLevelIterator.next().getCreationTime();
+               System.out.println("Value of creation time " + Tower.creationTime);
+            } }
+            catch (Exception e) {
+                System.out.println("No new levels");
             }
         }
     }
