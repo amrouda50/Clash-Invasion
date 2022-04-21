@@ -3,6 +3,7 @@ package com.mygdx.claninvasion.model.player;
 import com.badlogic.gdx.graphics.Color;
 import com.mygdx.claninvasion.model.GameModel;
 import com.mygdx.claninvasion.model.entity.*;
+import com.mygdx.claninvasion.model.level.GameTowerLevel;
 import com.mygdx.claninvasion.model.level.GameTowerLevelIterator;
 import com.mygdx.claninvasion.model.map.WorldCell;
 import com.mygdx.claninvasion.model.map.WorldMap;
@@ -77,6 +78,7 @@ public class Player implements Winnable {
     private final Color color;
 
 
+    GameTowerLevel gameTowerLevel;
     GameTowerLevelIterator gameTowerLevelIterator;
     private int creationTime; //For towers
 
@@ -94,6 +96,7 @@ public class Player implements Winnable {
         winningState = WinningState.UKNOWN;
 
         gameTowerLevelIterator = createTowerLevelIterator();
+        gameTowerLevel = gameTowerLevelIterator.current();
     }
 
     public void changeCastle(Castle castle) {
@@ -437,13 +440,14 @@ public class Player implements Winnable {
     }
 
     public void levelUp() {
-        //System.out.println("Tower level is:" + gameTowerLevelIterator.getLevelName());
-        //System.out.println("Tower creation time is" + gameTowerLevelIterator.current().getCreationTime());
         if (gameTowerLevelIterator.hasNext()) {
             try {
             if (createTowerLevelIterator().hasNext()) {
-               Tower.creationTime = gameTowerLevelIterator.next().getCreationTime();
+                gameTowerLevel = gameTowerLevelIterator.next();
+               Tower.creationTime = gameTowerLevel.getCreationTime();
+               Tower.COST = gameTowerLevel.getCreationCost();
                System.out.println("Value of creation time " + Tower.creationTime);
+                System.out.println("Value of creation cost " + Tower.COST);
             } }
             catch (Exception e) {
                 System.out.println("No new levels");
