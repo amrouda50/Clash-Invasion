@@ -3,6 +3,7 @@ package com.mygdx.claninvasion.model.player;
 import com.badlogic.gdx.graphics.Color;
 import com.mygdx.claninvasion.model.GameModel;
 import com.mygdx.claninvasion.model.entity.*;
+import com.mygdx.claninvasion.model.level.GameTowerLevelIterator;
 import com.mygdx.claninvasion.model.map.WorldCell;
 import com.mygdx.claninvasion.model.map.WorldMap;
 import org.javatuples.Pair;
@@ -16,6 +17,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
+import static com.mygdx.claninvasion.model.level.Levels.createTowerLevelIterator;
+
 /**
  * This class is responsible for handling
  * the workings of player
@@ -26,26 +29,10 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
  */
 
 public class Player implements Winnable {
-    /** A synchronization lock for moving soldiers
-     * Has two types of locks inside for supporting multiple thread
-     * execution in safe mode:
-     * 2. Use sync.readLock() when you know that this chunk of code will access
-     * thread vulnerable data for reading (like then the graph accesses cells
-     * (cells are mutated constantly) inside itself)
-     * readLock() wont block other readLock() calls, it wont affect writeLock() parts as well
-     * 1. Use sync.writeLock() for when you want to lock something which will is
-     * rewritten concurrently in the application.
-     * Like  WorldMap.mutate(...args) method changed map cells, which are used inside threads as well.
-     * writeLock() will lock all other re-writes of the code together with readLock parts
-     * @see WorldMap
-     * @see Player
-     * @see ReadWriteLock
-     */
-    static final ReadWriteLock sync = new ReentrantReadWriteLock();
-    public static final int INITIAL_WEALTH = 1000;
+    public static final int INITIAL_WEALTH = 3000;
     public static final int MAX_GOLDMINE = 3;
     /**
-     * Opponent of the active player
+     * Opponent of the active player 
      */
     private Player opponent;
 
@@ -89,7 +76,11 @@ public class Player implements Winnable {
     private final ExecutorService executorService;
     private final Color color;
 
-    public Player(GameModel game , Color c) {
+
+    GameTowerLevelIterator gameTowerLevelIterator;
+    private int creationTime; //For towers
+
+    public Player(GameModel game, Color c) {
         this.color = c;
         this.id = UUID.randomUUID();
         this.game = game;
@@ -101,6 +92,8 @@ public class Player implements Winnable {
         coinProduceQueue = new LinkedBlockingDeque<>(MAX_GOLDMINE);
         executorService.execute(this::consumeGold);
         winningState = WinningState.UKNOWN;
+
+        gameTowerLevelIterator = createTowerLevelIterator();
     }
 
     public void changeCastle(Castle castle) {
@@ -173,14 +166,16 @@ public class Player implements Winnable {
      * This method starts building towers for the active player
      */
     public Tower buildTower(WorldCell cell) {
-         if (!canCreateTower()) {
-             System.out.println("Not enough money for this action");
-             return null;
-         }
-         Tower tower = (Tower) game.getWorldMap().createMapEntity(EntitySymbol.TOWER, cell, null);
-         towers.add(tower);
-         wealth.set(wealth.get() - Tower.COST);
-         return tower;
+        if (!canCreateTower()) {
+            System.out.println("Not enough money for this action");
+            return null;
+        }
+        Tower tower = (Tower) game.getWorldMap().createMapEntity(EntitySymbol.TOWER, cell, null);
+
+
+        towers.add(tower);
+        wealth.set(wealth.get() - Tower.COST);
+        return tower;
     }
 
     public void removeDeadMiningFarm() {
@@ -195,16 +190,17 @@ public class Player implements Winnable {
     /**
      * This method starts the mining for the active player
      */
-    public void doMining() {}
+    public void doMining() {
+    }
 
     /**
      * This will add more soldiers
      * to player's army
      */
-    public CompletionStage<Void> trainSoldiers(EntitySymbol entitySymbol)  {
+    public CompletionStage<Void> trainSoldiers(EntitySymbol entitySymbol) {
         return castle
                 .trainSoldiers(entitySymbol, (cost) -> {
-                    wealth.set( wealth.get() - cost );
+                    wealth.set(wealth.get() - cost);
                     return false;
                 })
                 .thenRunAsync(() -> System.out.println("New soldiers were successfully added"));
@@ -233,7 +229,7 @@ public class Player implements Winnable {
      * This will add more soldiers
      * to player's army
      */
-    public void trainSoldiers(EntitySymbol entitySymbol, Runnable after)  {
+    public void trainSoldiers(EntitySymbol entitySymbol, Runnable after) {
         trainSoldiers(entitySymbol)
                 .thenRunAsync(after);
     }
@@ -257,16 +253,18 @@ public class Player implements Winnable {
         }
     }
 
-    public void moveSoldier(int index , Thread upcoming) {
+    final Object sync = new Object();
+
+    public void moveSoldier(int index, Thread upcoming) {
         Soldier soldier = getSoldiers().get(index);
 
         Pair<Integer, Integer> posSrc = new Pair<>(
-                soldier.getPosition().getValue0() ,
+                soldier.getPosition().getValue0(),
                 soldier.getPosition().getValue1()
         );
         Pair<Integer, Integer> posDst = new Pair<>(
-                opponent.getCastle().getPosition().getValue0() + index + 1 ,
-                opponent.getCastle().getPosition().getValue1() + 1
+                opponent.getCastle().getPosition().getValue0() + index + 1,
+                opponent.getCastle().getPosition().getValue1() + index + 1
         );
         int positionSrc = game.getWorldMap().transformMapPositionToIndex(posSrc);
         int positionDest = game.getWorldMap().transformMapPositionToIndex(posDst);
@@ -278,10 +276,12 @@ public class Player implements Winnable {
                 upcoming.start();
             }
             counter++;
-            try {
-                Thread.sleep( movingSpeed );
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+            synchronized (sync) {
+                try {
+                    Thread.sleep(movingSpeed);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
         }
     }
@@ -434,5 +434,17 @@ public class Player implements Winnable {
 
     public Color getColor() {
         return color;
+    }
+
+    public void levelUp() {
+        System.out.println("Tower level is:" + gameTowerLevelIterator.getLevelName());
+        System.out.println("Tower creation time is" + gameTowerLevelIterator.current().getCreationTime());
+        if (gameTowerLevelIterator.hasNext()) {
+            gameTowerLevelIterator.next();
+            if (createTowerLevelIterator().hasNext()) {
+                System.out.println("Tower value will change now");
+               Tower.creationTime = createTowerLevelIterator().next().getCreationTime();
+            }
+        }
     }
 }

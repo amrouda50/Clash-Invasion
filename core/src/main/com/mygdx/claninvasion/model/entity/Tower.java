@@ -33,16 +33,19 @@ public class Tower extends ArtificialEntity implements Defensible {
 
     public Tower(EntitySymbol entitySymbol, Pair<Integer, Integer> position) {
         super(entitySymbol, position);
-        towerLevelIterator = createTowerLevelIterator();
-        creationTime = towerLevelIterator.current().getCreationTime();
+        System.out.println("It will sleep for " + creationTime);
+        if(creationTime == 0) {
+            upgradeCreationTime();
+        }
         try {
             MILLISECONDS.sleep(creationTime);
         } catch (InterruptedException e) {
             System.out.println("This did not work");
         }
+    }
 
-
-
+    private void upgradeCreationTime() {
+        creationTime = createTowerLevelIterator().current().getCreationTime();
     }
 
     Tower(LevelIterator<Level> levelIterator) {
