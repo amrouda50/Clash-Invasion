@@ -14,31 +14,27 @@ import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import java.util.Timer;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class Tower extends ArtificialEntity implements Defensible {
-
-  /*  protected int creationTime;
-    protected int creationCost;
-    protected int maxHealth;
-    protected int minHealth;
-    protected int reactionTime;
-    protected int healHealthIncrease;
-    protected int healGoalPoint; */
-
     GameTowerLevelIterator towerLevelIterator = null;
     Timer timer = new Timer();
 
     public static int COST = 200;
     public static int creationTime;
-    public static int maxHealth;
+    public static int healthValue;
+    public AtomicInteger health;
     public static int minHealth;
 
     public Tower(EntitySymbol entitySymbol, Pair<Integer, Integer> position) {
         super(entitySymbol, position);
         System.out.println("It will sleep for " + creationTime);
+        health = new AtomicInteger();
         if(creationTime == 0) {
             upgradeCreationTime();
         }
+        health.set(healthValue);
+        super.setHealth(health);
         try {
             MILLISECONDS.sleep(creationTime);
         } catch (InterruptedException e) {
@@ -48,6 +44,8 @@ public class Tower extends ArtificialEntity implements Defensible {
 
     private void upgradeCreationTime() {
         creationTime = createTowerLevelIterator().current().getCreationTime();
+        healthValue = createTowerLevelIterator().current().getMaxHealth();
+        health.set(healthValue);
     }
 
     Tower(LevelIterator<Level> levelIterator) {

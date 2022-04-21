@@ -25,6 +25,10 @@ public abstract class ArtificialEntity extends Entity {
     protected Direction direction;
     private UUID id;
 
+    public void setHealth(AtomicInteger health) {
+        this.health = health;
+    }
+
     ArtificialEntity(EntitySymbol entitySymbol, Pair<Integer, Integer> position) {
         super(entitySymbol, position);
         level = Levels.createLevelIterator();
