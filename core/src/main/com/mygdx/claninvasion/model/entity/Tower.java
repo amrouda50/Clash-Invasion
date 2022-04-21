@@ -30,6 +30,8 @@ public class Tower extends ArtificialEntity implements Defensible {
 
     public static int COST = 200;
     public static int creationTime;
+    public static int maxHealth;
+    public static int minHealth;
 
     public Tower(EntitySymbol entitySymbol, Pair<Integer, Integer> position) {
         super(entitySymbol, position);
