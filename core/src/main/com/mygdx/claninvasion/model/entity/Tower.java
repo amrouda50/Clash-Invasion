@@ -14,6 +14,7 @@ import static com.mygdx.claninvasion.model.level.Levels.createTowerLevelIterator
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import java.util.Timer;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.javatuples.Septet;
@@ -31,18 +32,16 @@ public class Tower extends ArtificialEntity implements Defensible {
 
     public Tower(EntitySymbol entitySymbol, Pair<Integer, Integer> position) {
         super(entitySymbol, position);
-        System.out.println("It will sleep for " + creationTime);
         health = new AtomicInteger();
-        if(creationTime == 0) {
-            upgradeCreationTime();
-        }
         health.set(healthValue);
         super.setHealth(health);
+        changeLevel();
         try {
-            MILLISECONDS.sleep(creationTime);
-        } catch (InterruptedException e) {
-            System.out.println("This did not work");
+            createTower.get();
+        } catch (InterruptedException | ExecutionException e) {
+            System.out.println("Tower creation did not work");
         }
+
     }
 
     public static void changeLevel() {
@@ -51,15 +50,21 @@ public class Tower extends ArtificialEntity implements Defensible {
         Tower.healthValue = gameTowerLevel.getMaxHealth();
     }
 
-    private void upgradeCreationTime() {
-        creationTime = createTowerLevelIterator().current().getCreationTime();
-        healthValue = createTowerLevelIterator().current().getMaxHealth();
-        health.set(healthValue);
-    }
-
     Tower(LevelIterator<Level> levelIterator) {
         super(levelIterator);
     }
+
+    CompletableFuture<Void> createTower = CompletableFuture.runAsync(new Runnable() {
+        @Override
+        public void run() {
+            try {
+                MILLISECONDS.sleep(creationTime);
+            } catch (InterruptedException e) {
+                throw new IllegalStateException(e);
+            }
+            System.out.println("The tower is being created for " + creationTime + " seconds");
+        }
+    });
 
     @Override
     public void damage(int amount) {
