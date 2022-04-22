@@ -78,9 +78,7 @@ public class Player implements Winnable {
     private final Color color;
 
 
-    GameTowerLevel gameTowerLevel;
-    static GameTowerLevelIterator gameTowerLevelIterator;
-    private int creationTime; //For towers
+    public static GameTowerLevelIterator gameTowerLevelIterator;
 
     public Player(GameModel game, Color c) {
         this.color = c;
@@ -96,7 +94,7 @@ public class Player implements Winnable {
         winningState = WinningState.UKNOWN;
 
         gameTowerLevelIterator = createTowerLevelIterator();
-        gameTowerLevel = gameTowerLevelIterator.current();
+        Tower.gameTowerLevel = gameTowerLevelIterator.next();
     }
 
     public void changeCastle(Castle castle) {
@@ -441,25 +439,13 @@ public class Player implements Winnable {
 
     public void levelUp() {
         if (gameTowerLevelIterator.hasNext() ) {
-            //if (gameTowerLevelIterator.getLevelName() > 0) {
-                gameTowerLevel = gameTowerLevelIterator.next();
-                Tower.creationTime = gameTowerLevel.getCreationTime();
-                Tower.COST = gameTowerLevel.getCreationCost();
-                Tower.healthValue = gameTowerLevel.getMaxHealth();
+                Tower.gameTowerLevel = gameTowerLevelIterator.next();
+                Tower.changeLevel();
+
                 System.out.println("Value of creation time " + Tower.creationTime);
                 System.out.println("Value of creation cost " + Tower.COST);
                 System.out.println("Health of tower is " + Tower.healthValue);
                 System.out.println("After update the level of tower is " + gameTowerLevelIterator.getLevelName());
-            /*} else {
-                gameTowerLevel = gameTowerLevelIterator.next();
-                gameTowerLevel = gameTowerLevelIterator.next();
-                Tower.creationTime = gameTowerLevel.getCreationTime();
-                Tower.COST = gameTowerLevel.getCreationCost();
-                Tower.healthValue = gameTowerLevel.getMaxHealth();
-                System.out.println("Value of creation time " + Tower.creationTime);
-                System.out.println("Value of creation cost " + Tower.COST);
-                System.out.println("Health of tower is " + Tower.healthValue);
-            }*/
         }
     }
 }

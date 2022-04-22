@@ -27,7 +27,7 @@ public class Tower extends ArtificialEntity implements Defensible {
     public static int healthValue;
     public AtomicInteger health;
     public static int minHealth;
-    public GameTowerLevel currentLevel;
+    public static GameTowerLevel gameTowerLevel;
 
     public Tower(EntitySymbol entitySymbol, Pair<Integer, Integer> position) {
         super(entitySymbol, position);
@@ -43,6 +43,12 @@ public class Tower extends ArtificialEntity implements Defensible {
         } catch (InterruptedException e) {
             System.out.println("This did not work");
         }
+    }
+
+    public static void changeLevel() {
+        Tower.creationTime = gameTowerLevel.getCreationTime();
+        Tower.COST = gameTowerLevel.getCreationCost();
+        Tower.healthValue = gameTowerLevel.getMaxHealth();
     }
 
     private void upgradeCreationTime() {
