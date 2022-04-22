@@ -1,5 +1,6 @@
 package com.mygdx.claninvasion.model.entity;
 
+import com.badlogic.gdx.Game;
 import com.mygdx.claninvasion.model.level.GameTowerLevel;
 import com.mygdx.claninvasion.model.level.GameTowerLevelIterator;
 import com.mygdx.claninvasion.model.level.Level;
@@ -15,6 +16,7 @@ import static java.util.concurrent.TimeUnit.SECONDS;
 import java.util.Timer;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
+import org.javatuples.Septet;
 
 public class Tower extends ArtificialEntity implements Defensible {
     GameTowerLevelIterator towerLevelIterator = null;
@@ -25,6 +27,7 @@ public class Tower extends ArtificialEntity implements Defensible {
     public static int healthValue;
     public AtomicInteger health;
     public static int minHealth;
+    public GameTowerLevel currentLevel;
 
     public Tower(EntitySymbol entitySymbol, Pair<Integer, Integer> position) {
         super(entitySymbol, position);
