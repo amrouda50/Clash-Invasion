@@ -73,7 +73,7 @@ public class Tower extends ArtificialEntity implements Defensible {
         @Override
         public void run() {
             try {
-                MILLISECONDS.sleep(gameTowerLevel.getReactionTime());
+                MILLISECONDS.sleep(getReactionTime().intValue());
             } catch (InterruptedException e) {
                 throw new IllegalStateException(e);
             }

@@ -159,4 +159,12 @@ public abstract class ArtificialEntity extends Entity {
     public UUID getId() {
         return id;
     }
+
+    public AtomicInteger getReactionTime() {
+        return reactionTime;
+    }
+
+    public void setReactionTime(AtomicInteger reactionTime) {
+        this.reactionTime = reactionTime;
+    }
 }
