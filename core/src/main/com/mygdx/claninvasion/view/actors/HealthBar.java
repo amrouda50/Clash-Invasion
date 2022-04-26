@@ -15,13 +15,20 @@ public class HealthBar extends ShapeRenderer {
     private float stamina;
     private Pair<Float, Float> positionOffset;
     private boolean isActive = true;
+    private final Color healthColor;
 
     public HealthBar(Pair<Float, Float> sizes) {
         setDimensions(sizes);
+        healthColor = Color.RED;
     }
 
     public HealthBar() {
         super();
+        healthColor = Color.RED;
+    }
+
+    public HealthBar(Color color) {
+        healthColor = color;
     }
 
     public void setPositionOffset(Pair<Float, Float> positionOffset) {
@@ -49,10 +56,10 @@ public class HealthBar extends ShapeRenderer {
         );
         end();
         begin(ShapeRenderer.ShapeType.Filled);
-        setColor(Color.RED);
+        setColor(healthColor);
         rect(
                 coordinates.getValue0() + positionOffset.getValue0() + (float)0.5,
-                coordinates.getValue1()+ positionOffset.getValue1() + (float)0.5 ,
+                coordinates.getValue1() + positionOffset.getValue1() + (float)0.5 ,
                 stamina,
                 height - OFFSET
         );

@@ -1,7 +1,6 @@
 package com.mygdx.claninvasion.model.map;
 
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
-import com.badlogic.gdx.maps.tiled.TiledMapTileSet;
 import com.badlogic.gdx.maps.tiled.TiledMapTileSets;
 import com.badlogic.gdx.math.Vector2;
 import com.mygdx.claninvasion.model.entity.Entity;
@@ -11,11 +10,7 @@ import com.mygdx.claninvasion.model.entity.Tower;
 import javafixes.concurrency.ReusableCountLatch;
 import org.javatuples.Pair;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.CountDownLatch;
 import java.util.stream.Collectors;
 
 /**
@@ -129,9 +124,9 @@ public class WorldMap {
         return getCell(index).getMapPosition();
     }
 
-    public Vector2 tranformMapPositionToIso(Pair<Integer, Integer> cellPlace) {
+    public Vector2 transformMapPositionToIso(Pair<Integer, Integer> cellPlace) {
         WorldCell cell = getCell(cellPlace);
-        return cell.getworldIsoPoint();
+        return cell.getWorldIsoPoint();
     }
 
     public WorldCell getCell(Pair<Integer, Integer> cellPlace) {

@@ -10,6 +10,8 @@ public class Barbarian extends Soldier {
     public static int COST = 100;
     public Barbarian(EntitySymbol entitySymbol, Pair<Integer, Integer> position) {
         super(entitySymbol, position);
+        initHealth = initHealth - 300;
+        health.set(initHealth);
     }
 
     @Override

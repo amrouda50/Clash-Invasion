@@ -237,7 +237,7 @@ public class IsometricTiledMapGameRenderer extends BatchTiledMapRenderer {
                         xy,
                         position,
                         region,
-                        calculatedXY.getValue0() + "" + calculatedXY.getValue1()
+                        calculatedXY.getValue1() + "," + calculatedXY.getValue1()
                 );
                 worldCell.setTileCell(cell);
                 map.addCell(worldCell);
@@ -249,36 +249,6 @@ public class IsometricTiledMapGameRenderer extends BatchTiledMapRenderer {
             }
         }
     }
-
-//    /**
-//     * This function takes in a cell and return the EntitySymbol of the Entity in the cell , if there is no Entity then it return null
-//     * @return EntitySymbol
-//     */
-//    protected Entity chooseEntitySymbol(TextureRegion region, Pair<Integer, Integer> position) {
-//        String path = region.getTexture().toString();
-//        String entityName =  Paths.get(path).getFileName().toString();
-//        String trimmedEntityName  = entityName.substring(0, entityName.lastIndexOf('.'));
-//
-//        switch (trimmedEntityName) {
-//            case "Stone":
-//                return new NaturalEntity(EntitySymbol.STONE, position);
-//            case "tree":
-//                return new NaturalEntity(EntitySymbol.TREE, position);
-//            case "Dragon":
-//            case "Dragon-Flipped":
-//                return new Soldier(EntitySymbol.DRAGON, position);
-//            case "barbarian-fliped":
-//            case "barbarian":
-//                return new Soldier(EntitySymbol.BARBARIAN, position);
-//            case "tower":
-//                return new Tower(EntitySymbol.TOWER, position);
-//            case EntitySymbol.CASTEL.sourcePart:
-//
-//                return new Castle(EntitySymbol.CASTEL, position);
-//            default:
-//                return null;
-//        }
-//    }
 
     /**
      * Overridden method to yse local

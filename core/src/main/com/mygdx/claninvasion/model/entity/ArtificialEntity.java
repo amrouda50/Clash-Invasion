@@ -15,7 +15,6 @@ import org.javatuples.Pair;
  * Artificial entities are all entities except unmoving ones
  * @author Dinari
  * @version 0.01
- * TODO Some requirements will be needed
  */
 public abstract class ArtificialEntity extends Entity {
     protected AtomicInteger health;
@@ -53,6 +52,10 @@ public abstract class ArtificialEntity extends Entity {
         hpBar = bar;
     }
 
+    public HealthBar getHealthBar() {
+        return hpBar;
+    }
+
     public Pair<Float, Float> getHealthBarOffset() {
         return new Pair<>(-22f , 43f);
     }
@@ -88,7 +91,7 @@ public abstract class ArtificialEntity extends Entity {
      * @param amount - percent of injury
      */
     public void damage(int amount) {
-        health.set(getHealth() - amount);
+        setDecreaseHealth(amount);
     }
 
     /**
@@ -106,6 +109,10 @@ public abstract class ArtificialEntity extends Entity {
     }
 
     protected void setDecreaseHealth(int amount) {
+        if (health.get() <= 0) {
+            health.set(0);
+            return;
+        }
         float percent = amount / (float)health.get();
         health.set(health.get() - amount);
         hpBar.substStamina(percent);

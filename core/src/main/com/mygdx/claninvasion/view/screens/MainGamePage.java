@@ -2,12 +2,13 @@ package com.mygdx.claninvasion.view.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.*;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.maps.tiled.*;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.mygdx.claninvasion.ClanInvasion;
+import com.mygdx.claninvasion.model.Globals;
 import com.mygdx.claninvasion.model.entity.*;
+import com.mygdx.claninvasion.model.map.WorldCell;
 import com.mygdx.claninvasion.view.actors.HealthBar;
 import com.mygdx.claninvasion.view.applicationlistener.FireAnimated;
 import com.mygdx.claninvasion.view.applicationlistener.MainGamePageUI;
@@ -16,13 +17,13 @@ import com.mygdx.claninvasion.view.utils.EntityPlacer;
 import com.mygdx.claninvasion.view.utils.GameInputProcessor;
 import com.mygdx.claninvasion.view.utils.IsometricTiledMapGameRenderer;
 import com.mygdx.claninvasion.view.utils.InputClicker;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import org.javatuples.Pair;
 
 
 import java.util.*;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.stream.Collectors;
 
 
 /**
@@ -40,11 +41,9 @@ public class MainGamePage implements GamePage, UiUpdatable {
     private final ClanInvasion app;
     private Stage entitiesStage;
     private final List<FireAnimated> fireballs = Collections.synchronizedList(new CopyOnWriteArrayList<>());
-    private final List<HealthBar> hpBars = Collections.synchronizedList(new CopyOnWriteArrayList<>());
+//    private final List<HealthBar> hpBars = Collections.synchronizedList(new CopyOnWriteArrayList<>());
     private final MainGamePageUI mainGamePageUI;
     private TiledMap map;
-
-
 
     /**
      * @param app - app instance
@@ -54,17 +53,20 @@ public class MainGamePage implements GamePage, UiUpdatable {
         mainGamePageUI = new MainGamePageUI(app);
     }
 
-
     /**
      * Is fired once the page becomes active in application
      * See GamePage interface
      */
     @Override
     public void show() {
-        app.getModel().changePhase();
+        if (Globals.DEBUG) {
+            app.getModel().changeState();
+        } else {
+            app.getModel().changePhase();
+        }
 
         app.getCamera().update();
-        inputProcessor = new GameInputProcessor(app.getCamera(), new InputClicker(app ,mainGamePageUI, hpBars));
+        inputProcessor = new GameInputProcessor(app.getCamera(), new InputClicker(app ,mainGamePageUI), app);
         map = new TmxMapLoader().load(Gdx.files.getLocalStoragePath() + "/TileMap/Tilemap.tmx");
         app.getMap().setTileset(map.getTileSets());
         renderer = new IsometricTiledMapGameRenderer(
@@ -88,18 +90,83 @@ public class MainGamePage implements GamePage, UiUpdatable {
     private void fireTower() {
         ArrayList<Tower> towers = app.getMap().getTowers();
         ArrayList<Soldier> soldiers = app.getMap().getSoldiers();
-        if (towers.size() > 0 && soldiers.size() > 0) {
-            Tower tower = towers.get(0);
-            tower.attack(soldiers.get(0), (src, dest) -> CompletableFuture.supplyAsync(() -> {
-                Vector2 positionSrc = app.getMap().tranformMapPositionToIso(src);
-                Vector2 positionDest = app.getMap().tranformMapPositionToIso(dest);
-                FireAnimated animated = new FireAnimated(positionSrc,
-                        positionDest, (SpriteBatch) renderer.getBatch());
-                fireballs.add(animated);
-                return true;
-            }));
+//        if (towers.size() > 0 && soldiers.size() > 0) {
+//            Tower tower = towers.get(0);
+//            tower.attack(soldiers.get(0), (src, dest) -> CompletableFuture.supplyAsync(() -> {
+//                Vector2 positionSrc = app.getMap().transformMapPositionToIso(src);
+//                Vector2 positionDest = app.getMap().transformMapPositionToIso(dest);
+//                FireAnimated animated = new FireAnimated(positionSrc,
+//                        positionDest, (SpriteBatch) renderer.getBatch());
+//                fireballs.add(animated);
+//                return true;
+//            }));
+//        }
+    }
+
+    private <T extends ArtificialEntity>
+    void renderHealthBars(List<T> containers) {
+        List<HealthBar> healthBars = containers.stream().map(ArtificialEntity::getHealthBar).collect(Collectors.toList());
+        for (HealthBar healthBar : healthBars) {
+            if (healthBar != null) {
+                healthBar.rendering(app.getCamera().combined);
+            }
         }
     }
+
+    private <T extends ArtificialEntity>
+    void createHealthBars(List<T> containers, Color color) {
+        for (T container : containers) {
+                HealthBar healthBar = container.getHealthBar() == null
+                        ? new HealthBar(color)
+                        : container.getHealthBar();
+                for (WorldCell cell : app.getMap().getCells()) {
+                    if (cell.hasOccupier() && cell.hasArtificialOccupier()
+                            && container.getId().equals(((ArtificialEntity)cell.getOccupier()).getId())) {
+                        Vector2 coordinate = cell.getWorldIsoPoint1();
+                        healthBar.setProjectionMatrix(app.getCamera().combined);
+                        healthBar
+                                .setCoordinates(new Pair<>(coordinate.x, coordinate.y));
+                    }
+                }
+
+                if (container.getHealthBar() == null) {
+                    container.setHealthBar(healthBar);
+                }
+        }
+    }
+
+    private void createHealthBars() {
+        createHealthBars(
+                app.getModel().getPlayerOne().getSoldiers(),
+                app.getModel().getPlayerOne().getColor()
+        );
+        createHealthBars(
+                app.getModel().getPlayerTwo().getSoldiers(),
+                app.getModel().getPlayerTwo().getColor()
+        );
+    }
+
+    private void renderHealthBars() {
+        // health bar render
+        // render towers health
+        renderHealthBars(app.getModel().getPlayerOne().getTowers());
+        renderHealthBars(app.getModel().getPlayerTwo().getTowers());
+        // render soldiers health
+        renderHealthBars(app.getModel().getPlayerOne().getSoldiers());
+        renderHealthBars(app.getModel().getPlayerTwo().getSoldiers());
+        // render mining health
+        renderHealthBars(app.getModel().getPlayerOne().getMiningFarms());
+        renderHealthBars(app.getModel().getPlayerTwo().getMiningFarms());
+    }
+
+    /* Create fire animation
+     */
+    private void createFireAnimated() {
+        for (FireAnimated fireAnimated : fireballs) {
+            fireAnimated.create();
+        }
+    }
+
     /**
      * Fired on every frame update
      * See GamePage interface
@@ -110,33 +177,32 @@ public class MainGamePage implements GamePage, UiUpdatable {
         Gdx.gl.glClearColor((255f/255f), (255f/255f), (255f/255f), 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        for (FireAnimated fireAnimated : fireballs) {
-            fireAnimated.create();
-        }
+        // create fire
+        createFireAnimated();
 
         app.getCamera().update();
+        inputProcessor.onRender();
+
+        // create health bars
+        createHealthBars();
 
         renderer.setView(app.getCamera());
         renderer.render(app.getMap());
 
-        // health bar render
-        for (HealthBar curr : hpBars) {
-            curr.rendering(app.getCamera().combined);
-            if (!curr.isActive()) {
-                hpBars.remove(curr);
-            }
-        }
+        app.getModel().getPlayerOne().removeDeadMiningFarm();
+        app.getModel().getPlayerTwo().removeDeadMiningFarm();
 
-        // render game page ui
-        mainGamePageUI.render();
-        inputProcessor.onRender();
+        // update actors
+        update(delta);
+
+        // render health bars
+        renderHealthBars();
 
         // render animated object (fireballs, arrows, etc.)
         updateAnimated();
-        app.getModel().getPlayerOne().removeDead();
-        app.getModel().getPlayerTwo().removeDead();
-        // update actors
-        update(delta);
+
+        // render game page ui
+        mainGamePageUI.render();
     }
 
 

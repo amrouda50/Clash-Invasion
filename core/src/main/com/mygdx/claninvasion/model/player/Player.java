@@ -165,7 +165,7 @@ public class Player implements Winnable {
          return tower;
     }
 
-    public void removeDead() {
+    public void removeDeadMiningFarm() {
         for (MiningFarm farm : miningFarms) {
             if (!farm.isAlive()) {
                 miningFarms.remove(farm);
@@ -220,9 +220,13 @@ public class Player implements Winnable {
                 .thenRunAsync(after);
     }
 
-    public void attackCastle(int index) {
+    public boolean attackCastle(int index) {
+        if (soldiers.size() <= index) {
+            return false;
+        }
         Soldier soldier = soldiers.get(index);
         attackCastle(soldier);
+        return true;
     }
 
     public void attackCastle(Soldier soldier) {
@@ -343,6 +347,17 @@ public class Player implements Winnable {
 
     public List<MiningFarm> getMiningFarms() {
         return miningFarms;
+    }
+
+    public void removeDeadSoldiers() {
+        List<Soldier> soldiers = getSoldiers();
+        for(int i = 0; i < soldiers.size(); i++) {
+            if (!soldiers.get(i).isAlive()) {
+                getMap().removeMapEntity(soldiers.get(i));
+                soldiers.remove(soldiers.get(i));
+            }
+
+        }
     }
 
     @Override

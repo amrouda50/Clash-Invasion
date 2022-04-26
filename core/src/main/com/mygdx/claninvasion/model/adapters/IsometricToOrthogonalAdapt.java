@@ -12,7 +12,7 @@ import static com.badlogic.gdx.math.Matrix3.M01;
  * vector transformations
  * @author andreicristea
  */
-public class IsometricToOrthogonalAdapt {
+public class IsometricToOrthogonalAdapt implements VectorAdapter {
     private final Vector2 isometricPoint;
 
     public IsometricToOrthogonalAdapt(Vector2 point) {
@@ -26,6 +26,7 @@ public class IsometricToOrthogonalAdapt {
     /**
      * @return - orthogonal point which is derived from isometric one
      */
+    @Override
     public Vector2 getPoint() {
         // isometric matrix, needed for matrix multiplications
         // idea brought from https://www.youtube.com/watch?v=0fZXlxtMbC0

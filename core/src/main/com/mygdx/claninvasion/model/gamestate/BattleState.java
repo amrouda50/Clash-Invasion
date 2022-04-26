@@ -1,8 +1,12 @@
 package com.mygdx.claninvasion.model.gamestate;
 
 import com.mygdx.claninvasion.model.GameModel;
+import com.mygdx.claninvasion.model.entity.Soldier;
+import com.mygdx.claninvasion.model.entity.Tower;
 import com.mygdx.claninvasion.model.player.Player;
 import com.mygdx.claninvasion.model.player.WinningState;
+import java.util.List;
+import java.util.concurrent.*;
 
 /**
  * This class is responsible for beginning and
@@ -24,6 +28,7 @@ public class BattleState extends CommonGameState {
         changePhase();
         initializePlayerMove(game.getPlayerOne());
         initializePlayerMove(game.getPlayerTwo());
+        fireTower(game.getPlayerOne());
     }
 
     private void initializePlayerMove(Player player) {
@@ -35,8 +40,12 @@ public class BattleState extends CommonGameState {
             tempThread = new Thread(() -> {
                 player.addTrainedToMapSoldier();
                 player.moveSoldier(finalI, finalTempThread);
-                while (player.getOpponent().isAlive() && player.isAlive()) {
-                    player.attackCastle(finalI);
+                boolean iterate = player.getOpponent().isAlive() && player.isAlive();
+                while (iterate) {
+                    iterate = player.attackCastle(finalI);
+                    if (!iterate) {
+                        break;
+                    }
                     try {
                         Thread.sleep(100);
                     } catch (InterruptedException e) {
@@ -59,15 +68,48 @@ public class BattleState extends CommonGameState {
         }
     }
 
+    ScheduledExecutorService scheduledExecutorService =
+            Executors.newScheduledThreadPool(1);
+
     @Override
     public boolean isInteractive() {
         return false;
+    }
+
+    private void fireTower(Player player) {
+        List<Tower> towers = player.getTowers();
+        List<Soldier> soldiers = player.getOpponent().getSoldiers();
+
+        new Thread(() -> {
+            while (true) {
+                for (Tower tower : towers) {
+                    scheduledExecutorService
+                            .schedule(() -> {
+                                for (Soldier soldier : soldiers) {
+                                    if (!tower.canFire(soldier)) {
+                                        break;
+                                    }
+                                    tower.attack(soldier);
+                                }
+                            }, 200, TimeUnit.MILLISECONDS);
+                    try {
+                        scheduledExecutorService.awaitTermination(300, TimeUnit.MILLISECONDS);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }).start();
     }
 
     @Override
     public void updateState(float delta, Runnable runnable) {
         Boolean noSoldiers1 = game.getPlayerOne().getTrainingSoldiers().size() == 0 && game.getPlayerOne().getSoldiers().size() == 0;
         Boolean noSoldiers2 = game.getPlayerTwo().getTrainingSoldiers().size() == 0 && game.getPlayerTwo().getSoldiers().size() == 0;
+
+        game.getPlayerOne().removeDeadSoldiers();
+        game.getPlayerTwo().removeDeadSoldiers();
+
         if (noSoldiers1 && noSoldiers2) {
             battleStateChangeVariants = BattleStateChangeVariants.BUILDING;
         }

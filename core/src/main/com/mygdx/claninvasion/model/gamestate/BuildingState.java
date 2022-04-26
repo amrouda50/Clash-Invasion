@@ -15,8 +15,8 @@ import java.util.TimerTask;
  * @author Dinari
  */
 public class BuildingState extends CommonGameState implements Building {
-    private static final int COUNTER_INIT = 20;
-    private static final int END_PHASE_TIME = COUNTER_INIT*2;
+    private static final int COUNTER_INIT = 30;
+    private static final int END_PHASE_TIME = COUNTER_INIT * 2;
     private float timeSeconds = 0f;
     private final float diff = 1f;
     private int counter = COUNTER_INIT;

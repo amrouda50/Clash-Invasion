@@ -6,8 +6,6 @@ import org.javatuples.Pair;
 
 import java.util.concurrent.CompletableFuture;
 
-import static java.util.concurrent.TimeUnit.SECONDS;
-
 public class Tower extends ArtificialEntity implements Defensible {
     public static int COST = 200;
     public Tower(EntitySymbol entitySymbol, Pair<Integer, Integer> position) {
@@ -29,29 +27,24 @@ public class Tower extends ArtificialEntity implements Defensible {
         super.heal();
     }
 
+    public static int RADIUS = 4;
 
-    @Override
-    public CompletableFuture<Boolean> attack(ArtificialEntity artificialEntity, Fireable fire) {
+    public boolean canFire(ArtificialEntity entity) {
         float distance = getVec2Position().dst(
-                artificialEntity.getVec2Position().x,
-                artificialEntity.getVec2Position().y
+                entity.getVec2Position().x,
+                entity.getVec2Position().y
         );
 
-        if (distance > 2) {
-            return CompletableFuture.supplyAsync(() -> false);
-        }
+        return distance <= RADIUS;
+    }
 
+
+    @Override
+    public void attack(ArtificialEntity artificialEntity) {
         if (!artificialEntity.isAlive()) {
-            return CompletableFuture.supplyAsync(() -> false);
+            return;
         }
-
-        CompletableFuture<Boolean> future = CompletableFuture
-                .supplyAsync(() -> fire.fire(position, artificialEntity.position).join());
-        future
-                .orTimeout(3, SECONDS)
-                .thenAccept(a -> artificialEntity.damage(100))
-                .thenAccept(a -> System.out.println("Attack by tower was completed"))
-                .completeExceptionally(new RuntimeException("Could not finish the defend method"));
-        return future;
+        artificialEntity.setDecreaseHealth(85);
+        System.out.println("Descresing.. Current is" + artificialEntity.getHealth() + ", Entity " + artificialEntity);
     }
 }
