@@ -159,7 +159,8 @@ public class MainGamePage implements GamePage, UiUpdatable {
         renderHealthBars(app.getModel().getPlayerTwo().getMiningFarms());
     }
 
-
+    /* Create fire animation
+     */
     private void createFireAnimated() {
         for (FireAnimated fireAnimated : fireballs) {
             fireAnimated.create();
