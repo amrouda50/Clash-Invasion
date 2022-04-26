@@ -444,7 +444,7 @@ public class Player implements Winnable {
 
                 System.out.println("Value of creation time " + Tower.creationTime);
                 System.out.println("Value of creation cost " + Tower.COST);
-                System.out.println("Health of tower is " + Tower.healthValue);
+                System.out.println("Health of tower is " + Tower.maxHealth);
                 System.out.println("After update the level of tower is " + gameTowerLevelIterator.getLevelName());
         }
     }

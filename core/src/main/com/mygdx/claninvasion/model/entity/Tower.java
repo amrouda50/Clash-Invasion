@@ -25,29 +25,32 @@ public class Tower extends ArtificialEntity implements Defensible {
 
     public static int COST = 200;
     public static int creationTime;
-    public static int healthValue;
-    public AtomicInteger health;
-    public static int minHealth;
+    public static int maxHealth;
+
+    public int currentHealth;
+
     public static GameTowerLevel gameTowerLevel;
 
     public Tower(EntitySymbol entitySymbol, Pair<Integer, Integer> position) {
         super(entitySymbol, position);
+
+        currentHealth = maxHealth;
         health = new AtomicInteger();
-        health.set(healthValue);
+        health.set(currentHealth);
         super.setHealth(health);
+
         changeLevel();
         try {
             createTower.get();
         } catch (InterruptedException | ExecutionException e) {
             System.out.println("Tower creation did not work");
         }
-
     }
 
     public static void changeLevel() {
         Tower.creationTime = gameTowerLevel.getCreationTime();
         Tower.COST = gameTowerLevel.getCreationCost();
-        Tower.healthValue = gameTowerLevel.getMaxHealth();
+        Tower.maxHealth = gameTowerLevel.getMaxHealth();
     }
 
     Tower(LevelIterator<Level> levelIterator) {
@@ -62,14 +65,22 @@ public class Tower extends ArtificialEntity implements Defensible {
             } catch (InterruptedException e) {
                 throw new IllegalStateException(e);
             }
-            System.out.println("The tower is being created for " + creationTime + " seconds");
+            System.out.println("The tower is created successfully");
         }
     });
 
     @Override
     public void damage(int amount) {
-        super.damage(amount);
+        if (isAlive()) {
+            super.damage(amount);
+        } else {
+            remove();
+        }
     }
+
+    private void remove() {
+    }
+
 
     @Override
     public void heal() {
