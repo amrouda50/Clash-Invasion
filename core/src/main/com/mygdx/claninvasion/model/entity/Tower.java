@@ -69,6 +69,18 @@ public class Tower extends ArtificialEntity implements Defensible {
         }
     });
 
+    CompletableFuture<Void> reactionTime = CompletableFuture.runAsync(new Runnable() {
+        @Override
+        public void run() {
+            try {
+                MILLISECONDS.sleep(gameTowerLevel.getReactionTime());
+            } catch (InterruptedException e) {
+                throw new IllegalStateException(e);
+            }
+            System.out.println("The tower is preparing to attack");
+        }
+    });
+
     @Override
     public void damage(int amount) {
         if (isAlive()) {
@@ -88,28 +100,30 @@ public class Tower extends ArtificialEntity implements Defensible {
     }
 
 
-    @Override
-    public CompletableFuture<Boolean> attack(ArtificialEntity artificialEntity, Fireable fire) {
+    public static int RADIUS = 4;
+
+    public boolean canFire(ArtificialEntity entity) {
         float distance = getVec2Position().dst(
-                artificialEntity.getVec2Position().x,
-                artificialEntity.getVec2Position().y
+                entity.getVec2Position().x,
+                entity.getVec2Position().y
         );
 
-        if (distance > 2) {
-            return CompletableFuture.supplyAsync(() -> false);
+        return distance <= RADIUS;
+    }
+
+    @Override
+    public void attack(ArtificialEntity artificialEntity) {
+        try {
+            reactionTime.get();
+        } catch (InterruptedException | ExecutionException e) {
+            System.out.println("Tower reaction time did not work as expected");
         }
 
         if (!artificialEntity.isAlive()) {
-            return CompletableFuture.supplyAsync(() -> false);
+            return;
         }
-
-        CompletableFuture<Boolean> future = CompletableFuture
-                .supplyAsync(() -> fire.fire(position, artificialEntity.position).join());
-        future
-                .orTimeout(3, SECONDS)
-                .thenAccept(a -> artificialEntity.damage(100))
-                .thenAccept(a -> System.out.println("Attack by tower was completed"))
-                .completeExceptionally(new RuntimeException("Could not finish the defend method"));
-        return future;
+        artificialEntity.setDecreaseHealth(85);
+        System.out.println("Descresing.. Current is" + artificialEntity.getHealth() + ", Entity " + artificialEntity);
     }
 }
+
