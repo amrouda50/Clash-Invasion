@@ -1,5 +1,6 @@
 package com.mygdx.claninvasion.model.gamestate;
 import com.mygdx.claninvasion.model.GameModel;
+import com.mygdx.claninvasion.view.utils.InputClicker;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -66,6 +67,7 @@ public class BuildingState extends CommonGameState implements Building {
         }
 
         if (counter == 0) {
+            InputClicker.enabled = false;
             changeTurn();
             counter = COUNTER_INIT;
         }

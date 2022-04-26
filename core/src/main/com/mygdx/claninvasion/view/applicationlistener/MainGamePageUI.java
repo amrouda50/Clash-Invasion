@@ -11,6 +11,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.*;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.mygdx.claninvasion.ClanInvasion;
 import com.mygdx.claninvasion.model.entity.*;
@@ -118,6 +119,7 @@ public final class MainGamePageUI implements ApplicationListener {
         box.setSize(5f , 5f);
         box.setItems(values);
         box.setTouchable(Touchable.enabled);
+      //  box.isTouchFocusListener();
     }
 
     private void setPlayerData(Table table, SelectBox<String> box, List<Pair<String, Color>> playerData) {
@@ -133,6 +135,13 @@ public final class MainGamePageUI implements ApplicationListener {
         for (; index < 2; index++) {
             table.add(labels.get(index));
         }
+        box.addListener(new ClickListener(){
+            @Override
+            public void clicked (InputEvent event, float x, float y) {
+                InputClicker.enabled = false;
+                System.out.println(5);
+            }
+        });
         table.add(box);
         table.row();
 
@@ -242,6 +251,7 @@ public final class MainGamePageUI implements ApplicationListener {
 
     private void createBarbarian(Player player, Table table) {
         if (player.canCreateBarbarian()) {
+            InputClicker.enabled = false;
             player.trainSoldiers(EntitySymbol.BARBARIAN, () ->
                     updatePlayerData(player, table)
             );
@@ -252,6 +262,7 @@ public final class MainGamePageUI implements ApplicationListener {
 
     private void createDragon(Player player, Table table) {
         if (player.canCreateDragon()) {
+            InputClicker.enabled = false;
             player.trainSoldiers(EntitySymbol.DRAGON, () -> {
                 System.out.println("New barbarian trained");
                 updatePlayerData(player, table);
