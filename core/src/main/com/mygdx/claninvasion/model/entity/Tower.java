@@ -7,21 +7,15 @@ import com.mygdx.claninvasion.model.level.Level;
 import com.mygdx.claninvasion.model.level.LevelIterator;
 import org.javatuples.Pair;
 
-import java.util.TimerTask;
 import java.util.concurrent.CompletableFuture;
 
-import static com.mygdx.claninvasion.model.level.Levels.createTowerLevelIterator;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
-import static java.util.concurrent.TimeUnit.SECONDS;
 import java.util.Timer;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
-import org.javatuples.Septet;
 
 public class Tower extends ArtificialEntity implements Defensible {
     GameTowerLevelIterator towerLevelIterator = null;
-    Timer timer = new Timer();
 
     public static int COST = 200;
     public static int creationTime;

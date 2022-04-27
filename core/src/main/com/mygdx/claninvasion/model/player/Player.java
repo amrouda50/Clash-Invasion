@@ -77,7 +77,6 @@ public class Player implements Winnable {
     private final ExecutorService executorService;
     private final Color color;
 
-
     public static GameTowerLevelIterator gameTowerLevelIterator;
 
     public Player(GameModel game, Color c) {
@@ -92,9 +91,6 @@ public class Player implements Winnable {
         coinProduceQueue = new LinkedBlockingDeque<>(MAX_GOLDMINE);
         executorService.execute(this::consumeGold);
         winningState = WinningState.UKNOWN;
-        //castle = new Castle(EntitySymbol.CASTEL_REVERSED, reverseCastlePositions, model.getPlayerOne());
-
-        //System.out.println("Castle's health in the beginning is " + castle.getHealth());
 
         gameTowerLevelIterator = createTowerLevelIterator();
         Tower.gameTowerLevel = gameTowerLevelIterator.next();
@@ -102,6 +98,7 @@ public class Player implements Winnable {
 
     public void changeCastle(Castle castle) {
         this.castle = castle;
+        System.out.println("Castle's health in the beginning is " + castle.getHealth());
     }
 
     public MiningFarm createNewMining(WorldCell cell) {
@@ -176,8 +173,8 @@ public class Player implements Winnable {
         }
         Tower tower = (Tower) game.getWorldMap().createMapEntity(EntitySymbol.TOWER, cell, null);
         int healHealthIncrease = Tower.gameTowerLevel.getHealHealthIncrease();
-        //castle.healHealthIncrease(healHealthIncrease);
-        //System.out.println("Castle's health has been healed");
+        castle.healHealthIncrease(healHealthIncrease);
+        System.out.println("Castle's health has been healed and now it is " + castle.getHealth());
 
 
         towers.add(tower);
@@ -452,7 +449,6 @@ public class Player implements Winnable {
                 System.out.println("Value of creation cost " + Tower.COST);
                 System.out.println("Health of tower is " + Tower.maxHealth);
                 System.out.println("After update the level of tower is " + gameTowerLevelIterator.getLevelName());
-
         }
     }
 }

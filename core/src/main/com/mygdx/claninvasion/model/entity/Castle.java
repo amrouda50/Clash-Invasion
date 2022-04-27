@@ -58,11 +58,6 @@ public final class Castle extends ArtificialEntity {
         return sum.orElse(0);
     }
 
-    @Override
-    public void heal() {
-        //setHealth();
-    }
-
     public CompletionStage<Integer> trainSoldiers(EntitySymbol entitySymbol, Predicate<Integer> run) {
         ExecutorService executor = newFixedThreadPool(2);
         int money = 0;
