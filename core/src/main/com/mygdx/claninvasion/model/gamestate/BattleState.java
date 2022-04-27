@@ -29,6 +29,7 @@ public class BattleState extends CommonGameState {
         initializePlayerMove(game.getPlayerOne());
         initializePlayerMove(game.getPlayerTwo());
         fireTower(game.getPlayerOne());
+        fireTower(game.getPlayerTwo());
     }
 
     private void initializePlayerMove(Player player) {
