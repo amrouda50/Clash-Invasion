@@ -274,7 +274,7 @@ public class Player implements Winnable {
 
     public int moveSoldier(Soldier soldier, int positionSrc, int positionDest, int movingSpeed, int callTimes) {
         try {
-            getMap().getLatch().waitTillZero();
+//            getMap().getLatch().waitTillZero();
             game.getWorldMap().setGraph();
             List<Integer> paths = game.getWorldMap().getGraph()
                     .getShortestDistance(
@@ -322,9 +322,6 @@ public class Player implements Winnable {
                 }
             }
             moveSoldier(soldier, positionSrc, positionDest, movingSpeed, ++callTimes);
-            return positionSrc;
-        } catch (InterruptedException e) {
-            e.printStackTrace();
             return positionSrc;
         }
     }

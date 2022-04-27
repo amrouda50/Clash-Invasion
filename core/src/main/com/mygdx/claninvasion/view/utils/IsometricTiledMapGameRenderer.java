@@ -20,6 +20,8 @@ import com.badlogic.gdx.math.Vector3;
 import com.mygdx.claninvasion.model.map.WorldCell;
 import com.mygdx.claninvasion.model.map.WorldMap;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 
 public class IsometricTiledMapGameRenderer extends BatchTiledMapRenderer {
     protected Matrix4 isoTransform;
@@ -72,7 +74,6 @@ public class IsometricTiledMapGameRenderer extends BatchTiledMapRenderer {
      * @param worldMap - map of the application
      */
     public void render(WorldMap worldMap, boolean firstRender) {
-        worldMap.restart();
         beginRender();
         worldMap.setEntitiesLayer((TiledMapTileLayer) map.getLayers().get(ENTITIES_LAYER));
         for (MapLayer layer : map.getLayers()) {
@@ -87,7 +88,6 @@ public class IsometricTiledMapGameRenderer extends BatchTiledMapRenderer {
         } else {
             chooser.placeRender(worldMap);
         }
-        worldMap.finish();
     }
 
     /**
@@ -193,14 +193,13 @@ public class IsometricTiledMapGameRenderer extends BatchTiledMapRenderer {
 
         int col1 = (int) (translateScreenToIso(bottomLeft).x / tileWidth) - toIso ;
         int col2 = (int) (translateScreenToIso(topRight).x / tileWidth) + toIso ;
-
+        AtomicInteger counter = new AtomicInteger(0);
         for (int row = row2; row >= row1; row--) {
             for (int col = col1; col <= col2; col++) {
                 float positionX = (col * halfTileWidth) + (row * halfTileWidth);
                 float positionY = (row * halfTileHeight) - (col * halfTileHeight);
-                renderTileCell(layer, new Pair<>(row, col), new Pair<>(positionX, positionY), offset, color, map);
+                renderTileCell(layer, new Pair<>(row, col), new Pair<>(positionX, positionY), offset, color, map, counter);
             }
-
         }
     }
 
@@ -210,7 +209,8 @@ public class IsometricTiledMapGameRenderer extends BatchTiledMapRenderer {
             Pair<Float, Float> calculatedXY,
             Pair<Float, Float> offset,
             float color,
-            WorldMap map
+            WorldMap map,
+            AtomicInteger counter
     ) {
         final TiledMapTileLayer.Cell cell = layer.getCell(position.getValue1(), position.getValue0());
         if (cell == null) {
@@ -240,7 +240,12 @@ public class IsometricTiledMapGameRenderer extends BatchTiledMapRenderer {
                         calculatedXY.getValue1() + "," + calculatedXY.getValue1()
                 );
                 worldCell.setTileCell(cell);
-                map.addCell(worldCell);
+                if (map.hasCell(counter.get())) {
+                    map.replaceCell(counter.get(), worldCell);
+                } else {
+                    map.addCell(worldCell);
+                }
+                counter.incrementAndGet();
             } else if (map != null && layer.getName().equals(ENTITIES_LAYER)) {
                 WorldCell worldCell = map.getCell(position);
                 chooser.place(region, position, worldCell);

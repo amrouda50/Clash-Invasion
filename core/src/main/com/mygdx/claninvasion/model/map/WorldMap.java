@@ -24,25 +24,17 @@ public class WorldMap {
     private TiledMapTileLayer entitiesLayer;
     private Graph G;
     private TiledMapTileSets tilesets;
-    private ReusableCountLatch latch = new ReusableCountLatch(1);
 
     public WorldMap() {
         this.worldCells = new ArrayList<>();
     }
 
-    public void restart() {
-        if (latch.getCount() == 0) {
-            latch.increment();
-        }
-        worldCells.clear();
-    }
-
-    public void finish() {
-        latch.decrement();
-    }
-
     public void addCell(WorldCell worldCell) {
         this.worldCells.add(worldCell);
+    }
+
+    public void replaceCell(int index, WorldCell worldCells) {
+        this.worldCells.set(index, worldCells);
     }
 
     public void setTileset(TiledMapTileSets tilesets) {
@@ -98,26 +90,12 @@ public class WorldMap {
     }
 
     public WorldCell getCell(int index) {
-        try {
-            latch.waitTillZero();
-            return worldCells.get(index);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-            throw new RuntimeException("World cell is out of range");
-        }
+        return worldCells.get(index);
     }
 
     public int transformMapPositionToIndex(Pair<Integer, Integer> cellPlace) {
-        try {
-            System.out.println("latch not zero " + latch.getCount());
-            latch.waitTillZero();
-            System.out.println("latch zero " + latch.getCount());
-            WorldCell cell = getCell(cellPlace);
-            return worldCells.indexOf(cell);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-            throw new RuntimeException("Latch failed in transform. Exiting...");
-        }
+        WorldCell cell = getCell(cellPlace);
+        return worldCells.indexOf(cell);
     }
 
     public Pair<Integer, Integer> transformMapIndexToPosition(int index) {
@@ -135,6 +113,19 @@ public class WorldMap {
         } catch (Exception e) {
             return null;
         }
+    }
+
+    public Boolean hasCell(Pair<Integer, Integer> cellPlace) {
+        return worldCells.stream().filter(cell -> cell.getMapPosition().equals(cellPlace)).toArray().length > 1;
+    }
+
+    public Boolean hasCell(int index) {
+        try {
+            return worldCells.get(index) != null;
+        } catch (Exception ex) {
+            return false;
+        }
+
     }
 
     public List<WorldCell> getCells(Pair<Integer, Integer> cellPlace) {
@@ -267,9 +258,5 @@ public class WorldMap {
     public void setGraph(int size) {
         System.out.println(size);
         this.G = new Graph(size, this);
-    }
-
-    public ReusableCountLatch getLatch() {
-        return latch;
     }
 }

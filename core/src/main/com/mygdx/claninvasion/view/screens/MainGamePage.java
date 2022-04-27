@@ -18,8 +18,6 @@ import com.mygdx.claninvasion.view.utils.GameInputProcessor;
 import com.mygdx.claninvasion.view.utils.IsometricTiledMapGameRenderer;
 import com.mygdx.claninvasion.view.utils.InputClicker;
 import org.javatuples.Pair;
-
-
 import java.util.*;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -107,7 +105,7 @@ public class MainGamePage implements GamePage, UiUpdatable {
     void renderHealthBars(List<T> containers) {
         List<HealthBar> healthBars = containers.stream().map(ArtificialEntity::getHealthBar).collect(Collectors.toList());
         for (HealthBar healthBar : healthBars) {
-            if (healthBar != null) {
+            if (healthBar != null && healthBar.getCoordinates() != null) {
                 healthBar.rendering(app.getCamera().combined);
             }
         }

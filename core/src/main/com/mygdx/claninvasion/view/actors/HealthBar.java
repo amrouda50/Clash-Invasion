@@ -17,16 +17,6 @@ public class HealthBar extends ShapeRenderer {
     private boolean isActive = true;
     private final Color healthColor;
 
-    public HealthBar(Pair<Float, Float> sizes) {
-        setDimensions(sizes);
-        healthColor = Color.RED;
-    }
-
-    public HealthBar() {
-        super();
-        healthColor = Color.RED;
-    }
-
     public HealthBar(Color color) {
         healthColor = color;
     }
@@ -72,6 +62,10 @@ public class HealthBar extends ShapeRenderer {
     }
     public void setCoordinates(Pair<Float , Float> coordinates){
         this.coordinates = coordinates;
+    }
+
+    public Pair<Float , Float> getCoordinates() {
+        return coordinates;
     }
 
     public void setDimensions(Pair<Float, Float> sizes) {
