@@ -20,6 +20,7 @@ public class Tower extends ArtificialEntity implements Defensible {
     public static int COST = 200;
     public static int creationTime;
     public static int maxHealth;
+    public static int healGoalPoint;
 
     public int currentHealth;
 
@@ -45,6 +46,8 @@ public class Tower extends ArtificialEntity implements Defensible {
         Tower.creationTime = gameTowerLevel.getCreationTime();
         Tower.COST = gameTowerLevel.getCreationCost();
         Tower.maxHealth = gameTowerLevel.getMaxHealth();
+        Tower.healGoalPoint = (int) (((float) gameTowerLevel.getHealGoalPoint()) / 100.0);
+        System.out.println("The tower can only be healed by " + Tower.healGoalPoint);
     }
 
     Tower(LevelIterator<Level> levelIterator) {

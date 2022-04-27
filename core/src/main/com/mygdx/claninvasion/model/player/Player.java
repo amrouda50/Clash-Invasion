@@ -176,7 +176,6 @@ public class Player implements Winnable {
         castle.healHealthIncrease(healHealthIncrease);
         System.out.println("Castle's health has been healed and now it is " + castle.getHealth());
 
-
         towers.add(tower);
         wealth.set(wealth.get() - Tower.COST);
         return tower;
