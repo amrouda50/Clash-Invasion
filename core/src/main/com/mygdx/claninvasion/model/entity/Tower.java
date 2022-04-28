@@ -2,7 +2,6 @@ package com.mygdx.claninvasion.model.entity;
 
 import com.badlogic.gdx.Game;
 import com.mygdx.claninvasion.model.level.GameTowerLevel;
-import com.mygdx.claninvasion.model.level.GameTowerLevelIterator;
 import com.mygdx.claninvasion.model.level.Level;
 import com.mygdx.claninvasion.model.level.LevelIterator;
 import org.javatuples.Pair;
@@ -10,14 +9,11 @@ import org.javatuples.Pair;
 import java.util.concurrent.CompletableFuture;
 
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
-import java.util.Timer;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
 public class Tower extends ArtificialEntity implements Defensible {
-    GameTowerLevelIterator towerLevelIterator = null;
-
     public static int COST = 200;
     public static int creationTime;
     public static int maxHealth;
@@ -127,7 +123,7 @@ public class Tower extends ArtificialEntity implements Defensible {
         }
         artificialEntity.setDecreaseHealth(85);
         heal(); // Not tested yet
-        System.out.println("Descresing.. Current is" + artificialEntity.getHealth() + ", Entity " + artificialEntity);
+        System.out.println("Decreasing.. Current is" + artificialEntity.getHealth() + ", Entity " + artificialEntity);
     }
 }
 

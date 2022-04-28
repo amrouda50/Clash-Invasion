@@ -156,6 +156,10 @@ public abstract class ArtificialEntity extends Entity {
         this.level = level;
     }
 
+    public void nextLevel() {
+        this.level.next();
+    }
+
     public UUID getId() {
         return id;
     }

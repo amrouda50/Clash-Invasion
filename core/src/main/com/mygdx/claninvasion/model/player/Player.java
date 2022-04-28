@@ -3,6 +3,7 @@ package com.mygdx.claninvasion.model.player;
 import com.badlogic.gdx.graphics.Color;
 import com.mygdx.claninvasion.model.GameModel;
 import com.mygdx.claninvasion.model.entity.*;
+import com.mygdx.claninvasion.model.level.DefaultGameLevelIterator;
 import com.mygdx.claninvasion.model.level.GameTowerLevel;
 import com.mygdx.claninvasion.model.level.GameTowerLevelIterator;
 import com.mygdx.claninvasion.model.map.WorldCell;
@@ -18,6 +19,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
+import static com.mygdx.claninvasion.model.level.Levels.createLevelIterator;
 import static com.mygdx.claninvasion.model.level.Levels.createTowerLevelIterator;
 
 /**
@@ -92,6 +94,7 @@ public class Player implements Winnable {
         executorService.execute(this::consumeGold);
         winningState = WinningState.UKNOWN;
 
+
         gameTowerLevelIterator = createTowerLevelIterator();
         Tower.gameTowerLevel = gameTowerLevelIterator.next();
     }
@@ -99,6 +102,7 @@ public class Player implements Winnable {
     public void changeCastle(Castle castle) {
         this.castle = castle;
         System.out.println("Castle's health in the beginning is " + castle.getHealth());
+        System.out.println("In beginning castle level is " + castle.getLevel().getLevelName());
     }
 
     public MiningFarm createNewMining(WorldCell cell) {
@@ -440,14 +444,18 @@ public class Player implements Winnable {
     }
 
     public void levelUp() {
+
+        try {
         if (gameTowerLevelIterator.hasNext() ) {
+                castle.nextLevel();
                 Tower.gameTowerLevel = gameTowerLevelIterator.next();
                 Tower.changeLevel();
-
                 System.out.println("Value of creation time " + Tower.creationTime);
                 System.out.println("Value of creation cost " + Tower.COST);
                 System.out.println("Health of tower is " + Tower.maxHealth);
                 System.out.println("After update the level of tower is " + gameTowerLevelIterator.getLevelName());
+        } } catch (Exception e) {
+            System.out.println("There are no new levels");
         }
     }
 }
