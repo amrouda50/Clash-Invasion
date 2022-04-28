@@ -13,6 +13,7 @@ import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import java.util.Timer;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 
 public class Tower extends ArtificialEntity implements Defensible {
     GameTowerLevelIterator towerLevelIterator = null;
@@ -33,6 +34,7 @@ public class Tower extends ArtificialEntity implements Defensible {
         health = new AtomicInteger();
         health.set(currentHealth);
         super.setHealth(health);
+        healGoalPoint = getPercentage().intValue();
 
         changeLevel();
         try {
@@ -46,8 +48,7 @@ public class Tower extends ArtificialEntity implements Defensible {
         Tower.creationTime = gameTowerLevel.getCreationTime();
         Tower.COST = gameTowerLevel.getCreationCost();
         Tower.maxHealth = gameTowerLevel.getMaxHealth();
-        Tower.healGoalPoint = (int) (((float) gameTowerLevel.getHealGoalPoint()) / 100.0);
-        System.out.println("The tower can only be healed by " + Tower.healGoalPoint);
+        //(int) (( (float) gameTowerLevel.getHealGoalPoint()/ 100.0 ) * (float) Tower.maxHealth);
     }
 
     Tower(LevelIterator<Level> levelIterator) {
@@ -87,6 +88,11 @@ public class Tower extends ArtificialEntity implements Defensible {
         }
     }
 
+    @Override
+    public AtomicLong getPercentage() {
+        return super.getPercentage();
+    }
+
     private void remove() {
     }
 
@@ -120,6 +126,7 @@ public class Tower extends ArtificialEntity implements Defensible {
             return;
         }
         artificialEntity.setDecreaseHealth(85);
+        heal(); // Not tested yet
         System.out.println("Descresing.. Current is" + artificialEntity.getHealth() + ", Entity " + artificialEntity);
     }
 }
