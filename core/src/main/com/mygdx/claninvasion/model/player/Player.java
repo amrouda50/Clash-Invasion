@@ -3,8 +3,7 @@ package com.mygdx.claninvasion.model.player;
 import com.badlogic.gdx.graphics.Color;
 import com.mygdx.claninvasion.model.GameModel;
 import com.mygdx.claninvasion.model.entity.*;
-import com.mygdx.claninvasion.model.level.DefaultGameLevelIterator;
-import com.mygdx.claninvasion.model.level.GameTowerLevel;
+import com.mygdx.claninvasion.model.level.GameMiningLevelIterator;
 import com.mygdx.claninvasion.model.level.GameTowerLevelIterator;
 import com.mygdx.claninvasion.model.map.WorldCell;
 import com.mygdx.claninvasion.model.map.WorldMap;
@@ -19,7 +18,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
-import static com.mygdx.claninvasion.model.level.Levels.createLevelIterator;
+import static com.mygdx.claninvasion.model.level.Levels.createMiningLevelIterator;
 import static com.mygdx.claninvasion.model.level.Levels.createTowerLevelIterator;
 
 /**
@@ -80,6 +79,7 @@ public class Player implements Winnable {
     private final Color color;
 
     public static GameTowerLevelIterator gameTowerLevelIterator;
+    public static GameMiningLevelIterator miningLevelIterator;
 
     public Player(GameModel game, Color c) {
         this.color = c;
@@ -97,6 +97,9 @@ public class Player implements Winnable {
 
         gameTowerLevelIterator = createTowerLevelIterator();
         Tower.gameTowerLevel = gameTowerLevelIterator.next();
+
+        miningLevelIterator = createMiningLevelIterator();
+        MiningFarm.gameMiningLevel = miningLevelIterator.next();
     }
 
     public void changeCastle(Castle castle) {
@@ -444,18 +447,20 @@ public class Player implements Winnable {
     }
 
     public void levelUp() {
-
         try {
         if (gameTowerLevelIterator.hasNext() ) {
-                castle.nextLevel();
                 Tower.gameTowerLevel = gameTowerLevelIterator.next();
+                MiningFarm.gameMiningLevel = miningLevelIterator.next();
+                castle.nextLevel();
                 Tower.changeLevel();
-                System.out.println("Value of creation time " + Tower.creationTime);
-                System.out.println("Value of creation cost " + Tower.COST);
+                MiningFarm.changeLevel();
+                //System.out.println("Value of creation time " + Tower.creationTime);
+                //System.out.println("Value of creation time of Mine " + MiningFarm.creationTime);
+                /*System.out.println("Value of creation cost " + Tower.COST);
                 System.out.println("Health of tower is " + Tower.maxHealth);
-                System.out.println("After update the level of tower is " + gameTowerLevelIterator.getLevelName());
+                System.out.println("After update the level of tower is " + gameTowerLevelIterator.getLevelName());*/
         } } catch (Exception e) {
-            System.out.println("There are no new levels");
+                System.out.println("There are no new levels");
         }
     }
 }
