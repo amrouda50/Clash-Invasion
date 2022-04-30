@@ -34,7 +34,9 @@ public class WorldMap {
     }
 
     public void replaceCell(int index, WorldCell worldCells) {
+        Entity entity = this.worldCells.get(index).getOccupier();
         this.worldCells.set(index, worldCells);
+        this.worldCells.get(index).setOccupier(entity);
     }
 
     public void setTileset(TiledMapTileSets tilesets) {

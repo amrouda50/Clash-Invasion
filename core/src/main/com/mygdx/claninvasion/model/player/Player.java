@@ -239,7 +239,7 @@ public class Player implements Winnable {
         }
     }
 
-    final Object sync = new Object();
+    static final Object sync = new Object();
 
     public void moveSoldier(int index , Thread upcoming) {
         Soldier soldier = getSoldiers().get(index);
@@ -274,8 +274,9 @@ public class Player implements Winnable {
 
     public int moveSoldier(Soldier soldier, int positionSrc, int positionDest, int movingSpeed, int callTimes) {
         try {
-//            getMap().getLatch().waitTillZero();
-            game.getWorldMap().setGraph();
+            synchronized (sync) {
+                game.getWorldMap().setGraph();
+            }
             List<Integer> paths = game.getWorldMap().getGraph()
                     .getShortestDistance(
                             positionSrc,
@@ -290,11 +291,11 @@ public class Player implements Winnable {
                 synchronized (sync) {
                     try {
                         Thread.sleep(movingSpeed);
+                        moveSoldier(soldier, positionSrc, positionDest, movingSpeed, ++callTimes);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
                 }
-                moveSoldier(soldier, positionSrc, positionDest, movingSpeed, ++callTimes);
                 return positionSrc;
             } else {
                 if (getColor() == Color.RED && game.getWorldMap().getCell(paths.get(paths.size() - 2)).hasOccupier()) {
@@ -314,12 +315,10 @@ public class Player implements Winnable {
                 return paths.get(paths.size() - 2);
             }
         } catch (ArrayIndexOutOfBoundsException e) {
-            synchronized (sync) {
-                try {
-                    Thread.sleep(movingSpeed);
-                } catch (InterruptedException interruptedException) {
-                    interruptedException.printStackTrace();
-                }
+            try {
+                Thread.sleep(movingSpeed);
+            } catch (InterruptedException interruptedException) {
+                interruptedException.printStackTrace();
             }
             moveSoldier(soldier, positionSrc, positionDest, movingSpeed, ++callTimes);
             return positionSrc;
