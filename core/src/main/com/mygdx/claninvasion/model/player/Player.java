@@ -32,6 +32,24 @@ import static com.mygdx.claninvasion.model.level.Levels.createTowerLevelIterator
  */
 
 public class Player implements Winnable {
+    /** A synchronization lock for moving soldiers
+     * Has two types of locks inside for supporting multiple thread
+     * execution in safe mode:
+     * 2. Use sync.readLock() when you know that this chunk of code will access
+     * thread vulnerable data for reading (like then the graph accesses cells
+     * (cells are mutated constantly) inside itself)
+     * readLock() wont block other readLock() calls, it wont affect writeLock() parts as well
+     * 1. Use sync.writeLock() for when you want to lock something which will is
+     * rewritten concurrently in the application.
+     * Like  WorldMap.mutate(...args) method changed map cells, which are used inside threads as well.
+     * writeLock() will lock all other re-writes of the code together with readLock parts
+     * @see WorldMap
+     * @see Player
+     * @see ReadWriteLock
+     */
+    static final ReadWriteLock sync = new ReentrantReadWriteLock();
+
+
     public static final int INITIAL_WEALTH = 3000;
     public static final int MAX_GOLDMINE = 3;
     /**
@@ -262,8 +280,6 @@ public class Player implements Winnable {
         }
     }
 
-    final Object sync = new Object();
-
     public void moveSoldier(int index, Thread upcoming) {
         Soldier soldier = getSoldiers().get(index);
 
@@ -297,9 +313,9 @@ public class Player implements Winnable {
 
     public int moveSoldier(Soldier soldier, int positionSrc, int positionDest, int callTimes) {
         // lock reading of thread vulnerable data
-        //sync.readLock().lock();
+        sync.readLock().lock();
         game.getWorldMap().setGraph();
-        //sync.readLock().unlock();
+        sync.readLock().unlock();
         // unlock reading of thread vulnerable data
 
         // Shortest path algorithm
@@ -324,9 +340,9 @@ public class Player implements Winnable {
             }
             return positionSrc;
         } else {
-            //sync.writeLock().lock();
+            sync.writeLock().lock();
             game.getWorldMap().mutate(paths.get(paths.size() - 1), paths.get(paths.size() - 2));
-            //sync.writeLock().unlock();
+            sync.writeLock().unlock();
 
             Pair<Integer, Integer> newPosition =
                     game.getWorldMap().transformMapIndexToPosition(paths.get(paths.size() - 2));
