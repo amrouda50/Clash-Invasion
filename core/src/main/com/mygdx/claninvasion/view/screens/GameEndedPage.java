@@ -66,8 +66,8 @@ public class GameEndedPage implements GamePage, UiUpdatable {
         table.align(Align.center);
         table.setBounds(-80, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
-        startGameButton = new GameButton(skin, "Play Again");
-        endGameButton = new GameButton(skin, "Exit Game" );
+        startGameButton = new GameButton(skin, "Play Again", app.getFont());
+        endGameButton = new GameButton(skin, "Exit Game", app.getFont());
         startGameButton.getButton().pad(2);
         endGameButton.getButton().pad(2);
         table.add(headerText);

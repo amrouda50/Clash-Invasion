@@ -1,8 +1,6 @@
 package com.mygdx.claninvasion.view.screens;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.audio.Music;
-import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -66,8 +64,8 @@ public class SplashScreen implements GamePage, UiUpdatable {
         Table table = new Table(skin);
         table.setBounds(-85, -50, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
-        startGameButton = new GameButton(skin, "Start Game");
-        endGameButton = new GameButton(skin, "End Game" );
+        startGameButton = new GameButton(skin, "Start Game", app.getFont());
+        endGameButton = new GameButton(skin, "End Game", app.getFont());
         startGameButton.getButton().pad(2);
         endGameButton.getButton().pad(2);
         table.add(startGameButton.getButton());

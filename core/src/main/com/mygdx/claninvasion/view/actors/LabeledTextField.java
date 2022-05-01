@@ -1,10 +1,7 @@
 package com.mygdx.claninvasion.view.actors;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.scenes.scene2d.Event;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
@@ -28,14 +25,15 @@ public class LabeledTextField {
     private final Skin skin;
     private final TextField textField;
     private final TextField.TextFieldStyle fieldStyle;
-    private final BitmapFont font  = new BitmapFont(Gdx.files.internal("skin/skin/default.fnt"));
+    private final BitmapFont font;
 
     /**
      * @param skin - resource for ui widgets
      * @see Skin
      * @param placeholder - placeholder value
      */
-    public LabeledTextField(Skin skin, String placeholder) {
+    public LabeledTextField(Skin skin, String placeholder, BitmapFont font) {
+        this.font = font;
         labelStyle = new Label.LabelStyle();
         fieldStyle = new TextField.TextFieldStyle();
         this.skin = skin;

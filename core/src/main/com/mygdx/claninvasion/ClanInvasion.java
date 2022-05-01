@@ -5,6 +5,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.mygdx.claninvasion.model.GameModel;
 import com.mygdx.claninvasion.model.Globals;
 import com.mygdx.claninvasion.model.player.Player;
@@ -26,6 +27,8 @@ import java.util.Collections;
  */
 public class ClanInvasion extends Game {
     private final GameScreens screens;
+    private FreeTypeFontGenerator generator;
+    private FreeTypeFontGenerator.FreeTypeFontParameter parameter;
     private BitmapFont font;
     private OrthographicCamera camera;
     private ArrayList<GamePage> gamePages;
@@ -48,9 +51,12 @@ public class ClanInvasion extends Game {
      */
     @Override
     public void create() {
+        generator = new FreeTypeFontGenerator(Gdx.files.internal("skin/skin/minecraft.ttf"));
+        parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
+        font = generator.generateFont(parameter);
+
         camera = new OrthographicCamera();
         camera.setToOrtho(false, Globals.V_WIDTH, Globals.V_HEIGHT);
-        font = new BitmapFont();
         //addMusic();
 
         this.gamePages = Globals.DEBUG

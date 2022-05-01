@@ -57,10 +57,10 @@ public class ConfigureGameScreen implements GamePage, UiUpdatable {
         table.setOrigin(camera.position.x, camera.position.y);
         table.setFillParent(true);
 
-        playerOneField = new LabeledTextField(skin, "Enter player 1 name");
-        playerTwoField = new LabeledTextField(skin, "Enter player 2 name");
-        mapSizeField = new LabeledTextField(skin, "Enter map size");
-        confirmButton = new GameButton(skin, "Confirm");
+        playerOneField = new LabeledTextField(skin, "Enter player 1 name", app.getFont());
+        playerTwoField = new LabeledTextField(skin, "Enter player 2 name", app.getFont());
+        mapSizeField = new LabeledTextField(skin, "Enter map size", app.getFont());
+        confirmButton = new GameButton(skin, "Confirm", app.getFont());
 
         playerOneField.applyToTheTable(table);
         table.row();

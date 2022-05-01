@@ -1,12 +1,9 @@
 package com.mygdx.claninvasion.view.actors;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 /**
@@ -18,7 +15,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
  */
 public class GameButton {
     private final TextButton.TextButtonStyle buttonStyle;
-    private BitmapFont font  = new BitmapFont(Gdx.files.internal("skin/skin/default.fnt"));
+    private final BitmapFont font;
     private Skin skin;
     private final TextButton button;
 
@@ -27,7 +24,8 @@ public class GameButton {
      * @see Skin
      * @param text - button text
      */
-    public GameButton(Skin skin, String text) {
+    public GameButton(Skin skin, String text, BitmapFont font) {
+        this.font = font;
         buttonStyle = new TextButton.TextButtonStyle();
         this.skin = skin;
         buttonStyleInit();
@@ -54,15 +52,6 @@ public class GameButton {
                 runnable.run();
             }
         });
-    }
-
-    /**
-     * Change font method
-     * @param font - Bitmap font instance#
-     * @see BitmapFont
-     */
-    public void setFont(BitmapFont font) {
-        this.font = font;
     }
 
     /**
