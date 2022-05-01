@@ -128,7 +128,7 @@ public class WorldCell {
     }
 
     public Entity getOccupier() {
-        if (occupier.size() == 0) {
+        if (occupier == null || occupier.size() == 0) {
             return null;
         }
         return occupier.get(0);

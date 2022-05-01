@@ -2,15 +2,18 @@ package com.mygdx.claninvasion.view.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.*;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.tiled.*;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.mygdx.claninvasion.ClanInvasion;
 import com.mygdx.claninvasion.model.Globals;
 import com.mygdx.claninvasion.model.entity.*;
+import com.mygdx.claninvasion.model.gamestate.BattleState;
 import com.mygdx.claninvasion.model.map.WorldCell;
 import com.mygdx.claninvasion.view.actors.HealthBar;
 import com.mygdx.claninvasion.view.applicationlistener.FireAnimated;
+import com.mygdx.claninvasion.view.applicationlistener.FireFromEntity;
 import com.mygdx.claninvasion.view.applicationlistener.MainGamePageUI;
 import com.mygdx.claninvasion.view.tiledmap.TiledMapStage;
 import com.mygdx.claninvasion.view.utils.EntityPlacer;
@@ -39,9 +42,9 @@ public class MainGamePage implements GamePage, UiUpdatable {
     private final ClanInvasion app;
     private Stage entitiesStage;
     private final List<FireAnimated> fireballs = Collections.synchronizedList(new CopyOnWriteArrayList<>());
-//    private final List<HealthBar> hpBars = Collections.synchronizedList(new CopyOnWriteArrayList<>());
     private final MainGamePageUI mainGamePageUI;
     private TiledMap map;
+    private final FireFromEntity<Tower, Soldier> fireFromEntity = this::fireTower;
 
     /**
      * @param app - app instance
@@ -81,24 +84,15 @@ public class MainGamePage implements GamePage, UiUpdatable {
         entitiesStage = new TiledMapStage();
         Gdx.input.setInputProcessor(entitiesStage);
         app.getMap().setGraph(32);
-        //fireTower();
         mainGamePageUI.create();
     }
 
-    private void fireTower() {
-        ArrayList<Tower> towers = app.getMap().getTowers();
-        ArrayList<Soldier> soldiers = app.getMap().getSoldiers();
-//        if (towers.size() > 0 && soldiers.size() > 0) {
-//            Tower tower = towers.get(0);
-//            tower.attack(soldiers.get(0), (src, dest) -> CompletableFuture.supplyAsync(() -> {
-//                Vector2 positionSrc = app.getMap().transformMapPositionToIso(src);
-//                Vector2 positionDest = app.getMap().transformMapPositionToIso(dest);
-//                FireAnimated animated = new FireAnimated(positionSrc,
-//                        positionDest, (SpriteBatch) renderer.getBatch());
-//                fireballs.add(animated);
-//                return true;
-//            }));
-//        }
+    private void fireTower(Tower tower, Soldier soldier) {
+        Vector2 positionSrc = app.getMap().transformMapPositionToIso(tower.getPosition());
+        Vector2 positionDest = app.getMap().transformMapPositionToIso(soldier.getPosition());
+        FireAnimated animated = new FireAnimated(positionSrc,
+                positionDest, (SpriteBatch) renderer.getBatch());
+        fireballs.add(animated);
     }
 
     private <T extends ArtificialEntity>
@@ -172,8 +166,12 @@ public class MainGamePage implements GamePage, UiUpdatable {
      */
     @Override
     public void render(float delta) {
-        Gdx.gl.glClearColor((255f/255f), (255f/255f), (255f/255f), 1);
+        Gdx.gl.glClearColor(1.0f, 1.0f, 1.0f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+
+        if (app.getModel().getState() instanceof BattleState) {
+            ((BattleState) app.getModel().getState()).setFireFromEntity(fireFromEntity);
+        }
 
         // create fire
         createFireAnimated();
