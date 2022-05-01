@@ -13,6 +13,8 @@ import java.util.Stack;
 import java.util.UUID;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /**
  * This class is responsible for handling
@@ -24,6 +26,22 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 
 public class Player implements Winnable {
+    /** A synchronization lock for moving soldiers
+     * Has two types of locks inside for supporting multiple thread
+     * execution in safe mode:
+     * 2. Use sync.readLock() when you know that this chunk of code will access
+     * thread vulnerable data for reading (like then the graph accesses cells
+     * (cells are mutated constantly) inside itself)
+     * readLock() wont block other readLock() calls, it wont affect writeLock() parts as well
+     * 1. Use sync.writeLock() for when you want to lock something which will is
+     * rewritten concurrently in the application.
+     * Like  WorldMap.mutate(...args) method changed map cells, which are used inside threads as well.
+     * writeLock() will lock all other re-writes of the code together with readLock parts
+     * @see WorldMap
+     * @see Player
+     * @see ReadWriteLock
+     */
+    static final ReadWriteLock sync = new ReentrantReadWriteLock();
     public static final int INITIAL_WEALTH = 1000;
     public static final int MAX_GOLDMINE = 3;
     /**
@@ -239,8 +257,6 @@ public class Player implements Winnable {
         }
     }
 
-    final Object sync = new Object();
-
     public void moveSoldier(int index , Thread upcoming) {
         Soldier soldier = getSoldiers().get(index);
 
@@ -250,82 +266,63 @@ public class Player implements Winnable {
         );
         Pair<Integer, Integer> posDst = new Pair<>(
                 opponent.getCastle().getPosition().getValue0() + index + 1 ,
-                opponent.getCastle().getPosition().getValue1() + index + 1
+                opponent.getCastle().getPosition().getValue1() + 1
         );
         int positionSrc = game.getWorldMap().transformMapPositionToIndex(posSrc);
         int positionDest = game.getWorldMap().transformMapPositionToIndex(posDst);
         int counter = 0;
-        int movingSpeed = 200;
+        int movingSpeed = 500;
         while (positionSrc != positionDest) {
-            positionSrc = moveSoldier(soldier, positionSrc, positionDest, movingSpeed, 0);
+            positionSrc = moveSoldier(soldier, positionSrc, positionDest, 0);
             if (counter == 2 && upcoming != null) {
                 upcoming.start();
             }
             counter++;
-            synchronized (sync) {
-                try {
-                    Thread.sleep( movingSpeed );
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+            try {
+                Thread.sleep( movingSpeed );
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
         }
     }
 
-    public int moveSoldier(Soldier soldier, int positionSrc, int positionDest, int movingSpeed, int callTimes) {
-        try {
-            getMap().getLatch().waitTillZero();
-            game.getWorldMap().setGraph();
-            List<Integer> paths = game.getWorldMap().getGraph()
-                    .getShortestDistance(
-                            positionSrc,
-                            positionDest,
-                            game.getWorldMap().getGraphSize() * game.getWorldMap().getGraphSize()
-                    );
-            if (paths == null) {
-                System.out.println("Paths is null. No moving can be made. Waiting...");
-                if (callTimes > 100) {
-                    throw new RuntimeException("Paths is null. Exiting...");
-                }
-                synchronized (sync) {
-                    try {
-                        Thread.sleep(movingSpeed);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
-                moveSoldier(soldier, positionSrc, positionDest, movingSpeed, ++callTimes);
-                return positionSrc;
-            } else {
-                if (getColor() == Color.RED && game.getWorldMap().getCell(paths.get(paths.size() - 2)).hasOccupier()) {
-                    synchronized (sync) {
-                        try {
-                            Thread.sleep(movingSpeed);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }
+    public int moveSoldier(Soldier soldier, int positionSrc, int positionDest, int callTimes) {
+        // lock reading of thread vulnerable data
+        sync.readLock().lock();
+        game.getWorldMap().setGraph();
+        sync.readLock().unlock();
+        // unlock reading of thread vulnerable data
 
-                game.getWorldMap().mutate(paths.get(paths.size() - 1), paths.get(paths.size() - 2));
-                Pair<Integer, Integer> newPosition =
-                        game.getWorldMap().transformMapIndexToPosition(paths.get(paths.size() - 2));
-                soldier.changePosition(newPosition);
-                return paths.get(paths.size() - 2);
+        // Shortest path algorithm
+        List<Integer> paths = game.getWorldMap().getGraph()
+                .getShortestDistance(
+                        positionSrc,
+                        positionDest,
+                        game.getWorldMap().getGraphSize() * game.getWorldMap().getGraphSize()
+                );
+
+        if (paths == null) {
+            // case when there is a temporary or permanently blocking occupier
+            System.out.println("Paths is null. No moving can be made. Waiting...");
+            if (callTimes > 100) {
+                throw new RuntimeException("Paths is null. Exiting...");
             }
-        } catch (ArrayIndexOutOfBoundsException e) {
-            synchronized (sync) {
-                try {
-                    Thread.sleep(movingSpeed);
-                } catch (InterruptedException interruptedException) {
-                    interruptedException.printStackTrace();
-                }
+            try {
+                Thread.sleep(1);
+                moveSoldier(soldier, positionSrc, positionDest, ++callTimes);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
-            moveSoldier(soldier, positionSrc, positionDest, movingSpeed, ++callTimes);
             return positionSrc;
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-            return positionSrc;
+        } else {
+            sync.writeLock().lock();
+            game.getWorldMap().mutate(paths.get(paths.size() - 1), paths.get(paths.size() - 2));
+            sync.writeLock().unlock();
+
+            Pair<Integer, Integer> newPosition =
+                    game.getWorldMap().transformMapIndexToPosition(paths.get(paths.size() - 2));
+            soldier.changePosition(newPosition);
+            return paths.get(paths.size() - 2);
         }
     }
 

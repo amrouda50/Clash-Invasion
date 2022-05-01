@@ -5,6 +5,8 @@ import com.mygdx.claninvasion.model.entity.Soldier;
 import com.mygdx.claninvasion.model.entity.Tower;
 import com.mygdx.claninvasion.model.player.Player;
 import com.mygdx.claninvasion.model.player.WinningState;
+import com.mygdx.claninvasion.view.applicationlistener.FireFromEntity;
+
 import java.util.List;
 import java.util.concurrent.*;
 
@@ -22,6 +24,7 @@ public class BattleState extends CommonGameState {
         END_GAME,
     }
     private BattleStateChangeVariants battleStateChangeVariants = null;
+    private FireFromEntity<Tower, Soldier> fireFromEntity = null;
 
     public BattleState(GameModel game) {
         super(game);
@@ -29,6 +32,7 @@ public class BattleState extends CommonGameState {
         initializePlayerMove(game.getPlayerOne());
         initializePlayerMove(game.getPlayerTwo());
         fireTower(game.getPlayerOne());
+        fireTower(game.getPlayerTwo());
     }
 
     private void initializePlayerMove(Player player) {
@@ -89,6 +93,10 @@ public class BattleState extends CommonGameState {
                                     if (!tower.canFire(soldier)) {
                                         break;
                                     }
+
+                                    if (fireFromEntity != null) {
+                                        fireFromEntity.fire(tower, soldier);
+                                    }
                                     tower.attack(soldier);
                                 }
                             }, 200, TimeUnit.MILLISECONDS);
@@ -100,6 +108,10 @@ public class BattleState extends CommonGameState {
                 }
             }
         }).start();
+    }
+
+    public void setFireFromEntity(FireFromEntity<Tower, Soldier> fire) {
+        fireFromEntity = fire;
     }
 
     @Override

@@ -50,6 +50,11 @@ public class FireAnimated implements ApplicationListener {
         if (currentPosition.dst(positionDest) - OFFSET <= 0f) {
             return;
         }
+
+        if (sprite == null) {
+            create();
+        }
+
         System.out.println("render fire at position " + currentPosition.toString());
         System.out.println("destination " + positionDest);
 
@@ -63,30 +68,29 @@ public class FireAnimated implements ApplicationListener {
 
     protected void changeCurrentPosition() {
         float initDot = currentPosition.dst(positionDest);
-        Vector2 newPosition = currentPosition.cpy();
         // try to move to the right
-        moveCurrent(new Pair<>(MOVE_BY, 0f), initDot, newPosition);
+        moveCurrent(new Pair<>(MOVE_BY, 0f), initDot, currentPosition);
         // try to move to the bottom
-        moveCurrent(new Pair<>(0f, MOVE_BY), initDot, newPosition);
+        moveCurrent(new Pair<>(0f, MOVE_BY), initDot, currentPosition);
 
         // try to move to the left
-        moveCurrent(new Pair<>(-MOVE_BY, 0f), initDot, newPosition);
+        moveCurrent(new Pair<>(-MOVE_BY, 0f), initDot, currentPosition);
         // try to move to the top
-        moveCurrent(new Pair<>(0f, -MOVE_BY), initDot, newPosition);
+        moveCurrent(new Pair<>(0f, -MOVE_BY), initDot, currentPosition);
 
         // try to move to the right-bottom
-        moveCurrent(new Pair<>(MOVE_BY, MOVE_BY), initDot, newPosition);
+        moveCurrent(new Pair<>(MOVE_BY, MOVE_BY), initDot, currentPosition);
         // try to move to the left-top
-        moveCurrent(new Pair<>(-MOVE_BY, -MOVE_BY), initDot, newPosition);
+        moveCurrent(new Pair<>(-MOVE_BY, -MOVE_BY), initDot, currentPosition);
 
         // try to move to the right-top
-        moveCurrent(new Pair<>(MOVE_BY, -MOVE_BY), initDot, newPosition);
+        moveCurrent(new Pair<>(MOVE_BY, -MOVE_BY), initDot, currentPosition);
         // try to move to the left-bottom
-        moveCurrent(new Pair<>(-MOVE_BY, MOVE_BY), initDot, newPosition);
+        moveCurrent(new Pair<>(-MOVE_BY, MOVE_BY), initDot, currentPosition);
     }
 
-    protected void moveCurrent(Pair<Float, Float> moveBy, float initDistance, Vector2 newPosition) {
-        newPosition.set(newPosition.x + moveBy.getValue0(), newPosition.y + moveBy.getValue1());
+    protected void moveCurrent(Pair<Float, Float> moveBy, float initDistance, Vector2 oldPosition) {
+        Vector2 newPosition = new Vector2(oldPosition.x + moveBy.getValue0(), oldPosition.y + moveBy.getValue1());
         if (initDistance > newPosition.dst(positionDest)) {
             currentPosition.set(newPosition);
         }

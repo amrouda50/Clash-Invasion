@@ -128,7 +128,7 @@ public class WorldCell {
     }
 
     public Entity getOccupier() {
-        if (occupier.size() == 0) {
+        if (occupier == null || occupier.size() == 0) {
             return null;
         }
         return occupier.get(0);
@@ -144,7 +144,11 @@ public class WorldCell {
 
     public void setOccupier(Entity occupier, boolean multiple) {
         if (multiple) {
-            this.occupier.add(occupier);
+            if (this.occupier.size() > 0 && this.occupier.get(0) == null) {
+                this.occupier.set(0, occupier);
+            } else {
+                this.occupier.add(occupier);
+            }
         } else if (this.occupier.size() > 0) {
             this.occupier.set(0, occupier);
         } else {
