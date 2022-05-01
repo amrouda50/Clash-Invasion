@@ -266,7 +266,7 @@ public class Player implements Winnable {
         );
         Pair<Integer, Integer> posDst = new Pair<>(
                 opponent.getCastle().getPosition().getValue0() + index + 1 ,
-                opponent.getCastle().getPosition().getValue1() + index + 1
+                opponent.getCastle().getPosition().getValue1() + 1
         );
         int positionSrc = game.getWorldMap().transformMapPositionToIndex(posSrc);
         int positionDest = game.getWorldMap().transformMapPositionToIndex(posDst);
