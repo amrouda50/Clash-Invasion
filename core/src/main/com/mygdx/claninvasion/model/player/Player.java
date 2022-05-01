@@ -17,6 +17,7 @@ import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock.ReadLock;
 
 import static com.mygdx.claninvasion.model.level.Levels.createMiningLevelIterator;
 import static com.mygdx.claninvasion.model.level.Levels.createTowerLevelIterator;
@@ -104,8 +105,6 @@ public class Player implements Winnable {
 
     public void changeCastle(Castle castle) {
         this.castle = castle;
-        System.out.println("Castle's health in the beginning is " + castle.getHealth());
-        System.out.println("In beginning castle level is " + castle.getLevel().getLevelName());
     }
 
     public MiningFarm createNewMining(WorldCell cell) {
@@ -298,9 +297,9 @@ public class Player implements Winnable {
 
     public int moveSoldier(Soldier soldier, int positionSrc, int positionDest, int callTimes) {
         // lock reading of thread vulnerable data
-        sync.readLock().lock();
+        //sync.readLock().lock();
         game.getWorldMap().setGraph();
-        sync.readLock().unlock();
+        //sync.readLock().unlock();
         // unlock reading of thread vulnerable data
 
         // Shortest path algorithm
@@ -325,9 +324,9 @@ public class Player implements Winnable {
             }
             return positionSrc;
         } else {
-            sync.writeLock().lock();
+            //sync.writeLock().lock();
             game.getWorldMap().mutate(paths.get(paths.size() - 1), paths.get(paths.size() - 2));
-            sync.writeLock().unlock();
+            //sync.writeLock().unlock();
 
             Pair<Integer, Integer> newPosition =
                     game.getWorldMap().transformMapIndexToPosition(paths.get(paths.size() - 2));
@@ -451,10 +450,13 @@ public class Player implements Winnable {
         if (gameTowerLevelIterator.hasNext() ) {
                 Tower.gameTowerLevel = gameTowerLevelIterator.next();
                 MiningFarm.gameMiningLevel = miningLevelIterator.next();
+                System.out.println("The creation time of mining should be " + miningLevelIterator.current().getCreationTime());
                 castle.nextLevel();
                 Tower.changeLevel();
                 MiningFarm.changeLevel();
-                //System.out.println("Value of creation time " + Tower.creationTime);
+                //System.out.println("Changing level and now Mining creation time is " + MiningFarm.creationTime );
+
+                System.out.println("Value of creation time for Towers: " + Tower.creationTime);
                 //System.out.println("Value of creation time of Mine " + MiningFarm.creationTime);
                 /*System.out.println("Value of creation cost " + Tower.COST);
                 System.out.println("Health of tower is " + Tower.maxHealth);

@@ -4,6 +4,7 @@ import com.mygdx.claninvasion.model.level.*;
 import org.javatuples.Pair;
 
 import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 
@@ -25,18 +26,18 @@ public class MiningFarm extends ArtificialEntity implements Runnable, Mineable {
         coins = queue;
         level = Levels.createMiningLevelIterator();
 
+        changeLevel();
         try {
             createMiningFarm.get();
         } catch (InterruptedException | ExecutionException e) {
             System.out.println("Mine Farm creation did not work");
         }
+
     }
 
     public static void changeLevel() {
         MiningFarm.creationTime = gameMiningLevel.getCreationTime();
-        System.out.println("The value of creation time is " + gameMiningLevel.getCreationTime());
-        //Tower.COST = gameTowerLevel.getCreationCost();
-        //Tower.maxHealth = gameTowerLevel.getMaxHealth();
+        System.out.println("After change of level next creation time is " + MiningFarm.creationTime);
     }
 
     @Override
@@ -48,7 +49,8 @@ public class MiningFarm extends ArtificialEntity implements Runnable, Mineable {
         @Override
         public void run() {
             try {
-                MILLISECONDS.sleep(gameMiningLevel.getCreationTime());
+                System.out.println("It will sleep now for " + MiningFarm.creationTime);
+                MILLISECONDS.sleep(creationTime);
             } catch (InterruptedException e) {
                 throw new IllegalStateException(e);
             }

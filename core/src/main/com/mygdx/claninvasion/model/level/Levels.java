@@ -36,8 +36,8 @@ public class Levels {
     private static final ArrayList<GameMiningLevel> miningLevels = new ArrayList<>(
             Arrays.asList(
                     new GameMiningLevel(level0, 10),
-                    new GameMiningLevel(level0, 14),
-                    new GameMiningLevel(level0, 16)
+                    new GameMiningLevel(level1, 14),
+                    new GameMiningLevel(level2, 16)
             )
     );
 
