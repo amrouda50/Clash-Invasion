@@ -30,7 +30,7 @@ public class Tower extends ArtificialEntity implements Defensible {
         health = new AtomicInteger();
         health.set(currentHealth);
         super.setHealth(health);
-        healGoalPoint = getPercentage().intValue();
+        //healGoalPoint = getPercentage().intValue();
 
         changeLevel();
         try {
@@ -44,7 +44,6 @@ public class Tower extends ArtificialEntity implements Defensible {
         Tower.creationTime = gameTowerLevel.getCreationTime();
         Tower.COST = gameTowerLevel.getCreationCost();
         Tower.maxHealth = gameTowerLevel.getMaxHealth();
-        //(int) (( (float) gameTowerLevel.getHealGoalPoint()/ 100.0 ) * (float) Tower.maxHealth);
     }
 
     Tower(LevelIterator<Level> levelIterator) {

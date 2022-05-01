@@ -13,13 +13,14 @@ import static java.util.concurrent.TimeUnit.MILLISECONDS;
  * @version 0.01
  */
 public class MiningFarm extends ArtificialEntity implements Runnable, Mineable {
-    public static int COST = 300;
+    public static int COST = 250;
     private BlockingQueue<Integer> coins;
     private final int healthDecreaseRate = 10;
     private static final int HP_OFFSET_X = 20;
 
     public static int creationTime;
     public static GameMiningLevel gameMiningLevel;
+    private AtomicInteger currentHealth;
 
     public MiningFarm(EntitySymbol entitySymbol, Pair<Integer, Integer> position, BlockingQueue<Integer> queue) {
         super(entitySymbol, position);
@@ -27,6 +28,10 @@ public class MiningFarm extends ArtificialEntity implements Runnable, Mineable {
         level = Levels.createMiningLevelIterator();
 
         changeLevel();
+        /*currentHealth.set(gameMiningLevel.getMaxHealth());
+        super.setHealth(currentHealth);
+        System.out.println("Max Health of this mine is " + currentHealth);*/
+
         try {
             createMiningFarm.get();
         } catch (InterruptedException | ExecutionException e) {
@@ -37,7 +42,7 @@ public class MiningFarm extends ArtificialEntity implements Runnable, Mineable {
 
     public static void changeLevel() {
         MiningFarm.creationTime = gameMiningLevel.getCreationTime();
-        System.out.println("After change of level next creation time is " + MiningFarm.creationTime);
+        MiningFarm.COST = (gameMiningLevel.getCreationCost() + 80);
     }
 
     @Override
@@ -49,7 +54,6 @@ public class MiningFarm extends ArtificialEntity implements Runnable, Mineable {
         @Override
         public void run() {
             try {
-                System.out.println("It will sleep now for " + MiningFarm.creationTime);
                 MILLISECONDS.sleep(creationTime);
             } catch (InterruptedException e) {
                 throw new IllegalStateException(e);

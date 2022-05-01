@@ -450,16 +450,12 @@ public class Player implements Winnable {
         if (gameTowerLevelIterator.hasNext() ) {
                 Tower.gameTowerLevel = gameTowerLevelIterator.next();
                 MiningFarm.gameMiningLevel = miningLevelIterator.next();
-                System.out.println("The creation time of mining should be " + miningLevelIterator.current().getCreationTime());
                 castle.nextLevel();
                 Tower.changeLevel();
                 MiningFarm.changeLevel();
-                //System.out.println("Changing level and now Mining creation time is " + MiningFarm.creationTime );
 
-                System.out.println("Value of creation time for Towers: " + Tower.creationTime);
-                //System.out.println("Value of creation time of Mine " + MiningFarm.creationTime);
-                /*System.out.println("Value of creation cost " + Tower.COST);
-                System.out.println("Health of tower is " + Tower.maxHealth);
+                System.out.println("Value of creation cost " + MiningFarm.COST);
+                /*System.out.println("Health of tower is " + Tower.maxHealth);
                 System.out.println("After update the level of tower is " + gameTowerLevelIterator.getLevelName());*/
         } } catch (Exception e) {
                 System.out.println("There are no new levels");
