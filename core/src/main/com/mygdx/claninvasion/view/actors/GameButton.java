@@ -1,5 +1,6 @@
 package com.mygdx.claninvasion.view.actors;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -18,23 +19,28 @@ public class GameButton {
     private final BitmapFont font;
     private Skin skin;
     private final TextButton button;
+    private String drawableName = "Asset 4";
 
     /**
      * @param skin - resource for ui widgets
      * @see Skin
      * @param text - button text
      */
-    public GameButton(Skin skin, String text, BitmapFont font) {
+    public GameButton(Skin skin, String text, BitmapFont font, String drawableName) {
         this.font = font;
         buttonStyle = new TextButton.TextButtonStyle();
         this.skin = skin;
+        if (drawableName != null) {
+            this.drawableName = drawableName;
+        }
         buttonStyleInit();
         button = new TextButton(text, buttonStyle);
+        button.getStyle().fontColor = Color.WHITE;
     }
 
     private void buttonStyleInit() {
-        buttonStyle.up = skin.getDrawable("default-window");
-        buttonStyle.down = skin.getDrawable("default-window");
+        buttonStyle.up = skin.getDrawable(drawableName);
+        buttonStyle.down = skin.getDrawable(drawableName);
         buttonStyle.pressedOffsetX = 1;
         buttonStyle.pressedOffsetY = -1;
         buttonStyle.font = font;

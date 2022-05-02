@@ -9,11 +9,10 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.utils.viewport.FillViewport;
+import com.badlogic.gdx.utils.viewport.*;
 import com.mygdx.claninvasion.ClanInvasion;
 import com.mygdx.claninvasion.model.Globals;
 import com.mygdx.claninvasion.view.actors.GameButton;
-
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.*;
 
 /**
@@ -27,10 +26,11 @@ public class SplashScreen implements GamePage, UiUpdatable {
     private final ClanInvasion app;
     private Stage stage;
     private Image splash;
-    private Image background;
     private GameButton startGameButton;
     private GameButton endGameButton;
     private final OrthographicCamera camera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+    private Viewport viewport;
+    private boolean firstResize = true;
 
     /**
      * @param app - app instance
@@ -40,36 +40,46 @@ public class SplashScreen implements GamePage, UiUpdatable {
     }
 
     private void initSplash() {
-        stage = new Stage(new FillViewport(Globals.V_WIDTH, Globals.V_HEIGHT, camera));
+        viewport = new StretchViewport(Globals.V_WIDTH, Globals.V_HEIGHT, camera);
+        stage = new Stage(viewport);
         Gdx.input.setInputProcessor(stage);
-        Texture splashTexture = new Texture(Gdx.files.internal("splash/clashmenulogo-WhiteBackground.png"));
+        Texture splashTexture = new Texture(Gdx.files.internal("splash/clashmenulogo.png"));
         splash = new Image(splashTexture);
+        splash.setScale(1, 1.2f);
 
         Texture backgroundTexture = new Texture(Gdx.files.internal("splash/background.jpg"));
-        background = new Image(backgroundTexture);
+        Image background = new Image(backgroundTexture);
         background.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
-        splash.setScale(2f);
-        splash.setPosition((stage.getWidth() / 1000) - 170, (stage.getHeight() / 1000) - 100);
         stage.addActor(background);
-        stage.addActor(splash);
         addButtons();
         addActionListeners();
-
     }
 
     private void addButtons() {
-        TextureAtlas atlas = new TextureAtlas("skin/skin/uiskin.atlas");
+        TextureAtlas atlas = new TextureAtlas("skin/new-skin/skin.atlas");
         Skin skin = new Skin(atlas);
         Table table = new Table(skin);
-        table.setBounds(-85, -50, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        table.background(skin.getDrawable("Asset 1"));
+        float tableWidthRation = 0.625f;
+        float tableHeightRation = 0.73f;
+        table.setBounds(
+                Gdx.graphics.getWidth() / 6f,
+                Gdx.graphics.getHeight() / 6f,
+                tableWidthRation * Gdx.graphics.getWidth(),
+                tableHeightRation * Gdx.graphics.getHeight()
+        );
 
-        startGameButton = new GameButton(skin, "Start Game", app.getFont());
-        endGameButton = new GameButton(skin, "End Game", app.getFont());
-        startGameButton.getButton().pad(2);
-        endGameButton.getButton().pad(2);
-        table.add(startGameButton.getButton());
-        table.add(endGameButton.getButton());
+        table.add(splash).padTop(50);
+        table.row();
+
+        startGameButton = new GameButton(skin, "Start Game", app.getFont(), null);
+        endGameButton = new GameButton(skin, "End Game", app.getFont(), "Asset 5");
+        startGameButton.getButton().pad(1);
+        endGameButton.getButton().pad(1);
+        table.add(startGameButton.getButton()).padTop(-100);
+        table.row();
+        table.add(endGameButton.getButton()).padTop(-20);
         stage.addActor(table);
     }
 
@@ -120,6 +130,12 @@ public class SplashScreen implements GamePage, UiUpdatable {
      */
     @Override
     public void resize(int width, int height) {
+        camera.setToOrtho(false, width, height);
+        if (firstResize) {
+            viewport.setWorldSize(width, height);
+            firstResize = false;
+        }
+        stage.getViewport().update(width, height, true);
     }
 
     /**

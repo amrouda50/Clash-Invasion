@@ -30,9 +30,8 @@ public final class MainGamePageUI implements ApplicationListener {
     private Texture backgroundTexture = new Texture("background/background.jpg");
     private SelectBox<String> playerOneDropdown;
     private SelectBox<String> playerTwoDropdown;
-    private final TextureAtlas atlas = new TextureAtlas("skin/skin/uiskin.atlas");
+    private final TextureAtlas atlas = new TextureAtlas("skin/new-skin/skin.atlas");
     private final Skin atlasSkin = new Skin(atlas);
-    private final Skin jsonSkin = new Skin(Gdx.files.internal("skin/skin/uiskin.json"));
     private final OrthographicCamera camera;
     private ShapeRenderer shapeRenderer;
     private Label timeLabel;
@@ -58,14 +57,27 @@ public final class MainGamePageUI implements ApplicationListener {
 
     private void init() {
         uiStage = new Stage(new StretchViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), camera));
-        timeLabel = new Label(getTimerText(), jsonSkin);
-        turnLabel = new Label(getPlayerTopBar() , jsonSkin);
-        phaseLabel = new Label(getPlayerPhase() , jsonSkin);
+        TextureAtlas atlas = new TextureAtlas("skin/skin/uiskin.atlas");
+        Skin defaultSkin = new Skin(atlas);
+        Label.LabelStyle labelStyle = new Label.LabelStyle();
+        SelectBox.SelectBoxStyle style = new SelectBox.SelectBoxStyle();
+        style.background = atlasSkin.getDrawable("Asset 2");
+        style.backgroundOpen = atlasSkin.getDrawable("Asset 2");
+        style.listStyle = new com.badlogic.gdx.scenes.scene2d.ui.List.ListStyle();
+        style.listStyle.background = atlasSkin.getDrawable("Asset 8");
+        style.listStyle.selection = defaultSkin.getDrawable("selection");
+        style.scrollStyle = new ScrollPane.ScrollPaneStyle();
+        style.listStyle.font = app.getFont();
+        style.font = app.getFont();
+        labelStyle.font = app.getFont();
+        timeLabel = new Label(getTimerText(), labelStyle);
+        turnLabel = new Label(getPlayerTopBar() ,labelStyle);
+        phaseLabel = new Label(getPlayerPhase(), labelStyle);
         shapeRenderer = new ShapeRenderer();
-        playerOneDropdown = new SelectBox<>(jsonSkin);
-        playerTwoDropdown = new SelectBox<>(jsonSkin);
-        tableOne = new Table(atlasSkin);
-        tableTwo = new Table(atlasSkin);
+        playerOneDropdown = new SelectBox<>(style);
+        playerTwoDropdown = new SelectBox<>(style);
+        tableOne = new Table();
+        tableTwo = new Table();
         chosenSymbol = null;
     }
 
@@ -126,7 +138,9 @@ public final class MainGamePageUI implements ApplicationListener {
         initDropDown(box, dropdownItems);
         List<Label> labels = new ArrayList<>();
         for (Pair<String, Color> data : playerData) {
-            Label label = new Label(data.getValue0(), jsonSkin);
+            Label.LabelStyle labelStyle = new Label.LabelStyle();
+            labelStyle.font = app.getFont();
+            Label label = new Label(data.getValue0(), labelStyle);
             label.setColor(data.getValue1());
             labels.add(label);
         }

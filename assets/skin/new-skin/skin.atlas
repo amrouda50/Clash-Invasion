@@ -1,0 +1,104 @@
+
+skin.png
+size: 1024, 1024
+format: RGBA8888
+filter: Linear, Linear
+repeat: none
+FirstJob-X8rP
+  rotate: false
+  xy: 509, 984
+  size: 503, 26
+  orig: 503, 26
+  offset: 0, 0
+  index: -1
+ORIOND
+  rotate: false
+  xy: 1, 946
+  size: 506, 64
+  orig: 506, 64
+  offset: 0, 0
+  index: -1
+ORIOND(1)
+  rotate: false
+  xy: 1, 880
+  size: 506, 64
+  orig: 506, 64
+  offset: 0, 0
+  index: -1
+Asset 1
+  rotate: false
+  xy: 1, 570
+  size: 299, 241
+  orig: 299, 241
+  offset: 0, 0
+  index: -1
+Asset 10
+  rotate: false
+  xy: 509, 925
+  size: 316, 57
+  orig: 316, 57
+  offset: 0, 0
+  index: -1
+Asset 2
+  rotate: false
+  xy: 827, 939
+  size: 130, 43
+  orig: 130, 43
+  offset: 0, 0
+  index: -1
+ButtonOrange
+  rotate: false
+  xy: 827, 939
+  size: 130, 43
+  orig: 130, 43
+  offset: 0, 0
+  index: -1
+Asset 3
+  rotate: false
+  xy: 302, 758
+  size: 130, 44
+  orig: 130, 44
+  offset: 0, 0
+  index: -1
+Asset 4
+  rotate: false
+  xy: 1, 6
+  size: 161, 75
+  orig: 161, 75
+  offset: 0, 0
+  index: -1
+Asset 5
+  rotate: false
+  xy: 322, 804
+  size: 161, 74
+  orig: 161, 74
+  offset: 0, 0
+  index: -1
+Asset 6
+  rotate: false
+  xy: 509, 887
+  size: 257, 36
+  orig: 257, 36
+  offset: 0, 0
+  index: -1
+Asset 7
+  rotate: false
+  xy: 1, 83
+  size: 197, 141
+  orig: 197, 141
+  offset: 0, 0
+  index: -1
+Asset 8
+  rotate: false
+  xy: 1, 226
+  size: 297, 342
+  orig: 297, 342
+  offset: 0, 0
+  index: -1
+Asset 9
+  rotate: false
+  xy: 1, 813
+  size: 319, 65
+  orig: 319, 65
+  offset: 0, 0
+  index: -1

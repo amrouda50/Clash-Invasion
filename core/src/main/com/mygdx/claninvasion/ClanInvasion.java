@@ -51,9 +51,7 @@ public class ClanInvasion extends Game {
      */
     @Override
     public void create() {
-        generator = new FreeTypeFontGenerator(Gdx.files.internal("skin/skin/minecraft.ttf"));
-        parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
-        font = generator.generateFont(parameter);
+        font = new BitmapFont(Gdx.files.internal("skin/new-skin/ORIOND(1).fnt"));
 
         camera = new OrthographicCamera();
         camera.setToOrtho(false, Globals.V_WIDTH, Globals.V_HEIGHT);

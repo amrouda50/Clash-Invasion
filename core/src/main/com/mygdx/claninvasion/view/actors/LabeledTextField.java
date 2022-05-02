@@ -1,5 +1,6 @@
 package com.mygdx.claninvasion.view.actors;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -45,8 +46,9 @@ public class LabeledTextField {
 
 
     private void textFieldStyleInit() {
-        fieldStyle.cursor = skin.getDrawable("cursor");
-        fieldStyle.background = skin.getDrawable("textfield");
+        Skin localSkin = new Skin(Gdx.files.internal("skin/skin/uiskin.json"));
+        fieldStyle.cursor = localSkin.getDrawable("cursor");
+        fieldStyle.background = skin.getDrawable("Asset 6");
         fieldStyle.font = font;
         fieldStyle.fontColor = new Color(255, 255, 255, 1);
     }
@@ -72,9 +74,9 @@ public class LabeledTextField {
      * @see Table
      */
     public void applyToTheTable(Table table) {
-        table.add(getLabel()).pad(2);
+        table.add(getLabel()).left().padLeft(20);
         table.row();
-        table.add(getTextField());
+        table.add(getTextField()).growX().padLeft(20).padRight(20).padBottom(20);
     }
 
     /**
