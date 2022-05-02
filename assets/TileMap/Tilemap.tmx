@@ -14,6 +14,9 @@
  <tileset firstgid="22" source="../Tilesets/Buildings/goldmine.tsx"/>
  <tileset firstgid="23" source="../Tilesets/Buildings/blue-castel.tsx"/>
  <tileset firstgid="24" source="../Tilesets/Buildings/red-Castel.tsx"/>
+ <tileset firstgid="25" source="../Tilesets/Buildings/splashtower.tsx"/>
+ <tileset firstgid="26" source="../Tilesets/BuildingBlocks/bomb.tsx"/>
+ <tileset firstgid="27" source="../Tilesets/BuildingBlocks/bomb.tsx"/>
  <layer id="1" name="Layer1" width="32" height="32" offsetx="2" offsety="13.3333">
   <data encoding="csv">
 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
