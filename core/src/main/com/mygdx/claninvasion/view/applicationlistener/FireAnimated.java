@@ -10,7 +10,8 @@ import com.badlogic.gdx.math.Vector2;
 import org.javatuples.Pair;
 
 public class FireAnimated implements ApplicationListener {
-    private static final float MOVE_BY = 1f;
+
+    private static final float MOVE_BY = 2f;
     private static final float OFFSET = 2;
     private SpriteBatch batch;
     private Texture texture;
@@ -38,7 +39,7 @@ public class FireAnimated implements ApplicationListener {
     }
 
     public boolean isDone() {
-        return currentPosition.equals(positionDest);
+        return  currentPosition.dst(positionDest) - OFFSET <= 0f;
     }
 
     public void setView(OrthographicCamera camera) {
@@ -64,6 +65,7 @@ public class FireAnimated implements ApplicationListener {
         batch.end();
 
         changeCurrentPosition();
+
     }
 
     protected void changeCurrentPosition() {

@@ -8,6 +8,7 @@ import java.util.concurrent.CompletableFuture;
 
 public class Tower extends ArtificialEntity implements Defensible {
     public static int COST = 200;
+    public Soldier targetedSolider = null;
     public Tower(EntitySymbol entitySymbol, Pair<Integer, Integer> position) {
         super(entitySymbol, position);
 
