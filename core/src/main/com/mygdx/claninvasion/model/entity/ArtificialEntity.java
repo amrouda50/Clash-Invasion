@@ -24,6 +24,7 @@ public abstract class ArtificialEntity extends Entity {
     protected AtomicInteger reactionTime;
     protected Direction direction;
     private UUID id;
+    
 
     public void setHealth(int newHealth) {
         this.health.set(newHealth);
@@ -81,7 +82,7 @@ public abstract class ArtificialEntity extends Entity {
         }
 
          Thread thread = new Thread(() -> {
-            while (getPercentage().get() < level.current().getHealGoalPoint()) {
+            while (getPercentage().get() < Tower.gameTowerLevel.getHealGoalPoint()) {
                 try {
                     setIncreaseHealth();
                     Thread.sleep(level.current().getReactionTime());

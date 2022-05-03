@@ -25,7 +25,6 @@ public class MiningFarm extends ArtificialEntity implements Runnable, Mineable {
     public MiningFarm(EntitySymbol entitySymbol, Pair<Integer, Integer> position, BlockingQueue<Integer> queue) {
         super(entitySymbol, position);
         coins = queue;
-        level = Levels.createMiningLevelIterator();
 
         changeLevel();
 

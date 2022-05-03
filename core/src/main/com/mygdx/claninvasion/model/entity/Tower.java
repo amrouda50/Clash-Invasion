@@ -121,7 +121,7 @@ public class Tower extends ArtificialEntity implements Defensible {
             return;
         }
         artificialEntity.setDecreaseHealth(85);
-        heal(); // Not tested yet
+        heal(); // Not tested yet. Everytime the attack is successful, the tower's health is increased
         System.out.println("Decreasing.. Current is" + artificialEntity.getHealth() + ", Entity " + artificialEntity);
     }
 }
