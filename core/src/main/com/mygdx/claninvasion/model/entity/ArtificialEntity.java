@@ -25,6 +25,10 @@ public abstract class ArtificialEntity extends Entity {
     protected Direction direction;
     private UUID id;
 
+    public void setHealth(int newHealth) {
+        this.health.set(newHealth);
+    }
+
     public void setHealth(AtomicInteger health) {
         this.health = health;
     }

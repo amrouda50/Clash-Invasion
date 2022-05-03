@@ -20,7 +20,7 @@ public class MiningFarm extends ArtificialEntity implements Runnable, Mineable {
 
     public static int creationTime;
     public static GameMiningLevel gameMiningLevel;
-    private AtomicInteger currentHealth;
+    private int currentHealth;
 
     public MiningFarm(EntitySymbol entitySymbol, Pair<Integer, Integer> position, BlockingQueue<Integer> queue) {
         super(entitySymbol, position);
@@ -28,9 +28,10 @@ public class MiningFarm extends ArtificialEntity implements Runnable, Mineable {
         level = Levels.createMiningLevelIterator();
 
         changeLevel();
-        /*currentHealth.set(gameMiningLevel.getMaxHealth());
+
+        currentHealth = gameMiningLevel.getMaxHealth();
         super.setHealth(currentHealth);
-        System.out.println("Max Health of this mine is " + currentHealth);*/
+        System.out.println("Max Health of this mine is " + this.currentHealth);
 
         try {
             createMiningFarm.get();
@@ -85,11 +86,12 @@ public class MiningFarm extends ArtificialEntity implements Runnable, Mineable {
             }
 
             try {
-                int reaction = level.current().getReactionTime();
+                int reaction = gameMiningLevel.getReactionTime();
                 int boundedRandomValue = ThreadLocalRandom.current().nextInt(reaction / 2, reaction);
                 int gold = ((GameMiningLevelIterator)level).current().getGoldBonus();
                 setDecreaseHealth(healthDecreaseRate);
 
+                System.out.println("The reaction time is " + boundedRandomValue);
                 Thread.sleep(boundedRandomValue);
                 coins.put(gold);
             } catch (InterruptedException e) {
