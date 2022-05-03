@@ -24,7 +24,7 @@ public abstract class ArtificialEntity extends Entity {
     protected AtomicInteger reactionTime;
     protected Direction direction;
     private UUID id;
-    
+
 
     public void setHealth(int newHealth) {
         this.health.set(newHealth);
@@ -128,8 +128,8 @@ public abstract class ArtificialEntity extends Entity {
     }
 
     protected void setIncreaseHealth() {
-        float percent = level.current().getHealHealthIncrease() / (float)health.get();
-        health.set(level.current().getHealHealthIncrease() + health.get());
+        float percent = level.current().getHealGoalPoint() / (float)health.get();
+        health.set(level.current().getHealGoalPoint() + health.get());
         hpBar.addStamina(percent);
     }
 
@@ -137,6 +137,10 @@ public abstract class ArtificialEntity extends Entity {
         return health.get() < 0
                 ? 0 :
                 (health.get() / (float) initHealth) * 100;
+    }
+
+    public int getHealthPercentage(int healGoalPoint) {
+        return (int) (((float) Tower.gameTowerLevel.getHealGoalPoint() / (float) 100.0) * (float)getHealth());
     }
 
     public AtomicLong getPercentage() {
@@ -176,4 +180,5 @@ public abstract class ArtificialEntity extends Entity {
     public void setReactionTime(AtomicInteger reactionTime) {
         this.reactionTime = reactionTime;
     }
+
 }
