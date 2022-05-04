@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.mygdx.claninvasion.model.GameModel;
 import com.mygdx.claninvasion.model.entity.*;
 import com.mygdx.claninvasion.model.level.GameMiningLevelIterator;
+import com.mygdx.claninvasion.model.level.GameSoldierLevelIterator;
 import com.mygdx.claninvasion.model.level.GameTowerLevelIterator;
 import com.mygdx.claninvasion.model.map.WorldCell;
 import com.mygdx.claninvasion.model.map.WorldMap;
@@ -19,8 +20,7 @@ import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock.ReadLock;
 
-import static com.mygdx.claninvasion.model.level.Levels.createMiningLevelIterator;
-import static com.mygdx.claninvasion.model.level.Levels.createTowerLevelIterator;
+import static com.mygdx.claninvasion.model.level.Levels.*;
 
 /**
  * This class is responsible for handling
@@ -99,6 +99,7 @@ public class Player implements Winnable {
 
     public static GameTowerLevelIterator gameTowerLevelIterator;
     public static GameMiningLevelIterator miningLevelIterator;
+    public static GameSoldierLevelIterator soldierLevelIterator;
 
     public Player(GameModel game, Color c) {
         this.color = c;
@@ -117,8 +118,12 @@ public class Player implements Winnable {
         gameTowerLevelIterator = createTowerLevelIterator();
         Tower.gameTowerLevel = gameTowerLevelIterator.next();
 
+
         miningLevelIterator = createMiningLevelIterator();
         MiningFarm.gameMiningLevel = miningLevelIterator.next();
+
+        soldierLevelIterator = createSoldierLevelIterator();
+        Soldier.gameSoldierLevel = soldierLevelIterator.next();
     }
 
     public void changeCastle(Castle castle) {
@@ -466,11 +471,13 @@ public class Player implements Winnable {
         if (gameTowerLevelIterator.hasNext() ) {
                 Tower.gameTowerLevel = gameTowerLevelIterator.next();
                 MiningFarm.gameMiningLevel = miningLevelIterator.next();
+                Soldier.gameSoldierLevel = soldierLevelIterator.next();
                 castle.nextLevel();
                 Tower.changeLevel();
                 MiningFarm.changeLevel();
+                Soldier.changeLevel();
 
-                System.out.println("Value of creation cost " + MiningFarm.COST);
+                //System.out.println("Value of creation cost " + MiningFarm.COST);
                 /*System.out.println("Health of tower is " + Tower.maxHealth);
                 System.out.println("After update the level of tower is " + gameTowerLevelIterator.getLevelName());*/
         } } catch (Exception e) {

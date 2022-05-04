@@ -2,6 +2,7 @@ package com.mygdx.claninvasion.model.entity;
 
 import com.mygdx.claninvasion.model.helpers.Direction;
 import com.mygdx.claninvasion.model.level.GameSoldierLevelIterator;
+import com.mygdx.claninvasion.model.level.GameTowerLevel;
 import com.mygdx.claninvasion.model.level.Levels;
 import com.mygdx.claninvasion.model.map.WorldCell;
 import com.mygdx.claninvasion.view.actors.HealthBar;
@@ -9,6 +10,8 @@ import org.javatuples.Pair;
 
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicBoolean;
+
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
 
 /**
  * Soldier class implementation
@@ -19,9 +22,24 @@ public abstract class Soldier extends ArtificialEntity {
     private static final int STEP = 1;
     private final AtomicBoolean hasTrained = new AtomicBoolean(false);
 
+    public static int creationTime;
+    public static GameTowerLevel gameSoldierLevel;
+
     public Soldier(EntitySymbol entitySymbol, Pair<Integer, Integer> position) {
         super(entitySymbol, position);
         level = Levels.createSoldierLevelIterator();
+
+
+        changeLevel();
+        try {
+            createSoldier.get();
+        } catch (InterruptedException | ExecutionException e) {
+            System.out.println("Soldier creation did not work");
+        }
+    }
+
+    public static void changeLevel() {
+        Soldier.creationTime = gameSoldierLevel.getCreationTime();
     }
 
     /**
@@ -37,6 +55,18 @@ public abstract class Soldier extends ArtificialEntity {
             castle.damage(ATTACK + level.current().getAttackIncrease());
         }
     }
+
+    CompletableFuture<Void> createSoldier = CompletableFuture.runAsync(new Runnable() {
+        @Override
+        public void run() {
+            try {
+                MILLISECONDS.sleep(creationTime);
+            } catch (InterruptedException e) {
+                throw new IllegalStateException(e);
+            }
+            System.out.println("The soldier is trained successfully after creation time of " + Soldier.creationTime);
+        }
+    });
 
     /**
      * Make a step inside map
