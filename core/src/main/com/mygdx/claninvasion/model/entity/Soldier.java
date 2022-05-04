@@ -1,6 +1,7 @@
 package com.mygdx.claninvasion.model.entity;
 
 import com.mygdx.claninvasion.model.helpers.Direction;
+import com.mygdx.claninvasion.model.level.GameSoldierLevel;
 import com.mygdx.claninvasion.model.level.GameSoldierLevelIterator;
 import com.mygdx.claninvasion.model.level.GameTowerLevel;
 import com.mygdx.claninvasion.model.level.Levels;
@@ -24,11 +25,14 @@ public abstract class Soldier extends ArtificialEntity {
 
     public static int creationTime;
     public static GameTowerLevel gameSoldierLevel;
+    public static int maxHealth;
 
     public Soldier(EntitySymbol entitySymbol, Pair<Integer, Integer> position) {
         super(entitySymbol, position);
         level = Levels.createSoldierLevelIterator();
 
+
+        setHealth(maxHealth);
 
         changeLevel();
         try {
@@ -40,7 +44,23 @@ public abstract class Soldier extends ArtificialEntity {
 
     public static void changeLevel() {
         Soldier.creationTime = gameSoldierLevel.getCreationTime();
+        Barbarian.COST = gameSoldierLevel.getCreationCost();
+        Dragon.COST = gameSoldierLevel.getCreationCost();
+        Soldier.maxHealth = gameSoldierLevel.getMaxHealth();
     }
+
+    CompletableFuture<Void> reactionTime = CompletableFuture.runAsync(new Runnable() {
+        @Override
+        public void run() {
+            try {
+                MILLISECONDS.sleep(getReactionTime().intValue());
+            } catch (InterruptedException e) {
+                throw new IllegalStateException(e);
+            }
+            System.out.println("The soldier is preparing to attack");
+        }
+    });
+
 
     /**
      * Attack castle method implementation
@@ -48,6 +68,12 @@ public abstract class Soldier extends ArtificialEntity {
      * @see Castle
      */
     public void attackCastle(Castle castle) {
+        try {
+            reactionTime.get();
+        } catch (InterruptedException | ExecutionException e) {
+            System.out.println("soldier reaction time did not work as expected");
+        }
+
         float distance = getVec2Position().dst(castle.getVec2Position().x, castle.getVec2Position().y);
 
         GameSoldierLevelIterator level = (GameSoldierLevelIterator) this.level;

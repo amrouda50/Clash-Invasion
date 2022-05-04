@@ -28,8 +28,7 @@ public class Tower extends ArtificialEntity implements Defensible {
 
         currentHealth = maxHealth + gameTowerLevel.getHitsPointBonus();
         health = new AtomicInteger();
-        health.set(currentHealth);
-        super.setHealth(health);
+        super.setHealth(maxHealth);
 
         System.out.println("Just checking this method " + getPercentage().get());
 
