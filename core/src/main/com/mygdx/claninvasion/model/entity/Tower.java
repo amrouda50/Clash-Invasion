@@ -33,13 +33,17 @@ public class Tower extends ArtificialEntity implements Defensible {
 
         System.out.println("Just checking this method " + getPercentage().get());
 
-
         changeLevel();
         try {
             createTower.get();
         } catch (InterruptedException | ExecutionException e) {
             System.out.println("Tower creation did not work");
         }
+
+        System.out.println("The max health of this tower is " + maxHealth);
+        System.out.println("The percentage of goal health is " + getHealthPercentage(Tower.healGoalPoint));
+        int tempvalue = Tower.maxHealth + getHealthPercentage(Tower.gameTowerLevel.getHealGoalPoint());
+        System.out.println("The maximum this tower can reach is " + tempvalue);
     }
 
     public static void changeLevel() {
@@ -123,6 +127,7 @@ public class Tower extends ArtificialEntity implements Defensible {
         if (!artificialEntity.isAlive()) {
             return;
         }
+
         artificialEntity.setDecreaseHealth(85);
         heal(); // Not tested yet. Everytime the attack is successful, the tower's health is increased
         System.out.println("Decreasing.. Current is" + artificialEntity.getHealth() + ", Entity " + artificialEntity);
