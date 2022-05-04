@@ -94,9 +94,8 @@ public abstract class ArtificialEntity extends Entity {
 
         thread.start();*/
 
-        if( getHealth() < (Tower.maxHealth + getHealthPercentage(Tower.gameTowerLevel.getHealGoalPoint()))) {
-            this.health.set(Tower.gameTowerLevel.getHealGoalPoint());
-        }
+        int newHealth  = this.health.intValue() + getHealthPercentageValue();
+        setHealth(newHealth);
     }
 
     /**
@@ -143,8 +142,8 @@ public abstract class ArtificialEntity extends Entity {
                 (health.get() / (float) initHealth) * 100;
     }
 
-    public int getHealthPercentage(int healGoalPoint) {
-        return (int) (((float) Tower.gameTowerLevel.getHealGoalPoint() / (float) 100.0) * (float)Tower.maxHealth);
+    public int getHealthPercentageValue() {
+        return (int) (((float) Tower.gameTowerLevel.getHealGoalPoint() / (float) 100.0) * (float) health.intValue());
     }
 
     public AtomicLong getPercentage() {

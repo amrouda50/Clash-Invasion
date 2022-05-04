@@ -49,30 +49,12 @@ public abstract class Soldier extends ArtificialEntity {
         Soldier.maxHealth = gameSoldierLevel.getMaxHealth();
     }
 
-    CompletableFuture<Void> reactionTime = CompletableFuture.runAsync(new Runnable() {
-        @Override
-        public void run() {
-            try {
-                MILLISECONDS.sleep(getReactionTime().intValue());
-            } catch (InterruptedException e) {
-                throw new IllegalStateException(e);
-            }
-            System.out.println("The soldier is preparing to attack");
-        }
-    });
-
-
     /**
      * Attack castle method implementation
      * @param castle - opponents castle
      * @see Castle
      */
     public void attackCastle(Castle castle) {
-        try {
-            reactionTime.get();
-        } catch (InterruptedException | ExecutionException e) {
-            System.out.println("soldier reaction time did not work as expected");
-        }
 
         float distance = getVec2Position().dst(castle.getVec2Position().x, castle.getVec2Position().y);
 

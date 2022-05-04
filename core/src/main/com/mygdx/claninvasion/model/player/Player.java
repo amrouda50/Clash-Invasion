@@ -232,6 +232,8 @@ public class Player implements Winnable {
     public CompletionStage<Void> trainSoldiers(EntitySymbol entitySymbol) {
         return castle
                 .trainSoldiers(entitySymbol, (cost) -> {
+                    int healHealthIncrease = Soldier.gameSoldierLevel.getHealHealthIncrease();
+                    castle.healHealthIncrease(healHealthIncrease);
                     wealth.set(wealth.get() - cost);
                     return false;
                 })
@@ -241,7 +243,7 @@ public class Player implements Winnable {
     public void addTrainedToMapSoldier() {
         Soldier soldier = castle.getSoldiers().pop();
         try {
-            Thread.sleep(1000);
+            Thread.sleep(soldier.getReactionTime().intValue());
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
