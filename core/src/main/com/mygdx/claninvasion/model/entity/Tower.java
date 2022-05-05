@@ -38,11 +38,6 @@ public class Tower extends ArtificialEntity implements Defensible {
         } catch (InterruptedException | ExecutionException e) {
             System.out.println("Tower creation did not work");
         }
-
-        System.out.println("The max health of this tower is " + currentHealth);
-        System.out.println("The percentage of goal health is " + getHealthPercentage(Tower.healGoalPoint));
-        int tempvalue = Tower.maxHealth + getHealthPercentage(Tower.gameTowerLevel.getHealGoalPoint());
-        System.out.println("The maximum this tower can reach is " + tempvalue);
     }
 
     public static void changeLevel() {

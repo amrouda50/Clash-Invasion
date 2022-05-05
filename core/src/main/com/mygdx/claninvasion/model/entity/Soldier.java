@@ -24,14 +24,14 @@ public abstract class Soldier extends ArtificialEntity {
     private final AtomicBoolean hasTrained = new AtomicBoolean(false);
 
     public static int creationTime;
-    public static GameTowerLevel gameSoldierLevel;
+    public static GameSoldierLevel gameSoldierLevel;
     public static int maxHealth;
 
     public Soldier(EntitySymbol entitySymbol, Pair<Integer, Integer> position) {
         super(entitySymbol, position);
         level = Levels.createSoldierLevelIterator();
 
-
+        maxHealth = maxHealth + gameSoldierLevel.getHitsPointBonus();
         setHealth(maxHealth);
 
         changeLevel();
@@ -59,8 +59,8 @@ public abstract class Soldier extends ArtificialEntity {
         float distance = getVec2Position().dst(castle.getVec2Position().x, castle.getVec2Position().y);
 
         GameSoldierLevelIterator level = (GameSoldierLevelIterator) this.level;
-        if (distance < level.current().getVisibleArea()) {
-            castle.damage(ATTACK + level.current().getAttackIncrease());
+        if (distance < gameSoldierLevel.getVisibleArea()) {
+            castle.damage(ATTACK + gameSoldierLevel.getAttackIncrease());
         }
     }
 

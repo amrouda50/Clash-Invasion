@@ -301,7 +301,7 @@ public class Player implements Winnable {
         int positionSrc = game.getWorldMap().transformMapPositionToIndex(posSrc);
         int positionDest = game.getWorldMap().transformMapPositionToIndex(posDst);
         int counter = 0;
-        int movingSpeed = 500;
+        int movingSpeed = Soldier.gameSoldierLevel.getMovementSpeed();
         while (positionSrc != positionDest) {
             positionSrc = moveSoldier(soldier, positionSrc, positionDest, 0);
             if (counter == 2 && upcoming != null) {
