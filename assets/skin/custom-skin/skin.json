@@ -1,0 +1,144 @@
+{
+"com.badlogic.gdx.graphics.g2d.BitmapFont": {
+	"Arial": {
+		"file": "ORIOND.fnt"
+	},
+	"FirstJob-X8rP": {
+		"file": "FirstJob-X8rP.fnt"
+	},
+	"ORIOND1": {
+		"file": "ORIOND(1).fnt"
+	},
+	"ORIOND_1": {
+		"file": "ORIOND.fnt"
+	}
+},
+"com.badlogic.gdx.graphics.Color": {
+	"Black": {
+		"r": 0.03529412,
+		"g": 0.03529412,
+		"b": 0.09803922,
+		"a": 1
+	},
+	"Blue": {
+		"r": 0.40392157,
+		"g": 0.3882353,
+		"b": 0.8784314,
+		"a": 1
+	},
+	"ButtonOrange": {
+		"r": 1,
+		"g": 0.63529414,
+		"b": 0.28235295,
+		"a": 1
+	},
+	"RGBA_255_255_255_255": {
+		"r": 1,
+		"g": 1,
+		"b": 1,
+		"a": 1
+	},
+	"Rose": {
+		"r": 0.8784314,
+		"g": 0.3882353,
+		"b": 0.40392157,
+		"a": 1
+	},
+	"TextFieldColor": {
+		"r": 0.68235296,
+		"g": 0.8627451,
+		"b": 0.7372549,
+		"a": 1
+	},
+	"TextYellow": {
+		"r": 1,
+		"g": 0.99607843,
+		"b": 0.7764706,
+		"a": 1
+	}
+},
+"com.badlogic.gdx.scenes.scene2d.ui.Button$ButtonStyle": {
+	"default": {
+		"up": "button-primary",
+		"down": "button-primary"
+	}
+},
+"com.badlogic.gdx.scenes.scene2d.ui.ImageButton$ImageButtonStyle": {
+	"default": {
+		"imageUp": "button-primary",
+		"imageDown": "button-primary"
+	},
+	"secondary": {
+		"imageUp": "button-secondary",
+		"imageDown": "button-secondary"
+	},
+	"primary-big": {
+		"imageUp": "big-button-primary",
+		"imageDown": "big-button-primary"
+	},
+	"secondary-big": {
+		"imageUp": "big-button-secondary",
+		"imageDown": "big-button-secondary"
+	}
+},
+"com.badlogic.gdx.scenes.scene2d.ui.ImageTextButton$ImageTextButtonStyle": {
+	"default": {
+		"imageUp": "button-primary",
+		"imageDown": "button-primary",
+		"font": "ORIOND1"
+	}
+},
+"com.badlogic.gdx.scenes.scene2d.ui.Label$LabelStyle": {
+	"default": {
+		"font": "ORIOND1",
+		"fontColor": "RGBA_255_255_255_255"
+	}
+},
+"com.badlogic.gdx.scenes.scene2d.ui.TextButton$TextButtonStyle": {
+	"default": {
+		"font": "ORIOND1",
+		"fontColor": "TextYellow",
+		"downFontColor": "TextYellow",
+		"overFontColor": "TextYellow"
+	},
+	"rose": {
+		"font": "Arial",
+		"fontColor": "TextYellow"
+	}
+},
+"com.badlogic.gdx.scenes.scene2d.ui.TextField$TextFieldStyle": {
+	"default": {
+		"font": "ORIOND1",
+		"fontColor": "TextYellow",
+		"focusedFontColor": "ButtonOrange"
+	}
+},
+"com.badlogic.gdx.scenes.scene2d.ui.TextTooltip$TextTooltipStyle": {
+	"default": {
+		"label": "default"
+	}
+},
+"com.badlogic.gdx.scenes.scene2d.ui.Window$WindowStyle": {
+	"default": {
+		"background": "window",
+		"titleFont": "FirstJob-X8rP",
+		"titleFontColor": "TextYellow"
+	},
+	"header-blue": {
+		"background": "header-blue",
+		"titleFont": "FirstJob-X8rP"
+	},
+	"header-red": {
+		"background": "header-red",
+		"titleFont": "FirstJob-X8rP"
+	},
+	"window-small": {
+		"background": "window-small",
+		"titleFont": "ORIOND1"
+	},
+	"window-big": {
+		"background": "window-big",
+		"titleFont": "ORIOND1"
+	}
+}
+}
