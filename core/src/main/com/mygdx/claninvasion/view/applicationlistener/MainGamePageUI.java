@@ -173,72 +173,85 @@ public final class MainGamePageUI implements ApplicationListener {
         player1HealthBar.setStamina(app.getModel().getPlayerOne().getHealth());
     }
 
-    private void setPlayerData(Table table, HealthBar playerHealthBar, PlayerUIData playerData) {
-        // add heart to the table
-        Image heart = new Image(heartTexture);
-        Table table1 = new Table();
-        Table table2 = new Table();
-        table1.add(heart).padRight(0).padLeft(30);
+    private void initHealthBar(HealthBar playerHealthBar, Table table) {
         playerHealthBar.setDimensions(new Pair<>(70f, 12f));
         playerHealthBar.setCoordinates(new Pair<>(table.getX() + 60, table.getY() + 40));
         playerHealthBar.setPositionOffset(new Pair<>(0f, 0f));
         playerHealthBar.setStrokeColor(Color.WHITE);
         playerHealthBar.rendering(camera.combined);
+    }
 
+    private void headerTableOneInit(Table table) {
+        // add heart
+        Image heart = new Image(heartTexture);
+        table.add(heart).padRight(0).padLeft(30);
+
+        // add gold
         Image gold = new Image(goldTexture);
-        table1.add(gold).padLeft(95).padRight(20);
+        table.add(gold).padLeft(95).padRight(20);
 
         // soldier
         Image soldier = new Image(soldierTexture);
         soldier.setScale(0.8f);
-        table1.add(soldier);
+        table.add(soldier);
 
         // towers
         Image tower = new Image(towerTexture);
         tower.setScale(0.5f);
-        table1.add(tower).padTop(-25);
+        table.add(tower).padTop(-25);
 
         // goldmines
         Image goldmine = new Image(goldmineTexture);
         goldmine.setScale(0.4f);
-        table1.add(goldmine).padTop(-25).padLeft(-10);
+        table.add(goldmine).padTop(-25).padLeft(-10);
+    }
 
+    private void headerTableTwoInit(Table table, PlayerUIData playerData) {
         Label.LabelStyle labelStyle = new Label.LabelStyle();
         labelStyle.font = app.getFont();
 
-        // add star
-
         // add level
         Image star = new Image(starTexture);
-        table2.add(star).padRight(-10);
+        table.add(star).padRight(-10);
         Label level = new Label(playerData.level, labelStyle);
         level.setFontScale(0.8f);
         level.setColor(Color.BLACK);
-        table2.add(level).padLeft(-5).padTop(5);
+        table.add(level).padLeft(-5).padTop(5);
 
         // add name of player
 
         Label name = new Label(playerData.name, labelStyle);
-        table2.add(name).padLeft(20).padRight(5);
+        table.add(name).padLeft(20).padRight(5);
 
         // add wealth
         Label wealth = new Label(playerData.wealth, labelStyle);
-        table2.add(wealth).padLeft(20).padRight(5);
+        table.add(wealth).padLeft(20).padRight(5);
 
         // add soldiers size
         Label soldiers = new Label(playerData.soldiers, labelStyle);
-        table2.add(soldiers).padLeft(25).padRight(10);
+        table.add(soldiers).padLeft(25).padRight(10);
 
         // add towers
         Label towers = new Label(playerData.towers, labelStyle);
-        table2.add(towers).padLeft(10).padRight(10);
+        table.add(towers).padLeft(10).padRight(10);
 
         // add mineables
         Label minings = new Label(playerData.minings, labelStyle);
-        table2.add(minings).padLeft(10).padRight(10);
+        table.add(minings).padLeft(10).padRight(10);
+    }
+
+    private void setPlayerData(Table table, HealthBar playerHealthBar, PlayerUIData playerData) {
+
+        Table table1 = new Table();
+        Table table2 = new Table();
+        initHealthBar(playerHealthBar, table);
+        headerTableOneInit(table1);
+        headerTableTwoInit(table2, playerData);
+
         table.add(table1);
         table.row();
         table.add(table2);
+
         uiStage.addActor(table);
     }
 
