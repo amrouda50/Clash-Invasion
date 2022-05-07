@@ -37,7 +37,7 @@ public class ClanInvasion extends Game {
      * * GameModel responsible for the model handling
      * and is working as a bridge between UI/Logic
      */
-    private final GameModel gameModel;
+    private GameModel gameModel;
 
     /** Creates a Clan Invasion object.
      */
@@ -57,25 +57,28 @@ public class ClanInvasion extends Game {
         camera.setToOrtho(false, Globals.V_WIDTH, Globals.V_HEIGHT);
         //addMusic();
 
-        this.gamePages = Globals.DEBUG
-        ? new ArrayList<>(
-            Collections.singletonList(new MainGamePage(this))
-        )
-        : new ArrayList<>(
-            Arrays.asList(
-                new GameEndedPage(this),
-                new MainGamePage(this),
-                new ConfigureGameScreen(this),
-                new LoadingScreen(this),
-                new SplashScreen(this)
-            )
-        );
+        initPages();
 
         initScreens();
 
         setScreen(screens.pop());
     }
 
+    private void initPages() {
+        this.gamePages = Globals.DEBUG
+                ? new ArrayList<>(
+                Collections.singletonList(new MainGamePage(this))
+        )
+                : new ArrayList<>(
+                Arrays.asList(
+                        new GameEndedPage(this),
+                        new MainGamePage(this),
+                        new ConfigureGameScreen(this),
+                        new LoadingScreen(this),
+                        new SplashScreen(this)
+                )
+        );
+    }
 
     /** Used to add the screen one after the other.
     * It goes through the array list and pushes the screens.
@@ -106,6 +109,10 @@ public class ClanInvasion extends Game {
      */
     public void changeScreen() {
         if (screens.isEmpty()) {
+            gameModel = new GameModel();
+            camera = new OrthographicCamera();
+            camera.setToOrtho(false, Globals.V_WIDTH, Globals.V_HEIGHT);
+            initPages();
             initScreens();
         }
         setScreen(screens.pop());

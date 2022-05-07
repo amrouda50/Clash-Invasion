@@ -40,18 +40,23 @@ public class Globals {
 
     public static final String COLOR_BLACK_BLUE = "#090919";
     public static final String COLOR_ROSE = "#E06367";
+    public static final String COLOR_PLAYER_2 = "#6763E0";
+    public static final String COLOR_PLAYER_1 = "#E06367";
 
-    public static TextureAtlas DEFAULT_ATLAS = new TextureAtlas(PATH_ATLAS);
-    public static Texture APP_LOGO_TEXTURE = new Texture(Gdx.files.internal("splash/clashmenulogo.png"));
-    public static Texture APP_BACKGROUND_TEXTURE = new Texture(Gdx.files.internal("splash/background.jpg"));
-    public static Texture LOADING_TEXTURE = new Texture(Gdx.files.internal("LoadingscreenAnimation/Loading-Screen-icon0.png"));
-    public static Texture HEART_TEXTURE = new Texture(Gdx.files.internal("raw/heart-stroked.png"));
-    public static Texture GOLD_TEXTURE = new Texture(Gdx.files.internal("raw/gold.png"));
-    public static Texture STAR_TEXTURE = new Texture(Gdx.files.internal("raw/star.png"));
-    public static Texture BACK_TEXTURE = new Texture(Gdx.files.internal("raw/button-back.png"));
-    public static Texture SOLDIER_TEXTURE = new Texture(Gdx.files.internal("Soliders/barbarian.png"));
-    public static Texture GOLDMINE_TEXTURE = new Texture(Gdx.files.internal("Buidlings/goldmine.png"));
-    public static Texture TOWER_TEXTURE = new Texture(Gdx.files.internal("BuildingBlocks/tower.png"));
+    public static final TextureAtlas DEFAULT_ATLAS = new TextureAtlas(PATH_ATLAS);
+    public static final Texture APP_LOGO_TEXTURE = new Texture(Gdx.files.internal("splash/clashmenulogo.png"));
+    public static final Texture APP_BACKGROUND_TEXTURE = new Texture(Gdx.files.internal("splash/background.jpg"));
+    public static final Texture LOADING_TEXTURE = new Texture(Gdx.files.internal("LoadingscreenAnimation/Loading-Screen-icon0.png"));
+    public static final Texture HEART_TEXTURE = new Texture(Gdx.files.internal("raw/heart-stroked.png"));
+    public static final Texture GOLD_TEXTURE = new Texture(Gdx.files.internal("raw/gold.png"));
+    public static final Texture STAR_TEXTURE = new Texture(Gdx.files.internal("raw/star.png"));
+    public static final Texture BACK_TEXTURE = new Texture(Gdx.files.internal("raw/button-back.png"));
+    public static final Texture SOLDIER_TEXTURE = new Texture(Gdx.files.internal("Soliders/barbarian.png"));
+    public static final Texture GOLDMINE_TEXTURE = new Texture(Gdx.files.internal("Buidlings/goldmine.png"));
+    public static final Texture TOWER_TEXTURE = new Texture(Gdx.files.internal("BuildingBlocks/tower.png"));
+
+    public static final String PLAYER1_DEFAULT_NAME = "Player 1";
+    public static final String PLAYER2_DEFAULT_NAME = "Player 2";
 
 
     private Globals() {
