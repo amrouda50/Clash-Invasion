@@ -40,6 +40,9 @@ public class Tower extends ArtificialEntity implements Defensible {
         }
     }
 
+    /*
+    * This method changes the level of the towers to next one
+    * */
     public static void changeLevel() {
         Tower.creationTime = gameTowerLevel.getCreationTime();
         Tower.COST = gameTowerLevel.getCreationCost();

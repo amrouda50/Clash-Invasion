@@ -468,6 +468,9 @@ public class Player implements Winnable {
         return color;
     }
 
+    /*
+    * This method checks if there is any next level and then iterates to the next
+    * */
     public void levelUp() {
         try {
         if (gameTowerLevelIterator.hasNext() ) {
@@ -478,10 +481,6 @@ public class Player implements Winnable {
                 Tower.changeLevel();
                 MiningFarm.changeLevel();
                 Soldier.changeLevel();
-
-                //System.out.println("Value of creation cost " + MiningFarm.COST);
-                /*System.out.println("Health of tower is " + Tower.maxHealth);
-                System.out.println("After update the level of tower is " + gameTowerLevelIterator.getLevelName());*/
         } } catch (Exception e) {
                 System.out.println("There are no new levels");
         }
