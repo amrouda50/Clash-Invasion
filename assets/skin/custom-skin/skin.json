@@ -59,21 +59,39 @@
 },
 "com.badlogic.gdx.scenes.scene2d.ui.Button$ButtonStyle": {
 	"default": {
-		"up": "Asset 4",
-		"down": "Asset 4"
+		"up": "button-primary",
+		"down": "button-primary"
 	}
 },
 "com.badlogic.gdx.scenes.scene2d.ui.ImageButton$ImageButtonStyle": {
 	"default": {
-		"imageUp": "Asset 2",
-		"imageDown": "Asset 4"
+		"imageUp": "button-primary",
+		"imageDown": "button-primary"
+	},
+	"secondary": {
+		"imageUp": "button-secondary",
+		"imageDown": "button-secondary"
+	},
+	"primary-big": {
+		"imageUp": "big-button-primary",
+		"imageDown": "big-button-primary"
+	},
+	"secondary-big": {
+		"imageUp": "big-button-secondary",
+		"imageDown": "big-button-secondary"
 	}
 },
 "com.badlogic.gdx.scenes.scene2d.ui.ImageTextButton$ImageTextButtonStyle": {
 	"default": {
-		"imageUp": "Asset 3",
-		"imageDown": "Asset 5",
+		"imageUp": "button-primary",
+		"imageDown": "button-primary",
 		"font": "ORIOND1"
+	}
+},
+"com.badlogic.gdx.scenes.scene2d.ui.Label$LabelStyle": {
+	"default": {
+		"font": "ORIOND1",
+		"fontColor": "RGBA_255_255_255_255"
 	}
 },
 "com.badlogic.gdx.scenes.scene2d.ui.TextButton$TextButtonStyle": {
@@ -81,41 +99,45 @@
 		"font": "ORIOND1",
 		"fontColor": "TextYellow",
 		"downFontColor": "TextYellow",
-		"overFontColor": "TextYellow",
-		"up": "Asset 4",
-		"down": "Asset 4"
+		"overFontColor": "TextYellow"
 	},
 	"rose": {
 		"font": "Arial",
-		"fontColor": "TextYellow",
-		"up": "Asset 5",
-		"down": "Asset 5"
+		"fontColor": "TextYellow"
 	}
 },
 "com.badlogic.gdx.scenes.scene2d.ui.TextField$TextFieldStyle": {
 	"default": {
 		"font": "ORIOND1",
 		"fontColor": "TextYellow",
-		"focusedFontColor": "ButtonOrange",
-		"background": "Asset 6"
+		"focusedFontColor": "ButtonOrange"
+	}
+},
+"com.badlogic.gdx.scenes.scene2d.ui.TextTooltip$TextTooltipStyle": {
+	"default": {
+		"label": "default"
 	}
 },
 "com.badlogic.gdx.scenes.scene2d.ui.Window$WindowStyle": {
 	"default": {
-		"background": "Asset 7",
+		"background": "window",
 		"titleFont": "FirstJob-X8rP",
 		"titleFontColor": "TextYellow"
 	},
 	"header-blue": {
-		"background": "Asset 9",
+		"background": "header-blue",
 		"titleFont": "FirstJob-X8rP"
 	},
 	"header-red": {
-		"background": "Asset 10",
+		"background": "header-red",
 		"titleFont": "FirstJob-X8rP"
 	},
-	"dialog": {
-		"background": "Asset 1",
+	"window-small": {
+		"background": "window-small",
+		"titleFont": "ORIOND1"
+	},
+	"window-big": {
+		"background": "window-big",
 		"titleFont": "ORIOND1"
 	}
 }

@@ -1,4 +1,4 @@
-sourceCompatibility = 1.9
+sourceCompatibility = JavaVersion.VERSION_14
 [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
 
 sourceSets.main.java.srcDirs = [ "src/main" ]

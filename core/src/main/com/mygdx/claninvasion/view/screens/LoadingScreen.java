@@ -51,22 +51,22 @@ public class LoadingScreen implements GamePage {
         viewport = new FillViewport(Globals.V_WIDTH, Globals.V_HEIGHT, camera);
         stage = new Stage(viewport);
         Gdx.input.setInputProcessor(stage);
-        Texture texture = new Texture(Gdx.files.internal("LoadingscreenAnimation/Loading-Screen-icon0.png"));
+        Texture texture = Globals.LOADING_TEXTURE;
         animated = new Image(texture);
         animated.setSize(200, 200);
         animated.setPosition(Gdx.graphics.getWidth() / 3.1f, Gdx.graphics.getHeight() / 3.4f);
 
 
         // background
-        Texture backgroundTexture = new Texture(Gdx.files.internal("splash/background.jpg"));
+        Texture backgroundTexture = Globals.APP_BACKGROUND_TEXTURE;
         Image background = new Image(backgroundTexture);
         background.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
         // table
-        TextureAtlas atlas = new TextureAtlas("skin/new-skin/skin.atlas");
+        TextureAtlas atlas = Globals.DEFAULT_ATLAS;
         Skin skin = new Skin(atlas);
         Table table = new Table(skin);
-        table.background(skin.getDrawable("Asset 1"));
+        table.background(skin.getDrawable(Globals.ATLAS_WINDOW));
         float tableWidthRation = 0.625f;
         float tableHeightRation = 0.73f;
         table.setBounds(

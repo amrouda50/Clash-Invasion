@@ -43,11 +43,11 @@ public class SplashScreen implements GamePage, UiUpdatable {
         viewport = new StretchViewport(Globals.V_WIDTH, Globals.V_HEIGHT, camera);
         stage = new Stage(viewport);
         Gdx.input.setInputProcessor(stage);
-        Texture splashTexture = new Texture(Gdx.files.internal("splash/clashmenulogo.png"));
+        Texture splashTexture = Globals.APP_LOGO_TEXTURE;
         splash = new Image(splashTexture);
         splash.setScale(1, 1.2f);
 
-        Texture backgroundTexture = new Texture(Gdx.files.internal("splash/background.jpg"));
+        Texture backgroundTexture = Globals.APP_BACKGROUND_TEXTURE;
         Image background = new Image(backgroundTexture);
         background.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
@@ -57,10 +57,10 @@ public class SplashScreen implements GamePage, UiUpdatable {
     }
 
     private void addButtons() {
-        TextureAtlas atlas = new TextureAtlas("skin/new-skin/skin.atlas");
+        TextureAtlas atlas = Globals.DEFAULT_ATLAS;
         Skin skin = new Skin(atlas);
         Table table = new Table(skin);
-        table.background(skin.getDrawable("Asset 1"));
+        table.background(skin.getDrawable(Globals.ATLAS_WINDOW));
         float tableWidthRation = 0.625f;
         float tableHeightRation = 0.73f;
         table.setBounds(
@@ -73,8 +73,8 @@ public class SplashScreen implements GamePage, UiUpdatable {
         table.add(splash).padTop(50);
         table.row();
 
-        startGameButton = new GameButton(skin, "Start Game", app.getFont(), null);
-        endGameButton = new GameButton(skin, "End Game", app.getFont(), "Asset 5");
+        startGameButton = new GameButton(skin, "Start Game", app.getFont(), Globals.ATLAS_BUTTON_PRIMARY);
+        endGameButton = new GameButton(skin, "End Game", app.getFont(), Globals.ATLAS_BUTTON_SECONDARY);
         startGameButton.getButton().pad(1);
         endGameButton.getButton().pad(1);
         table.add(startGameButton.getButton()).padTop(-100);

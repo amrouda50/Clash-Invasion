@@ -9,6 +9,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
+import com.mygdx.claninvasion.model.Globals;
 
 import java.util.function.Consumer;
 
@@ -48,7 +49,7 @@ public class LabeledTextField {
     private void textFieldStyleInit() {
         Skin localSkin = new Skin(Gdx.files.internal("skin/skin/uiskin.json"));
         fieldStyle.cursor = localSkin.getDrawable("cursor");
-        fieldStyle.background = skin.getDrawable("Asset 6");
+        fieldStyle.background = skin.getDrawable(Globals.ATLAS_INPUT);
         fieldStyle.font = font;
         fieldStyle.fontColor = new Color(255, 255, 255, 1);
     }

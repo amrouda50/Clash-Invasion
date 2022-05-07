@@ -51,7 +51,7 @@ public class ClanInvasion extends Game {
      */
     @Override
     public void create() {
-        font = new BitmapFont(Gdx.files.internal("skin/new-skin/ORIOND(1).fnt"));
+        font = new BitmapFont(Gdx.files.internal(Globals.PATH_FONT));
 
         camera = new OrthographicCamera();
         camera.setToOrtho(false, Globals.V_WIDTH, Globals.V_HEIGHT);

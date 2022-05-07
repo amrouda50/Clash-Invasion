@@ -3,14 +3,13 @@ package com.mygdx.claninvasion.model.player;
 import com.badlogic.gdx.graphics.Color;
 import com.mygdx.claninvasion.model.GameModel;
 import com.mygdx.claninvasion.model.entity.*;
+import com.mygdx.claninvasion.model.level.Level;
+import com.mygdx.claninvasion.model.level.LevelIterator;
 import com.mygdx.claninvasion.model.map.WorldCell;
 import com.mygdx.claninvasion.model.map.WorldMap;
 import org.javatuples.Pair;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Stack;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.ReadWriteLock;
@@ -342,10 +341,6 @@ public class Player implements Winnable {
         return towers;
     }
 
-    public List<MiningFarm> getMiningFarms() {
-        return miningFarms;
-    }
-
     public void removeDeadSoldiers() {
         List<Soldier> soldiers = getSoldiers();
         for(int i = 0; i < soldiers.size(); i++) {
@@ -392,6 +387,8 @@ public class Player implements Winnable {
         return castle.getHealthPercentage();
     }
 
+    public List<MiningFarm> getMiningFarms() { return miningFarms; }
+
     public boolean canCreateTower() {
         return getWealth() >= Tower.COST;
     }
@@ -422,6 +419,25 @@ public class Player implements Winnable {
 
     public boolean isAlive() {
         return castle.isAlive();
+    }
+
+    private <T extends ArtificialEntity>Optional<LevelIterator<? extends Level>> getEntityLevel(List<T> entities) {
+        if (this.getTowers().size() == 0) {
+            return Optional.empty();
+        }
+        return Optional.ofNullable(entities.get(0).getLevel());
+    }
+
+    public LevelIterator<? extends Level> getCastleLevel() {
+        return castle.getLevel();
+    }
+
+    public Optional<LevelIterator<? extends Level>> getTowersLevel() {
+        return getEntityLevel(towers);
+    }
+
+    public Optional<LevelIterator<? extends Level>> getSoldiersLevel() {
+        return getEntityLevel(soldiers);
     }
 
     @Override

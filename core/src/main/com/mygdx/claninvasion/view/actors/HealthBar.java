@@ -4,7 +4,6 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Matrix4;
 import org.javatuples.Pair;
-import org.javatuples.Triplet;
 
 
 public class HealthBar extends ShapeRenderer {
@@ -16,6 +15,8 @@ public class HealthBar extends ShapeRenderer {
     private Pair<Float, Float> positionOffset;
     private boolean isActive = true;
     private final Color healthColor;
+    private Color strokeColor = Color.BLACK;
+    private float initStamina;
 
     public HealthBar(Color color) {
         healthColor = color;
@@ -35,9 +36,15 @@ public class HealthBar extends ShapeRenderer {
         if (stamina == 0) isActive = false;
     }
 
+    public void setStamina(float percent) {
+        if (this.stamina == 0) return;
+        this.stamina = initStamina * (percent / 100f);
+        if (this.stamina == 0) isActive = false;
+    }
+
     private void drawRectangle(Matrix4 camera) {
         begin(ShapeRenderer.ShapeType.Line);
-        setColor(Color.BLACK);
+        setColor(strokeColor);
         rect(
                 coordinates.getValue0() + positionOffset.getValue0(),
                 coordinates.getValue1()+ positionOffset.getValue1(),
@@ -72,9 +79,14 @@ public class HealthBar extends ShapeRenderer {
         width = sizes.getValue0();
         height = sizes.getValue1();
         stamina = sizes.getValue0() - OFFSET;
+        initStamina = stamina;
     }
 
     public boolean isActive() {
         return isActive;
+    }
+
+    public void setStrokeColor(Color color) {
+        strokeColor = color;
     }
 }

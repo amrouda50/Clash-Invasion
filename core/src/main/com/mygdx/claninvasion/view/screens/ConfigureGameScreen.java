@@ -58,15 +58,15 @@ public class ConfigureGameScreen implements GamePage, UiUpdatable {
 
     void initView() {
         // background
-        Texture backgroundTexture = new Texture(Gdx.files.internal("splash/background.jpg"));
+        Texture backgroundTexture = Globals.APP_BACKGROUND_TEXTURE;
         Image background = new Image(backgroundTexture);
         background.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
-        TextureAtlas atlas = new TextureAtlas("skin/new-skin/skin.atlas");
+        TextureAtlas atlas = Globals.DEFAULT_ATLAS;
         Skin skin = new Skin(atlas);
         Table table = new Table(skin);
         table.setOrigin(camera.position.x, camera.position.y);
-        table.background(skin.getDrawable("Asset 1"));
+        table.background(skin.getDrawable(Globals.ATLAS_WINDOW));
         float tableWidthRation = 0.625f;
         float tableHeightRation = 0.63f;
         table.setBounds(
@@ -78,12 +78,12 @@ public class ConfigureGameScreen implements GamePage, UiUpdatable {
 
         playerOneField = new LabeledTextField(skin, "Enter player 1 name", app.getFont());
         playerTwoField = new LabeledTextField(skin, "Enter player 2 name", app.getFont());
-        confirmButton = new GameButton(skin, "Confirm", app.getFont(), null);
+        confirmButton = new GameButton(skin, "Confirm", app.getFont(), Globals.ATLAS_BUTTON_PRIMARY);
         Label.LabelStyle labelStyle = new Label.LabelStyle();
         labelStyle.font = app.getFont();
         Label titleLabel = new Label("Configure", labelStyle);
         titleLabel.setFontScale(1.5f);
-        titleLabel.setColor(Color.valueOf("#090919"));
+        titleLabel.setColor(Color.valueOf(Globals.COLOR_BLACK_BLUE));
 
         table.add(titleLabel).padBottom(20);
         table.row();

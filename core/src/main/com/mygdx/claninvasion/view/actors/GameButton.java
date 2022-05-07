@@ -6,6 +6,7 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.mygdx.claninvasion.model.Globals;
 
 /**
  * Composition of the button with project specific implementation
@@ -15,11 +16,11 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
  * @see com.badlogic.gdx.scenes.scene2d.ui.Button
  */
 public class GameButton {
-    private final TextButton.TextButtonStyle buttonStyle;
-    private final BitmapFont font;
-    private Skin skin;
-    private final TextButton button;
-    private String drawableName = "Asset 4";
+    protected final TextButton.TextButtonStyle buttonStyle;
+    protected final BitmapFont font;
+    protected Skin skin;
+    protected final TextButton button;
+    protected String drawableName = Globals.ATLAS_BUTTON_PRIMARY;
 
     /**
      * @param skin - resource for ui widgets
