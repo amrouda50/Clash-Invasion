@@ -25,7 +25,6 @@ public class GameEndedPage implements GamePage, UiUpdatable {
     private GameButton startGameButton;
     private GameButton endGameButton;
     private OrthographicCamera camera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-    private final Skin jsonSkin = new Skin(Gdx.files.internal("skin/skin/uiskin.json"));
     private Label winnerText;
     private Label headerText;
     private final Skin skin;
@@ -34,16 +33,19 @@ public class GameEndedPage implements GamePage, UiUpdatable {
         this.app = app;
         stage = new Stage(new FillViewport(Globals.V_WIDTH, Globals.V_HEIGHT, camera));
         stage.setDebugUnderMouse(true);
-        TextureAtlas atlas = new TextureAtlas("skin/skin/uiskin.atlas");
+        TextureAtlas atlas = new TextureAtlas(Globals.PATH_ATLAS);
         skin = new Skin(atlas);
-        winnerText = new Label("",jsonSkin);
-        headerText = new Label("Winner is: ", jsonSkin);
+        Label.LabelStyle labelStyle = new Label.LabelStyle();
+        labelStyle.font = app.getFont();
+        winnerText = new Label("", labelStyle);
+        headerText = new Label("Winner is: ", labelStyle);
     }
 
     private void initText() {
         if (app.getModel().getState() instanceof EndGameState) {
             Player winner = ((EndGameState) app.getModel().getState()).getWinnerPlayer();
             winnerText.setText(winner.getName());
+            winnerText.setColor(winner.getColor());
         } else {
             winnerText.setText(app.getCurrentPlayer().getName());
         }
@@ -53,7 +55,7 @@ public class GameEndedPage implements GamePage, UiUpdatable {
 
     private void init() {
         Gdx.input.setInputProcessor(stage);
-        Texture backgroundTexture = new Texture(Gdx.files.internal("splash/background.jpg"));
+        Texture backgroundTexture = Globals.APP_BACKGROUND_TEXTURE;
         background = new Image(backgroundTexture);
         background.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         stage.addActor(background);
@@ -63,11 +65,12 @@ public class GameEndedPage implements GamePage, UiUpdatable {
 
     private void addButtons() {
         Table table = new Table(skin);
+        table.background(skin.getDrawable(Globals.ATLAS_WINDOW));
         table.align(Align.center);
         table.setBounds(-80, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
         startGameButton = new GameButton(skin, "Play Again", app.getFont(), null);
-        endGameButton = new GameButton(skin, "Exit Game", app.getFont(), null);
+        endGameButton = new GameButton(skin, "Exit Game", app.getFont(), Globals.ATLAS_BUTTON_SECONDARY);
         startGameButton.getButton().pad(2);
         endGameButton.getButton().pad(2);
         table.add(headerText);
