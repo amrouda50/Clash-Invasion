@@ -12,7 +12,9 @@ public class Levels {
     private static final Septet<Integer, Integer, Integer, Integer, Integer, Integer, Integer> level1 =
             new Septet<>(500, 210, 1090, 0, 500, 10, 35);
     private static final Septet<Integer, Integer, Integer, Integer, Integer, Integer, Integer> level2 =
-            new Septet<>(200, 280, 1090, 0, 460, 10, 35);
+            new Septet<>(350, 280, 1090, 0, 460, 10, 35);
+    private static final Septet<Integer, Integer, Integer, Integer, Integer, Integer, Integer> level3 =
+            new Septet<>(320, 400, 1190, 0, 420, 20, 38);
 
     private static final ArrayList<GameTowerLevel> towerLevels = new ArrayList<>(
             Arrays.asList(
@@ -21,7 +23,8 @@ public class Levels {
                     // level 1
                     new GameTowerLevel(level1, 200),
                     // level 2
-                    new GameTowerLevel(level2, 170)
+                    new GameTowerLevel(level2, 170),
+                    new GameTowerLevel(level3, 190)
             )
     );
 
@@ -29,7 +32,8 @@ public class Levels {
             Arrays.asList(
                     new Level(level0),
                     new Level(level1),
-                    new Level(level2)
+                    new Level(level2),
+                    new Level(level3)
             )
     );
 
@@ -37,7 +41,8 @@ public class Levels {
             Arrays.asList(
                     new GameMiningLevel(level0, 10),
                     new GameMiningLevel(level1, 14),
-                    new GameMiningLevel(level2, 16)
+                    new GameMiningLevel(level2, 16),
+                    new GameMiningLevel(level3, 18)
             )
     );
 
@@ -45,7 +50,8 @@ public class Levels {
             Arrays.asList(
                     new GameSoldierLevel(level0, 30, 600, 1, 2),
                     new GameSoldierLevel(level1, 40, 500, 2, 2),
-                    new GameSoldierLevel(level2, 44, 460, 3, 3)
+                    new GameSoldierLevel(level2, 44, 460, 3, 3),
+                    new GameSoldierLevel(level3, 46, 455, 4, 3)
             )
     );
 
@@ -53,7 +59,8 @@ public class Levels {
             Arrays.asList(
                     new GameSoldierLevel(new Septet<>(750, 350, 1100, 0, 450, 10, 30), 50, 300, 4, 3),
                     new GameSoldierLevel(new Septet<>(650, 450, 1200, 0, 450, 10, 30), 60, 250, 5, 3),
-                    new GameSoldierLevel(new Septet<>(650, 550, 1250, 0, 450, 10, 30), 65, 246, 5, 5)
+                    new GameSoldierLevel(new Septet<>(650, 550, 1250, 0, 450, 10, 30), 65, 246, 5, 5),
+                    new GameSoldierLevel(new Septet<>(600, 580, 1280, 0, 470, 10, 30), 65, 246, 5, 5)
             )
     );
 
