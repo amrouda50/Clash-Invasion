@@ -1,13 +1,12 @@
 package com.mygdx.claninvasion.view.actors;
 
-import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.mygdx.claninvasion.model.Globals;
 
 /**
  * Composition of the button with project specific implementation
@@ -17,26 +16,32 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
  * @see com.badlogic.gdx.scenes.scene2d.ui.Button
  */
 public class GameButton {
-    private final TextButton.TextButtonStyle buttonStyle;
-    private BitmapFont font  = new BitmapFont(Gdx.files.internal("skin/skin/default.fnt"));
-    private Skin skin;
-    private final TextButton button;
+    protected final TextButton.TextButtonStyle buttonStyle;
+    protected final BitmapFont font;
+    protected Skin skin;
+    protected final TextButton button;
+    protected String drawableName = Globals.ATLAS_BUTTON_PRIMARY;
 
     /**
      * @param skin - resource for ui widgets
      * @see Skin
      * @param text - button text
      */
-    public GameButton(Skin skin, String text) {
+    public GameButton(Skin skin, String text, BitmapFont font, String drawableName) {
+        this.font = font;
         buttonStyle = new TextButton.TextButtonStyle();
         this.skin = skin;
+        if (drawableName != null) {
+            this.drawableName = drawableName;
+        }
         buttonStyleInit();
         button = new TextButton(text, buttonStyle);
+        button.getStyle().fontColor = Color.WHITE;
     }
 
     private void buttonStyleInit() {
-        buttonStyle.up = skin.getDrawable("default-window");
-        buttonStyle.down = skin.getDrawable("default-window");
+        buttonStyle.up = skin.getDrawable(drawableName);
+        buttonStyle.down = skin.getDrawable(drawableName);
         buttonStyle.pressedOffsetX = 1;
         buttonStyle.pressedOffsetY = -1;
         buttonStyle.font = font;
@@ -54,15 +59,6 @@ public class GameButton {
                 runnable.run();
             }
         });
-    }
-
-    /**
-     * Change font method
-     * @param font - Bitmap font instance#
-     * @see BitmapFont
-     */
-    public void setFont(BitmapFont font) {
-        this.font = font;
     }
 
     /**

@@ -3,7 +3,8 @@ package com.mygdx.claninvasion.model.player;
 import com.badlogic.gdx.graphics.Color;
 import com.mygdx.claninvasion.model.GameModel;
 import com.mygdx.claninvasion.model.entity.*;
-import com.mygdx.claninvasion.model.level.*;
+import com.mygdx.claninvasion.model.level.Level;
+import com.mygdx.claninvasion.model.level.LevelIterator;
 import com.mygdx.claninvasion.model.map.WorldCell;
 import com.mygdx.claninvasion.model.map.WorldMap;
 import org.javatuples.Pair;
@@ -47,10 +48,10 @@ public class Player implements Winnable {
     static final ReadWriteLock sync = new ReentrantReadWriteLock();
 
 
-    public static final int INITIAL_WEALTH = 3000;
+    public static final int INITIAL_WEALTH = 1000;
     public static final int MAX_GOLDMINE = 3;
     /**
-     * Opponent of the active player 
+     * Opponent of the active player
      */
     private Player opponent;
 
@@ -276,8 +277,8 @@ public class Player implements Winnable {
                 soldier.getPosition().getValue1()
         );
         Pair<Integer, Integer> posDst = new Pair<>(
-                opponent.getCastle().getPosition().getValue0() + index + 1,
-                opponent.getCastle().getPosition().getValue1() + index + 1
+                opponent.getCastle().getPosition().getValue0() + index + 1 ,
+                opponent.getCastle().getPosition().getValue1() + 1
         );
         int positionSrc = game.getWorldMap().transformMapPositionToIndex(posSrc);
         int positionDest = game.getWorldMap().transformMapPositionToIndex(posDst);
@@ -289,12 +290,10 @@ public class Player implements Winnable {
                 upcoming.start();
             }
             counter++;
-            synchronized (sync) {
-                try {
-                    Thread.sleep(movingSpeed);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+            try {
+                Thread.sleep( movingSpeed );
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
         }
     }
@@ -435,6 +434,25 @@ public class Player implements Winnable {
 
     public boolean isAlive() {
         return castle.isAlive();
+    }
+
+    private <T extends ArtificialEntity>Optional<LevelIterator<? extends Level>> getEntityLevel(List<T> entities) {
+        if (this.getTowers().size() == 0) {
+            return Optional.empty();
+        }
+        return Optional.ofNullable(entities.get(0).getLevel());
+    }
+
+    public LevelIterator<? extends Level> getCastleLevel() {
+        return castle.getLevel();
+    }
+
+    public Optional<LevelIterator<? extends Level>> getTowersLevel() {
+        return getEntityLevel(towers);
+    }
+
+    public Optional<LevelIterator<? extends Level>> getSoldiersLevel() {
+        return getEntityLevel(soldiers);
     }
 
     @Override
