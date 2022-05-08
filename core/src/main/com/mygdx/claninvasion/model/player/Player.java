@@ -3,8 +3,7 @@ package com.mygdx.claninvasion.model.player;
 import com.badlogic.gdx.graphics.Color;
 import com.mygdx.claninvasion.model.GameModel;
 import com.mygdx.claninvasion.model.entity.*;
-import com.mygdx.claninvasion.model.level.Level;
-import com.mygdx.claninvasion.model.level.LevelIterator;
+import com.mygdx.claninvasion.model.level.*;
 import com.mygdx.claninvasion.model.map.WorldCell;
 import com.mygdx.claninvasion.model.map.WorldMap;
 import org.javatuples.Pair;
@@ -436,23 +435,20 @@ public class Player implements Winnable {
         return castle.isAlive();
     }
 
-    private <T extends ArtificialEntity>Optional<LevelIterator<? extends Level>> getEntityLevel(List<T> entities) {
-        if (this.getTowers().size() == 0) {
-            return Optional.empty();
-        }
-        return Optional.ofNullable(entities.get(0).getLevel());
-    }
-
     public LevelIterator<? extends Level> getCastleLevel() {
         return castle.getLevel();
     }
 
-    public Optional<LevelIterator<? extends Level>> getTowersLevel() {
-        return getEntityLevel(towers);
+    public LevelIterator<? extends Level> getTowersLevel() {
+        return gameTowerLevelIterator;
     }
 
-    public Optional<LevelIterator<? extends Level>> getSoldiersLevel() {
-        return getEntityLevel(soldiers);
+    public LevelIterator<? extends Level> getSoldiersLevel() {
+        return soldierLevelIterator;
+    }
+
+    public GameMiningLevelIterator getMiningLevelIterator() {
+        return miningLevelIterator;
     }
 
     @Override
