@@ -2,11 +2,7 @@ package com.mygdx.claninvasion.model.entity;
 
 import com.mygdx.claninvasion.model.level.*;
 import org.javatuples.Pair;
-
 import java.util.concurrent.*;
-import java.util.concurrent.atomic.AtomicInteger;
-
-import static java.util.concurrent.TimeUnit.MILLISECONDS;
 
 /**
  * Mining farm
@@ -15,53 +11,21 @@ import static java.util.concurrent.TimeUnit.MILLISECONDS;
 public class MiningFarm extends ArtificialEntity implements Runnable, Mineable {
     public static int COST = 250;
     private BlockingQueue<Integer> coins;
-    private final int healthDecreaseRate = 10;
+    private final int healthDecreaseRate;
     private static final int HP_OFFSET_X = 20;
-
-    public static int creationTime;
-    public static GameMiningLevel gameMiningLevel;
-    private int currentHealth;
 
     public MiningFarm(EntitySymbol entitySymbol, Pair<Integer, Integer> position, BlockingQueue<Integer> queue) {
         super(entitySymbol, position);
         coins = queue;
-
-        changeLevel();
-
-        currentHealth = gameMiningLevel.getMaxHealth();
-        super.setHealth(currentHealth);
-        System.out.println("Max Health of this mine is " + this.currentHealth);
-
-        try {
-            createMiningFarm.get();
-        } catch (InterruptedException | ExecutionException e) {
-            System.out.println("Mine Farm creation did not work");
-        }
-
-    }
-
-    public static void changeLevel() {
-        MiningFarm.creationTime = gameMiningLevel.getCreationTime();
-        MiningFarm.COST = (gameMiningLevel.getCreationCost() + 80);
+        level = Levels.createMiningLevelIterator();
+        healthDecreaseRate = level.current().getHealHealthIncrease();
+        super.setHealth(level.current().getMaxHealth());
     }
 
     @Override
     public void changePosition(Pair<Integer, Integer> position) {
         throw new RuntimeException("Can not change goldmine position after initialization");
     }
-
-    CompletableFuture<Void> createMiningFarm = CompletableFuture.runAsync(new Runnable() {
-        @Override
-        public void run() {
-            try {
-                MILLISECONDS.sleep(creationTime);
-            } catch (InterruptedException e) {
-                throw new IllegalStateException(e);
-            }
-            System.out.println("Mining Farm is created successfully");
-        }
-    });
-
 
     public void setCoins(BlockingQueue<Integer> queue) {
         coins = queue;
@@ -85,12 +49,10 @@ public class MiningFarm extends ArtificialEntity implements Runnable, Mineable {
             }
 
             try {
-                int reaction = gameMiningLevel.getReactionTime();
+                int reaction = level.current().getReactionTime();
                 int boundedRandomValue = ThreadLocalRandom.current().nextInt(reaction / 2, reaction);
                 int gold = ((GameMiningLevelIterator)level).current().getGoldBonus();
                 setDecreaseHealth(healthDecreaseRate);
-
-                System.out.println("The reaction time is " + boundedRandomValue);
                 Thread.sleep(boundedRandomValue);
                 coins.put(gold);
             } catch (InterruptedException e) {

@@ -26,12 +26,8 @@ public abstract class ArtificialEntity extends Entity {
     private UUID id;
 
 
-    public void setHealth(int newHealth) {
+    protected void setHealth(int newHealth) {
         this.health.set(newHealth);
-    }
-
-    public void setHealth(AtomicInteger health) {
-        this.health = health;
     }
 
     ArtificialEntity(EntitySymbol entitySymbol, Pair<Integer, Integer> position) {
@@ -81,8 +77,8 @@ public abstract class ArtificialEntity extends Entity {
             return;
         }
 
-       /*  Thread thread = new Thread(() -> {
-            while (getPercentage().get() < Tower.gameTowerLevel.getHealGoalPoint()) {
+       Thread thread = new Thread(() -> {
+            while (getPercentage().get() < level.current().getHealGoalPoint()) {
                 try {
                     setIncreaseHealth();
                     Thread.sleep(level.current().getReactionTime());
@@ -92,10 +88,7 @@ public abstract class ArtificialEntity extends Entity {
             }
         });
 
-        thread.start();*/
-
-        int newHealth  = this.health.intValue() + getHealthPercentageValue();
-        setHealth(newHealth);
+        thread.start();
     }
 
     /**
@@ -142,10 +135,6 @@ public abstract class ArtificialEntity extends Entity {
                 (health.get() / (float) initHealth) * 100;
     }
 
-    public int getHealthPercentageValue() {
-        return (int) (((float) Tower.gameTowerLevel.getHealGoalPoint() / (float) 100.0) * (float) health.intValue());
-    }
-
     public AtomicLong getPercentage() {
         return new AtomicLong(health.get() / (long) initHealth * 100);
     }
@@ -161,15 +150,20 @@ public abstract class ArtificialEntity extends Entity {
         return level;
     }
 
+    public boolean changeLevel() {
+        if (level.hasNext()) {
+            level.next();
+            return true;
+        }
+
+        return false;
+    }
+
     /**
      * Change level
      */
-    public void setLevel(LevelIterator<Level> level) {
+    public <T extends Level>void setLevel(LevelIterator<T> level) {
         this.level = level;
-    }
-
-    public void nextLevel() {
-        this.level.next();
     }
 
     public UUID getId() {
@@ -179,9 +173,4 @@ public abstract class ArtificialEntity extends Entity {
     public AtomicInteger getReactionTime() {
         return reactionTime;
     }
-
-    public void setReactionTime(AtomicInteger reactionTime) {
-        this.reactionTime = reactionTime;
-    }
-
 }

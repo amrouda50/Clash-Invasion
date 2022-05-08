@@ -23,30 +23,9 @@ public abstract class Soldier extends ArtificialEntity {
     private static final int STEP = 1;
     private final AtomicBoolean hasTrained = new AtomicBoolean(false);
 
-    public static int creationTime;
-    public static GameSoldierLevel gameSoldierLevel;
-    public static int maxHealth;
-
     public Soldier(EntitySymbol entitySymbol, Pair<Integer, Integer> position) {
         super(entitySymbol, position);
         level = Levels.createSoldierLevelIterator();
-
-        maxHealth = maxHealth + gameSoldierLevel.getHitsPointBonus();
-        setHealth(maxHealth);
-
-        changeLevel();
-        try {
-            createSoldier.get();
-        } catch (InterruptedException | ExecutionException e) {
-            System.out.println("Soldier creation did not work");
-        }
-    }
-
-    public static void changeLevel() {
-        Soldier.creationTime = gameSoldierLevel.getCreationTime();
-        Barbarian.COST = gameSoldierLevel.getCreationCost();
-        Dragon.COST = gameSoldierLevel.getCreationCost();
-        Soldier.maxHealth = gameSoldierLevel.getMaxHealth();
     }
 
     /**
@@ -55,26 +34,13 @@ public abstract class Soldier extends ArtificialEntity {
      * @see Castle
      */
     public void attackCastle(Castle castle) {
-
         float distance = getVec2Position().dst(castle.getVec2Position().x, castle.getVec2Position().y);
 
         GameSoldierLevelIterator level = (GameSoldierLevelIterator) this.level;
-        if (distance < gameSoldierLevel.getVisibleArea()) {
-            castle.damage(ATTACK + gameSoldierLevel.getAttackIncrease());
+        if (distance < level.current().getVisibleArea()) {
+            castle.damage(ATTACK + level.current().getAttackIncrease());
         }
     }
-
-    CompletableFuture<Void> createSoldier = CompletableFuture.runAsync(new Runnable() {
-        @Override
-        public void run() {
-            try {
-                MILLISECONDS.sleep(creationTime);
-            } catch (InterruptedException e) {
-                throw new IllegalStateException(e);
-            }
-            System.out.println("The soldier is trained successfully after creation time of " + Soldier.creationTime);
-        }
-    });
 
     /**
      * Make a step inside map

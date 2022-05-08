@@ -3,9 +3,7 @@ package com.mygdx.claninvasion.model.player;
 import com.badlogic.gdx.graphics.Color;
 import com.mygdx.claninvasion.model.GameModel;
 import com.mygdx.claninvasion.model.entity.*;
-import com.mygdx.claninvasion.model.level.GameMiningLevelIterator;
-import com.mygdx.claninvasion.model.level.GameSoldierLevelIterator;
-import com.mygdx.claninvasion.model.level.GameTowerLevelIterator;
+import com.mygdx.claninvasion.model.level.*;
 import com.mygdx.claninvasion.model.map.WorldCell;
 import com.mygdx.claninvasion.model.map.WorldMap;
 import org.javatuples.Pair;
@@ -97,9 +95,9 @@ public class Player implements Winnable {
     private final ExecutorService executorService;
     private final Color color;
 
-    public static GameTowerLevelIterator gameTowerLevelIterator;
-    public static GameMiningLevelIterator miningLevelIterator;
-    public static GameSoldierLevelIterator soldierLevelIterator;
+    private GameTowerLevelIterator gameTowerLevelIterator;
+    private GameMiningLevelIterator miningLevelIterator;
+    private GameSoldierLevelIterator soldierLevelIterator;
 
     public Player(GameModel game, Color c) {
         this.color = c;
@@ -114,16 +112,9 @@ public class Player implements Winnable {
         executorService.execute(this::consumeGold);
         winningState = WinningState.UKNOWN;
 
-
         gameTowerLevelIterator = createTowerLevelIterator();
-        Tower.gameTowerLevel = gameTowerLevelIterator.next();
-
-
         miningLevelIterator = createMiningLevelIterator();
-        MiningFarm.gameMiningLevel = miningLevelIterator.next();
-
         soldierLevelIterator = createSoldierLevelIterator();
-        Soldier.gameSoldierLevel = soldierLevelIterator.next();
     }
 
     public void changeCastle(Castle castle) {
@@ -201,12 +192,10 @@ public class Player implements Winnable {
             return null;
         }
         Tower tower = (Tower) game.getWorldMap().createMapEntity(EntitySymbol.TOWER, cell, null);
-        int healHealthIncrease = Tower.gameTowerLevel.getHealHealthIncrease();
-        castle.healHealthIncrease(healHealthIncrease);
-        System.out.println("Castle's health has been healed and now it is " + castle.getHealth());
+        tower.setLevel(gameTowerLevelIterator);
 
         towers.add(tower);
-        wealth.set(wealth.get() - Tower.COST);
+        wealth.set(wealth.get() - tower.getLevel().current().getCreationCost());
         return tower;
     }
 
@@ -220,20 +209,12 @@ public class Player implements Winnable {
     }
 
     /**
-     * This method starts the mining for the active player
-     */
-    public void doMining() {
-    }
-
-    /**
      * This will add more soldiers
      * to player's army
      */
     public CompletionStage<Void> trainSoldiers(EntitySymbol entitySymbol) {
         return castle
                 .trainSoldiers(entitySymbol, (cost) -> {
-                    int healHealthIncrease = Soldier.gameSoldierLevel.getHealHealthIncrease();
-                    castle.healHealthIncrease(healHealthIncrease);
                     wealth.set(wealth.get() - cost);
                     return false;
                 })
@@ -248,6 +229,7 @@ public class Player implements Winnable {
             e.printStackTrace();
         }
         Soldier soldier1 = (Soldier) game.getWorldMap().createMapEntity(soldier.getSymbol(), soldier.getPosition(), null);
+        soldier.setLevel(soldierLevelIterator);
         soldiers.add(soldier1);
     }
 
@@ -301,7 +283,7 @@ public class Player implements Winnable {
         int positionSrc = game.getWorldMap().transformMapPositionToIndex(posSrc);
         int positionDest = game.getWorldMap().transformMapPositionToIndex(posDst);
         int counter = 0;
-        int movingSpeed = Soldier.gameSoldierLevel.getMovementSpeed();
+        int movingSpeed = soldier.getLevel().current().getReactionTime();
         while (positionSrc != positionDest) {
             positionSrc = moveSoldier(soldier, positionSrc, positionDest, 0);
             if (counter == 2 && upcoming != null) {
@@ -425,7 +407,7 @@ public class Player implements Winnable {
     }
 
     public boolean canCreateTower() {
-        return getWealth() >= Tower.COST;
+        return getWealth() >= gameTowerLevelIterator.current().getCreationCost();
     }
 
     public boolean canCreateDragon() {
@@ -472,17 +454,23 @@ public class Player implements Winnable {
     * This method checks if there is any next level and then iterates to the next
     * */
     public void levelUp() {
-        try {
-        if (gameTowerLevelIterator.hasNext() ) {
-                Tower.gameTowerLevel = gameTowerLevelIterator.next();
-                MiningFarm.gameMiningLevel = miningLevelIterator.next();
-                Soldier.gameSoldierLevel = soldierLevelIterator.next();
-                castle.nextLevel();
-                Tower.changeLevel();
-                MiningFarm.changeLevel();
-                Soldier.changeLevel();
-        } } catch (Exception e) {
-                System.out.println("There are no new levels");
+        if (castle.getLevel().hasNext()) {
+            castle.changeLevel();
+            gameTowerLevelIterator.next();
+            miningLevelIterator.next();
+            soldierLevelIterator.next();
+
+            for (MiningFarm miningFarm : miningFarms) {
+                miningFarm.changeLevel();
+            }
+
+            for (Soldier soldier : soldiers) {
+                soldier.changeLevel();
+            }
+
+            for (Tower tower : towers) {
+                tower.changeLevel();
+            }
         }
     }
 }
