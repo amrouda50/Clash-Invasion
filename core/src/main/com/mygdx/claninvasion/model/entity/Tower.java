@@ -2,15 +2,20 @@ package com.mygdx.claninvasion.model.entity;
 
 import com.mygdx.claninvasion.model.level.Level;
 import com.mygdx.claninvasion.model.level.LevelIterator;
+import com.mygdx.claninvasion.model.level.Levels;
 import org.javatuples.Pair;
-
-import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 
 public class Tower extends ArtificialEntity implements Defensible {
-    public static int COST = 200;
+    private final int radius = 4;
+
     public Tower(EntitySymbol entitySymbol, Pair<Integer, Integer> position) {
         super(entitySymbol, position);
 
+        level = Levels.createTowerLevelIterator();
+        health = new AtomicInteger();
+        super.setHealth(level.current().getMaxHealth());
     }
 
     Tower(LevelIterator<Level> levelIterator) {
@@ -19,7 +24,19 @@ public class Tower extends ArtificialEntity implements Defensible {
 
     @Override
     public void damage(int amount) {
-        super.damage(amount);
+        if (isAlive()) {
+            super.damage(amount);
+        } else {
+            remove();
+        }
+    }
+
+    @Override
+    public AtomicLong getPercentage() {
+        return super.getPercentage();
+    }
+
+    private void remove() {
     }
 
     @Override
@@ -27,24 +44,24 @@ public class Tower extends ArtificialEntity implements Defensible {
         super.heal();
     }
 
-    public static int RADIUS = 4;
-
     public boolean canFire(ArtificialEntity entity) {
         float distance = getVec2Position().dst(
                 entity.getVec2Position().x,
                 entity.getVec2Position().y
         );
 
-        return distance <= RADIUS;
+        return distance <= radius;
     }
-
 
     @Override
     public void attack(ArtificialEntity artificialEntity) {
+        reactionTime.get();
+
         if (!artificialEntity.isAlive()) {
             return;
         }
+
         artificialEntity.setDecreaseHealth(85);
-        System.out.println("Descresing.. Current is" + artificialEntity.getHealth() + ", Entity " + artificialEntity);
     }
 }
+

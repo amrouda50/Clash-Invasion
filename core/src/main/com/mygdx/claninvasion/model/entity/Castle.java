@@ -96,6 +96,10 @@ public final class Castle extends ArtificialEntity {
     public void damageOpponents() {
     }
 
+    public void healHealthIncrease(int amount){
+        this.health = new AtomicInteger(getHealth() + amount);
+    }
+
     public Stack<Soldier> getSoldiers() {
         return soldiers;
     }
