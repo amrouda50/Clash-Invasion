@@ -16,7 +16,6 @@ import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
-import java.util.concurrent.locks.ReentrantReadWriteLock.ReadLock;
 
 import static com.mygdx.claninvasion.model.level.Levels.*;
 
@@ -95,9 +94,9 @@ public class Player implements Winnable {
     private final ExecutorService executorService;
     private final Color color;
 
-    private GameTowerLevelIterator gameTowerLevelIterator;
-    private GameMiningLevelIterator miningLevelIterator;
-    private GameSoldierLevelIterator soldierLevelIterator;
+    private final GameTowerLevelIterator gameTowerLevelIterator;
+    private final GameMiningLevelIterator miningLevelIterator;
+    private final GameSoldierLevelIterator soldierLevelIterator;
 
     public Player(GameModel game, Color c) {
         this.color = c;
@@ -423,7 +422,7 @@ public class Player implements Winnable {
     }
 
     public boolean canUpdateLevel() {
-        return getWealth() >= 1000;
+        return castle.getLevel().hasNext() && getWealth() >= 1000;
     }
 
     public Stack<Soldier> getTrainingSoldiers() {
@@ -456,9 +455,18 @@ public class Player implements Winnable {
     public void levelUp() {
         if (castle.getLevel().hasNext()) {
             castle.changeLevel();
-            gameTowerLevelIterator.next();
-            miningLevelIterator.next();
-            soldierLevelIterator.next();
+            wealth.set(wealth.get() - 500);
+            if (gameTowerLevelIterator.hasNext()) {
+                gameTowerLevelIterator.next();
+            }
+
+            if (miningLevelIterator.hasNext()) {
+                miningLevelIterator.next();
+            }
+
+            if (soldierLevelIterator.hasNext()) {
+                soldierLevelIterator.next();
+            }
 
             for (MiningFarm miningFarm : miningFarms) {
                 miningFarm.changeLevel();

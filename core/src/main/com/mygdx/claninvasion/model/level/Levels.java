@@ -1,18 +1,17 @@
 package com.mygdx.claninvasion.model.level;
 
 import java.util.Arrays;
-
 import java.util.ArrayList;
 
 import org.javatuples.Septet;
 
 public class Levels {
     private static final Septet<Integer, Integer, Integer, Integer, Integer, Integer, Integer> level0 =
-            new Septet<>(1000, 200, 1000, 0, 1000, 10, 30);
+            new Septet<>(600, 200, 1000, 0, 600, 10, 30);
     private static final Septet<Integer, Integer, Integer, Integer, Integer, Integer, Integer> level1 =
-            new Septet<>(800, 210, 1090, 0, 1000, 10, 35);
+            new Septet<>(500, 210, 1090, 0, 500, 10, 35);
     private static final Septet<Integer, Integer, Integer, Integer, Integer, Integer, Integer> level2 =
-            new Septet<>(500, 280, 1090, 0, 1000, 10, 35);
+            new Septet<>(200, 280, 1090, 0, 460, 10, 35);
 
     private static final ArrayList<GameTowerLevel> towerLevels = new ArrayList<>(
             Arrays.asList(

@@ -26,11 +26,7 @@ public class LevelIterator<L extends Level> implements Iterator<L> {
 
     @Override
     public boolean hasNext() {
-        return currentLevelNumber <= levels.size();
-    }
-
-    public int getLevelSize() {
-        return levels.size();
+        return currentLevelNumber + 1 < levels.size();
     }
 
     public L current() {
@@ -39,7 +35,8 @@ public class LevelIterator<L extends Level> implements Iterator<L> {
 
     @Override
     public L next() {
-        return levels.get(currentLevelNumber++);
+        currentLevelNumber += 1;
+        return current();
     }
 
     @Override

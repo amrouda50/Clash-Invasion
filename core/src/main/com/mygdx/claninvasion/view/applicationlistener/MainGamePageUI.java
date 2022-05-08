@@ -17,7 +17,6 @@ import com.mygdx.claninvasion.ClanInvasion;
 import com.mygdx.claninvasion.model.entity.*;
 import com.mygdx.claninvasion.model.gamestate.Building;
 import com.mygdx.claninvasion.model.player.Player;
-import com.mygdx.claninvasion.view.actors.HealthBar;
 import com.mygdx.claninvasion.view.utils.InputClicker;
 import org.javatuples.Pair;
 import org.javatuples.Quartet;
@@ -219,7 +218,6 @@ public final class MainGamePageUI implements ApplicationListener {
                 if (!player.equals(app.getCurrentPlayer())) {
                     return;
                 }
-                System.out.println(selectBox.getSelected().split(" ")[1]);
                 switch (selectBox.getSelected().split(" ")[1]) {
                     case "Tower":
                         if (player.canCreateTower()) {
@@ -238,9 +236,7 @@ public final class MainGamePageUI implements ApplicationListener {
                         }
                         break;
                     case "Level":
-                        System.out.println("You are about to update");
-                        if(player.canUpdateLevel()) {
-                            System.out.println("You have funds to update");
+                        if (player.canUpdateLevel()) {
                             player.levelUp();
                         }
                         break;
