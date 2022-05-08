@@ -25,7 +25,6 @@ public abstract class Soldier extends ArtificialEntity {
 
     public Soldier(EntitySymbol entitySymbol, Pair<Integer, Integer> position) {
         super(entitySymbol, position);
-        level = Levels.createSoldierLevelIterator();
     }
 
     /**
@@ -63,7 +62,7 @@ public abstract class Soldier extends ArtificialEntity {
 
     private int trainCall() {
         try {
-            Thread.sleep(500);
+            Thread.sleep(level.current().getCreationTime());
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

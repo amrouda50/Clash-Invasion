@@ -65,12 +65,18 @@ public final class MainGamePageUI implements ApplicationListener {
         PlayerActionMethods methods = new PlayerActionMethods(player);
 
         // train soldiers
-        TableWithOptions.Option trainBarbarian = new TableWithOptions.Option("Train Barbarian", Barbarian.COST, atlasSkin, app.getFont(), 0);
+        TableWithOptions.Option trainBarbarian = new TableWithOptions.Option(
+                "Train Barbarian",
+                player.getBarbarianCost(),
+                atlasSkin,
+                app.getFont(),
+                0
+        );
         trainBarbarian.setActionable((option) -> {
             methods.createBarbarian();
             this.tableWithOptions.setIsOpen(false);
         });
-        TableWithOptions.Option trainDragon = new TableWithOptions.Option("Train Dragon", Dragon.COST, atlasSkin, app.getFont(), 1);
+        TableWithOptions.Option trainDragon = new TableWithOptions.Option("Train Dragon", player.getDragonCost(), atlasSkin, app.getFont(), 1);
         trainDragon.setActionable((option) -> {
             methods.createDragon();
             this.tableWithOptions.setIsOpen(false);
@@ -88,7 +94,7 @@ public final class MainGamePageUI implements ApplicationListener {
         options.add(chooseTrainSoldier);
 
         // create towers
-        TableWithOptions.Option trainTowers = new TableWithOptions.Option("Train tower", Tower.COST, atlasSkin, app.getFont(), 0);
+        TableWithOptions.Option trainTowers = new TableWithOptions.Option("Train tower", player.getTowerCost(), atlasSkin, app.getFont(), 0);
         trainTowers.setActionable((option) -> {
             methods.createTower();
             this.tableWithOptions.setIsOpen(false);
@@ -105,13 +111,19 @@ public final class MainGamePageUI implements ApplicationListener {
         chooseTowerType.setActionable((option) -> tableWithOptions.goIntoChildOptions(option.getIndex()));
         options.add(chooseTowerType);
 
-        TableWithOptions.Option buildGoldmine = new TableWithOptions.Option("Build Goldmine", MiningFarm.COST, atlasSkin, app.getFont(), 2);
+        TableWithOptions.Option buildGoldmine = new TableWithOptions.Option("Build Goldmine", player.getMiningCost(), atlasSkin, app.getFont(), 2);
         buildGoldmine.setActionable((option) -> {
             methods.createGoldmine();
             this.tableWithOptions.setIsOpen(false);
         });
         options.add(buildGoldmine);
-        options.add(new TableWithOptions.Option("Upgrade Level", 0, atlasSkin, app.getFont(), 3));
+        TableWithOptions.Option updateLevel = new TableWithOptions.Option("Upgrade Level", 0, atlasSkin, app.getFont(), 3);
+        updateLevel.setActionable(option -> {
+            player.levelUp();
+            System.out.println("Level Successfully Updated");
+            this.tableWithOptions.setIsOpen(false);
+        });
+        options.add(updateLevel);
 
         if (tableWithOptions == null) {
             tableWithOptions = new TableWithOptions(70, 70 , options, atlasSkin);
@@ -433,9 +445,7 @@ public final class MainGamePageUI implements ApplicationListener {
             if (disableClick()) return;
             if (player.canCreateBarbarian()) {
                 InputClicker.enabled = false;
-                player.trainSoldiers(EntitySymbol.BARBARIAN, () -> {
-                    System.out.println("New barbarian trained");
-                });
+                player.trainSoldiers(EntitySymbol.BARBARIAN, () -> System.out.println("New barbarian trained"));
             } else {
                 System.out.println("Not enough money for this action");
             }
@@ -445,9 +455,7 @@ public final class MainGamePageUI implements ApplicationListener {
             if (disableClick()) return;
             if (player.canCreateDragon()) {
                 InputClicker.enabled = false;
-                player.trainSoldiers(EntitySymbol.DRAGON, () -> {
-                    System.out.println("New barbarian trained");
-                });
+                player.trainSoldiers(EntitySymbol.DRAGON, () -> System.out.println("New dragon trained"));
             } else {
                 System.out.println("Not enough money for this action");
             }

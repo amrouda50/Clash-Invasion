@@ -8,8 +8,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
 public class Tower extends ArtificialEntity implements Defensible {
-    public static int COST = 250;
-    public static int RADIUS = 4;
+    private final int radius = 4;
 
     public Tower(EntitySymbol entitySymbol, Pair<Integer, Integer> position) {
         super(entitySymbol, position);
@@ -40,7 +39,6 @@ public class Tower extends ArtificialEntity implements Defensible {
     private void remove() {
     }
 
-
     @Override
     public void heal() {
         super.heal();
@@ -52,7 +50,7 @@ public class Tower extends ArtificialEntity implements Defensible {
                 entity.getVec2Position().y
         );
 
-        return distance <= RADIUS;
+        return distance <= radius;
     }
 
     @Override

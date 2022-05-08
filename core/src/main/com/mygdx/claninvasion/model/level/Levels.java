@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import org.javatuples.Septet;
 
 public class Levels {
+    // creationTime, creationCost, maxHealth, minHealth, reactionTime, healHealthIncrease, healGoalPoint
     private static final Septet<Integer, Integer, Integer, Integer, Integer, Integer, Integer> level0 =
             new Septet<>(600, 200, 1000, 0, 600, 10, 30);
     private static final Septet<Integer, Integer, Integer, Integer, Integer, Integer, Integer> level1 =
@@ -40,11 +41,19 @@ public class Levels {
             )
     );
 
-    private static final ArrayList<GameSoldierLevel> soldierLevels = new ArrayList<>(
+    private static final ArrayList<GameSoldierLevel> barbarianLevels = new ArrayList<>(
             Arrays.asList(
-                    new GameSoldierLevel(level0, 30, 100, 1, 2),
-                    new GameSoldierLevel(level1, 40, 170, 2, 2),
-                    new GameSoldierLevel(level2, 44, 190, 3, 3)
+                    new GameSoldierLevel(level0, 30, 600, 1, 2),
+                    new GameSoldierLevel(level1, 40, 500, 2, 2),
+                    new GameSoldierLevel(level2, 44, 460, 3, 3)
+            )
+    );
+
+    private static final ArrayList<GameSoldierLevel> dragonLevels = new ArrayList<>(
+            Arrays.asList(
+                    new GameSoldierLevel(new Septet<>(750, 350, 1100, 0, 450, 10, 30), 50, 300, 4, 3),
+                    new GameSoldierLevel(new Septet<>(650, 450, 1200, 0, 450, 10, 30), 60, 250, 5, 3),
+                    new GameSoldierLevel(new Septet<>(650, 550, 1250, 0, 450, 10, 30), 65, 246, 5, 5)
             )
     );
 
@@ -56,8 +65,12 @@ public class Levels {
         return new GameMiningLevelIterator(miningLevels);
     }
 
-    public static GameSoldierLevelIterator createSoldierLevelIterator() {
-        return new GameSoldierLevelIterator(soldierLevels);
+    public static GameSoldierLevelIterator createBarbarianLevelIterator() {
+        return new GameSoldierLevelIterator(barbarianLevels);
+    }
+
+    public static GameSoldierLevelIterator createDragonLevelIterator() {
+        return new GameSoldierLevelIterator(dragonLevels);
     }
 
     public static GameTowerLevelIterator createTowerLevelIterator() {

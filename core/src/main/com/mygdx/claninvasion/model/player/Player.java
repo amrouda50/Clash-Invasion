@@ -47,8 +47,9 @@ public class Player implements Winnable {
     static final ReadWriteLock sync = new ReentrantReadWriteLock();
 
 
-    public static final int INITIAL_WEALTH = 1000;
-    public static final int MAX_GOLDMINE = 3;
+    private static final int INITIAL_WEALTH = 1000;
+    private static final int INCREASE_LEVEL_COST = 500;
+    private static final int MAX_GOLDMINE = 3;
     /**
      * Opponent of the active player
      */
@@ -96,7 +97,8 @@ public class Player implements Winnable {
 
     private final GameTowerLevelIterator gameTowerLevelIterator;
     private final GameMiningLevelIterator miningLevelIterator;
-    private final GameSoldierLevelIterator soldierLevelIterator;
+    private final GameSoldierLevelIterator barbarianLevelIterator;
+    private final GameSoldierLevelIterator dragonLevelIterator;
 
     public Player(GameModel game, Color c) {
         this.color = c;
@@ -113,7 +115,8 @@ public class Player implements Winnable {
 
         gameTowerLevelIterator = createTowerLevelIterator();
         miningLevelIterator = createMiningLevelIterator();
-        soldierLevelIterator = createSoldierLevelIterator();
+        barbarianLevelIterator = createBarbarianLevelIterator();
+        dragonLevelIterator = createDragonLevelIterator();
     }
 
     public void changeCastle(Castle castle) {
@@ -128,7 +131,7 @@ public class Player implements Winnable {
         MiningFarm farm = (MiningFarm) game.getWorldMap().createMapEntity(EntitySymbol.MINING, cell, coinProduceQueue);
         executorService.execute(farm::startMining);
         miningFarms.add(farm);
-        wealth.set(wealth.get() - MiningFarm.COST);
+        wealth.set(wealth.get() - miningLevelIterator.current().getCreationCost());
         return farm;
     }
 
@@ -228,7 +231,12 @@ public class Player implements Winnable {
             e.printStackTrace();
         }
         Soldier soldier1 = (Soldier) game.getWorldMap().createMapEntity(soldier.getSymbol(), soldier.getPosition(), null);
-        soldier.setLevel(soldierLevelIterator);
+        if (soldier1 instanceof Barbarian) {
+            soldier1.setLevel(barbarianLevelIterator);
+        } else {
+            soldier1.setLevel(dragonLevelIterator);
+        }
+
         soldiers.add(soldier1);
     }
 
@@ -408,19 +416,19 @@ public class Player implements Winnable {
     }
 
     public boolean canCreateDragon() {
-        return getWealth() >= Castle.AMOUNT_OF_SOLDIERS * Dragon.COST;
+        return getWealth() >= Castle.AMOUNT_OF_SOLDIERS * dragonLevelIterator.current().getCreationCost();
     }
 
     public boolean canCreateBarbarian() {
-        return getWealth() >= Castle.AMOUNT_OF_SOLDIERS * Barbarian.COST;
+        return getWealth() >= Castle.AMOUNT_OF_SOLDIERS * barbarianLevelIterator.current().getCreationCost();
     }
 
     public boolean canCreateMining() {
-        return getWealth() >= MiningFarm.COST;
+        return getWealth() >= miningLevelIterator.current().getCreationCost();
     }
 
     public boolean canUpdateLevel() {
-        return castle.getLevel().hasNext() && getWealth() >= 1000;
+        return castle.getLevel().hasNext() && getWealth() >= INCREASE_LEVEL_COST;
     }
 
     public Stack<Soldier> getTrainingSoldiers() {
@@ -435,20 +443,20 @@ public class Player implements Winnable {
         return castle.isAlive();
     }
 
-    public LevelIterator<? extends Level> getCastleLevel() {
-        return castle.getLevel();
+    public int getTowerCost() {
+        return gameTowerLevelIterator.current().getCreationCost();
     }
 
-    public LevelIterator<? extends Level> getTowersLevel() {
-        return gameTowerLevelIterator;
+    public int getBarbarianCost() {
+        return gameTowerLevelIterator.current().getCreationCost();
     }
 
-    public LevelIterator<? extends Level> getSoldiersLevel() {
-        return soldierLevelIterator;
+    public int getDragonCost() {
+        return dragonLevelIterator.current().getCreationCost();
     }
 
-    public GameMiningLevelIterator getMiningLevelIterator() {
-        return miningLevelIterator;
+    public int getMiningCost() {
+        return miningLevelIterator.current().getCreationCost();
     }
 
     @Override
@@ -469,7 +477,7 @@ public class Player implements Winnable {
     public void levelUp() {
         if (castle.getLevel().hasNext()) {
             castle.changeLevel();
-            wealth.set(wealth.get() - 500);
+            wealth.set(wealth.get() - INCREASE_LEVEL_COST);
             if (gameTowerLevelIterator.hasNext()) {
                 gameTowerLevelIterator.next();
             }
@@ -478,8 +486,12 @@ public class Player implements Winnable {
                 miningLevelIterator.next();
             }
 
-            if (soldierLevelIterator.hasNext()) {
-                soldierLevelIterator.next();
+            if (barbarianLevelIterator.hasNext()) {
+                barbarianLevelIterator.next();
+            }
+
+            if (dragonLevelIterator.hasNext()) {
+                dragonLevelIterator.next();
             }
 
             for (MiningFarm miningFarm : miningFarms) {
