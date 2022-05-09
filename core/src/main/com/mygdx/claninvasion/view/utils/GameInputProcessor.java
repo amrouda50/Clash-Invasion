@@ -2,11 +2,18 @@ package com.mygdx.claninvasion.view.utils;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.mygdx.claninvasion.ClanInvasion;
+import com.mygdx.claninvasion.model.Globals;
+import com.mygdx.claninvasion.model.adapters.IsometricToOrthogonalAdapt;
+import com.mygdx.claninvasion.model.entity.Castle;
+import com.mygdx.claninvasion.model.map.WorldCell;
+import com.mygdx.claninvasion.view.screens.MainGamePage;
+import org.javatuples.Pair;
 
 /**
  * Represents an event handler for libgdx input
@@ -15,7 +22,7 @@ import com.mygdx.claninvasion.ClanInvasion;
  * @version 0.1
  * @see com.badlogic.gdx.InputProcessor
  */
-public class GameInputProcessor implements InputProcessor {
+public class GameInputProcessor extends InputAdapter {
     /**
      * camera of the application
      */
@@ -25,6 +32,8 @@ public class GameInputProcessor implements InputProcessor {
 
     private final ClanInvasion app;
 
+    private Pair<Integer, Integer> previousPosition;
+
     /**
      * @param camera - camera of the application
      * @param event - event for click listeners
@@ -33,16 +42,8 @@ public class GameInputProcessor implements InputProcessor {
         this.camera = camera;
         onTouchEvent = event;
         this.app = app;
-    }
-
-    @Override
-    public boolean keyDown(int keycode) {
-        return false;
-    }
-
-    @Override
-    public boolean keyUp(int keycode) {
-        return false;
+        System.out.println(app.getScreen());
+        previousPosition = new Pair<>(0,0);
     }
 
     /**
@@ -52,6 +53,36 @@ public class GameInputProcessor implements InputProcessor {
         Vector3 mousePosition = getMousePosition();
         camera.unproject(mousePosition); // get the world position from camera
         onTouchEvent.run(mousePosition);
+    }
+
+    private void onHover() {
+        Vector3 mousePosition = getMousePosition();
+        camera.unproject(mousePosition);
+        if (app.getScreen() instanceof MainGamePage
+                && ((MainGamePage) app.getScreen()).getChosenSymbol() != null
+        ) {
+            Vector2 mouseOrtho = new IsometricToOrthogonalAdapt(new Vector2(mousePosition.x, mousePosition.y)).getPoint();
+            Vector3 mouseOrtho3 = new Vector3(mouseOrtho.x + WorldCell.getTransformWidth(), mouseOrtho.y - WorldCell.getTransformWidth(), 0);
+            Vector2 mouseOrtho2 = new Vector2(mouseOrtho3.x, mouseOrtho3.y);
+
+            Castle currentOpponentCastle = app.getModel()
+                    .getActivePlayer()
+                    .getOpponent()
+                    .getCastle();
+
+            float difference = mouseOrtho2.dst(
+                    app
+                            .getMap()
+                            .getCell(currentOpponentCastle.getPosition()).getWorldPosition()
+            );
+            if (difference <= Globals.MAX_ENTITY_CREATION_DISTANCE) {
+                InputClicker.enabled = false;
+                Cursor.changeToDisabled();
+            } else {
+                InputClicker.enabled = true;
+                Cursor.changeToDefault();
+            }
+        }
     }
 
 
@@ -89,6 +120,14 @@ public class GameInputProcessor implements InputProcessor {
              app.changeVolume();
         }
 
+        if ( previousPosition.getValue0() != Gdx.input.getX()
+            || previousPosition.getValue1() != Gdx.input.getY()
+        ) {
+            previousPosition = previousPosition.setAt0(Gdx.input.getX());
+            previousPosition = previousPosition.setAt1(Gdx.input.getY());
+            onHover();
+        }
+
         if (Gdx.input.justTouched()) {
             this.onTouch();
         }
@@ -97,32 +136,7 @@ public class GameInputProcessor implements InputProcessor {
     }
 
     @Override
-    public boolean keyTyped(char character) {
-        return false;
-    }
-
-    @Override
-    public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-        return false;
-    }
-
-    @Override
-    public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-        return false;
-    }
-
-    @Override
-    public boolean touchDragged(int screenX, int screenY, int pointer) {
-        return false;
-    }
-
-    @Override
     public boolean mouseMoved(int screenX, int screenY) {
-        return false;
-    }
-
-    @Override
-    public boolean scrolled(float amountX, float amountY) {
-        return false;
+        return super.mouseMoved(screenX, screenY);
     }
 }

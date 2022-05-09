@@ -45,13 +45,27 @@ public class MainGamePage implements GamePage, UiUpdatable {
     private final MainGamePageUI mainGamePageUI;
     private TiledMap map;
     private final FireFromEntity<Tower, Soldier> fireFromEntity = this::fireTower;
+    private EntitySymbol chosenSymbol;
 
     /**
      * @param app - app instance
      */
     public MainGamePage(ClanInvasion app) {
         this.app = app;
-        mainGamePageUI = new MainGamePageUI(app);
+        mainGamePageUI = new MainGamePageUI(app, this);
+        chosenSymbol = null;
+    }
+
+    public void setChosenSymbol(EntitySymbol entity) {
+        chosenSymbol = entity;
+    }
+
+    public EntitySymbol getChosenSymbol() {
+        return chosenSymbol;
+    }
+
+    public MainGamePageUI getUI() {
+        return mainGamePageUI;
     }
 
     /**
@@ -67,7 +81,7 @@ public class MainGamePage implements GamePage, UiUpdatable {
         }
 
         app.getCamera().update();
-        inputProcessor = new GameInputProcessor(app.getCamera(), new InputClicker(app ,mainGamePageUI), app);
+        inputProcessor = new GameInputProcessor(app.getCamera(), new InputClicker(app, this), app);
         map = new TmxMapLoader().load(Gdx.files.getLocalStoragePath() + "/TileMap/Tilemap.tmx");
         app.getMap().setTileset(map.getTileSets());
         renderer = new IsometricTiledMapGameRenderer(
