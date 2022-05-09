@@ -16,8 +16,6 @@ public class Levels {
     private static final Septet<Integer, Integer, Integer, Integer, Integer, Integer, Integer> level3 =
             new Septet<>(320, 400, 1190, 0, 420, 20, 38);
 
-
-
     private static final ArrayList<GameTowerLevel> towerLevels = new ArrayList<>(
             Arrays.asList(
                     // level 0
@@ -26,9 +24,8 @@ public class Levels {
                     new GameTowerLevel(level1, 200),
                     // level 2
                     new GameTowerLevel(level2, 170),
+                    // level 3
                     new GameTowerLevel(level3, 190)
-                    new GameTowerLevel(2,level2, 170)
-                    new GameTowerLevel(level2, 170)
             )
     );
 
@@ -68,22 +65,32 @@ public class Levels {
             )
     );
 
+    /*
+     * @return all the levels*/
     public static DefaultGameLevelIterator createLevelIterator() {
         return new DefaultGameLevelIterator(defaultLevels);
     }
 
+    /*
+     * @return all the levels of the minings*/
     public static GameMiningLevelIterator createMiningLevelIterator() {
         return new GameMiningLevelIterator(miningLevels);
     }
 
+    /*
+     * @return all the levels of the barbarians*/
     public static GameSoldierLevelIterator createBarbarianLevelIterator() {
         return new GameSoldierLevelIterator(barbarianLevels);
     }
 
+    /*
+     * @return all the levels of the dragon*/
     public static GameSoldierLevelIterator createDragonLevelIterator() {
         return new GameSoldierLevelIterator(dragonLevels);
     }
 
+    /*
+    * @return all the levels of the tower*/
     public static GameTowerLevelIterator createTowerLevelIterator() {
         return new GameTowerLevelIterator(towerLevels);
     }

@@ -13,18 +13,12 @@ import org.javatuples.Pair;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.CountDownLatch;
-import java.util.stream.Collectors;
+
 
 /**
  * Map modal of the application
  * Should represent all the map manipulations and connected to the view libgdx tilemap
  * @version 0.01
- * TODO Logic implementation required
  */
 public class WorldMap {
     private final List<WorldCell> worldCells;
@@ -153,6 +147,10 @@ public class WorldMap {
        return  this.entitiesLayer ;
     }
 
+    /*
+     * Shows the maximum row position in the map
+     * @return integer
+     * */
     public int maxCellRowPosition() {
         return worldCells
                 .stream()
@@ -162,6 +160,10 @@ public class WorldMap {
                 .getValue0();
     }
 
+    /*
+     * Shows the minimum row position in the map
+     * @return integer
+     * */
     public int minCellRowPosition() {
         return worldCells
                 .stream()
@@ -171,6 +173,10 @@ public class WorldMap {
                 .getValue0();
     }
 
+    /*
+     * Shows the maximum column position in the map
+     * @return integer
+     * */
     public int maxCellColumnPosition() {
         return worldCells
                 .stream()
@@ -180,6 +186,10 @@ public class WorldMap {
                 .getValue1();
     }
 
+    /*
+     * Shows the minimum column position in the map
+     * @return integer
+     * */
     public int minCellColumnPosition() {
         return worldCells
                 .stream()
@@ -193,6 +203,9 @@ public class WorldMap {
         return worldCells;
     }
 
+    /*
+    * Prints the symbol of entity if the entity has an occupier
+    * */
     public void printEntitiesLayer() {
         for (int i = minCellRowPosition(); i <= maxCellRowPosition(); i++) {
             System.out.print("{");
@@ -241,6 +254,7 @@ public class WorldMap {
         cell2.setOccupier(entity);
     }
 
+    /**/
     public void mutate(int index1, int index2) {
         try {
             WorldCell cell1 = getCell(index1);
@@ -268,26 +282,11 @@ public class WorldMap {
         System.out.println(size);
         this.G = new Graph(size, this);
     }
-    }*/
 
-        public List<Pair<Integer,Integer>> getNeighborsOfPoint(int x, int y) {
-            List<Pair<Integer,Integer>> neighbors = new ArrayList<>();
-            for (int xx = -1; xx <= 1; xx++) {
-                for (int yy = -1; yy <= 1; yy++) {
-                    if (xx == 0 && yy == 0) {
-                        continue; // You are not neighbor to yourself
-                    }
-                    if (Math.abs(xx) + Math.abs(yy) > 1) {
-                        continue;
-                    }
-                    if (isOnMap(x + xx, y + yy)) {
-                        neighbors.add(new Pair<>(x + xx, y + yy));
-                    }
-                }
-            }
-            return neighbors;
-        }
-
+    /*
+    * Checks if a point is on map or not
+    * @return Boolean
+    * */
     public boolean isOnMap(int x, int y) {
         return x >= 0 && y >= 0 && x < Globals.V_WIDTH && y < Globals.V_HEIGHT;
     }
