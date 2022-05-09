@@ -2,19 +2,10 @@ package com.mygdx.claninvasion.model.entity;
 
 import com.mygdx.claninvasion.model.entity.attacktype.AttackType;
 import com.mygdx.claninvasion.model.helpers.Direction;
-import com.mygdx.claninvasion.model.level.GameSoldierLevel;
 import com.mygdx.claninvasion.model.level.GameSoldierLevelIterator;
-import com.mygdx.claninvasion.model.level.GameTowerLevel;
-import com.mygdx.claninvasion.model.level.Levels;
-import com.mygdx.claninvasion.model.map.WorldCell;
-import com.mygdx.claninvasion.view.actors.HealthBar;
 import org.javatuples.Pair;
-
-import java.util.ArrayList;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicBoolean;
-
-import static java.util.concurrent.TimeUnit.MILLISECONDS;
 
 /**
  * Soldier class implementation
@@ -24,21 +15,12 @@ public abstract class Soldier extends ArtificialEntity {
     private static final int ATTACK = 5;
     private static final int STEP = 1;
     private final AtomicBoolean hasTrained = new AtomicBoolean(false);
+    private AttackType attackType;
+
+    public abstract int getCost();
 
     public Soldier(EntitySymbol entitySymbol, Pair<Integer, Integer> position) {
         super(entitySymbol, position);
-    private AtomicBoolean hasTrained = new AtomicBoolean(false);
-    private int pos_x;
-    private int pos_y;
-    public AttackType attackType;
-
-    public Soldier(EntitySymbol entitySymbol, Pair<Integer, Integer> position) {
-        super(entitySymbol, position);
-        level = Levels.createSoldierLevelIterator();
-
-        pos_x = getPositionX();
-        pos_y = getPositionY();
-
     }
 
     /**
@@ -74,6 +56,10 @@ public abstract class Soldier extends ArtificialEntity {
         }
     }
 
+    /*
+    * Thread sleeps for the training of soldier
+    * @return - integer COST
+    * */
     private int trainCall() {
         try {
             Thread.sleep(level.current().getCreationTime());
@@ -83,8 +69,6 @@ public abstract class Soldier extends ArtificialEntity {
         hasTrained.getAndSet(true);
         return getCost();
     }
-
-    public abstract int getCost();
 
     @Override
     public Pair<Float, Float> getHealthBarOffset() {
@@ -105,14 +89,8 @@ public abstract class Soldier extends ArtificialEntity {
         return CompletableFuture.supplyAsync(this::trainCall);
     }
 
-
     public CompletableFuture<Integer> train(ExecutorService service) {
         return CompletableFuture.supplyAsync(this::trainCall, service);
-    }
-
-
-    public ArrayList<Tower> getNeighbors() {
-        return null;
     }
 
     public AttackType getAttackType() {
@@ -122,8 +100,5 @@ public abstract class Soldier extends ArtificialEntity {
     public void setAttackType(AttackType attackType) {
         this.attackType = attackType;
     }
-
-    public boolean checkNeighbors(int i) {
-        return false;
-    }
+    
 }
