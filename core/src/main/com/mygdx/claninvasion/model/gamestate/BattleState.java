@@ -59,6 +59,7 @@ public class BattleState extends CommonGameState {
             });
         }
         if (tempThread != null) {
+            tempThread.setDaemon(true);
             tempThread.start();
         }
     }

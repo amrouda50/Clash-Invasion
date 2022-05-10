@@ -68,10 +68,10 @@ public class EntityPlacer implements Placer {
         } else if (EntitySymbol.CASTEL_REVERSED.sourcePart.equals(trimmedEntityName)) {
             castleReversePositions.add(position);
         } else if (EntitySymbol.TREE.sourcePart.equals(trimmedEntityName)) {
-            NaturalEntity entity = new NaturalEntity(EntitySymbol.TREE, position);
+            NaturalEntity entity = new NaturalEntity(EntitySymbol.TREE, position, model.getWorldMap().getRootedSizeMap());
             cell.setOccupier(entity);
         } else if (EntitySymbol.STONE.sourcePart.equals(trimmedEntityName)) {
-            NaturalEntity entity = new NaturalEntity(EntitySymbol.STONE, position);
+            NaturalEntity entity = new NaturalEntity(EntitySymbol.STONE, position , model.getWorldMap().getRootedSizeMap());
             cell.setOccupier(entity);
         }
     }
