@@ -5,6 +5,8 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.mygdx.claninvasion.model.GameModel;
 import com.mygdx.claninvasion.model.entity.*;
+import com.mygdx.claninvasion.model.entity.attacktype.AttackType;
+import com.mygdx.claninvasion.model.entity.attacktype.Attacks;
 import com.mygdx.claninvasion.model.level.*;
 import com.mygdx.claninvasion.model.map.WorldCell;
 import com.mygdx.claninvasion.model.map.WorldMap;
@@ -262,7 +264,7 @@ public class Player implements Winnable {
      * This will add more soldiers
      * to player's army
      */
-    public void trainSoldiers(EntitySymbol entitySymbol, Runnable after) {
+    public void trainSoldiers(EntitySymbol entitySymbol, Attacks attackType, Runnable after) {
         trainSoldiers(entitySymbol)
                 .thenRunAsync(after);
     }
@@ -521,6 +523,20 @@ public class Player implements Winnable {
                 tower.changeLevel();
             }
         }
+    }
+
+    public int getAttackCost(Attacks attackType) {
+        int cost = 0;
+        switch(attackType) {
+            case SWORD:
+                break;
+            case SPEAR:
+                // code block
+                break;
+            default:
+                cost =  0;
+        }
+        return cost;
     }
 }
 

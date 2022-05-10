@@ -14,6 +14,7 @@ import com.mygdx.claninvasion.ClanInvasion;
 import com.mygdx.claninvasion.model.Globals;
 import com.mygdx.claninvasion.model.entity.*;
 import com.mygdx.claninvasion.model.entity.attacktype.AttackType;
+import com.mygdx.claninvasion.model.entity.attacktype.Attacks;
 import com.mygdx.claninvasion.model.gamestate.Building;
 import com.mygdx.claninvasion.model.player.Player;
 import com.mygdx.claninvasion.view.actors.GameButton;
@@ -70,13 +71,13 @@ public final class MainGamePageUI implements ApplicationListener {
 
         TableWithOptions.Option AttackTypeSword = new TableWithOptions.Option(
                 "Attack Type Sword",
-                player.getBarbarianCost(),
+                player.getAttackCost(Attacks.SWORD),
                 atlasSkin,
                 app.getFont(),
                 0
         );
         AttackTypeSword.setActionable((option) -> {
-            methods.createBarbarianSword();
+            methods.createBarbarian(Attacks.SWORD);
             this.tableWithOptions.setIsOpen(false);
         });
 
@@ -469,11 +470,11 @@ public final class MainGamePageUI implements ApplicationListener {
             }
         }
 
-        public void createBarbarian() {
+        public void createBarbarian(Attacks attackType) {
             if (disableClick()) return;
             if (player.canCreateBarbarian()) {
                 InputClicker.enabled = false;
-                player.trainSoldiers(EntitySymbol.BARBARIAN, () -> System.out.println("New barbarian trained"));
+                player.trainSoldiers(EntitySymbol.BARBARIAN, attackType, () -> System.out.println("New barbarian trained"));
             } else {
                 System.out.println("Not enough money for this action");
             }
@@ -483,15 +484,12 @@ public final class MainGamePageUI implements ApplicationListener {
             if (disableClick()) return;
             if (player.canCreateDragon()) {
                 InputClicker.enabled = false;
-                player.trainSoldiers(EntitySymbol.DRAGON, () -> System.out.println("New dragon trained"));
+                //player.trainSoldiers(EntitySymbol.DRAGON, () -> System.out.println("New dragon trained"));
             } else {
                 System.out.println("Not enough money for this action");
             }
         }
 
-        public void createBarbarianSword() {
-            createBarbarian();
-        }
     }
 
     private void addButtonListeners() {

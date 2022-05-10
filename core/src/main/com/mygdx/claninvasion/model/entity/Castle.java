@@ -65,6 +65,7 @@ public final class Castle extends ArtificialEntity {
             Soldier soldier;
             if (entitySymbol == EntitySymbol.BARBARIAN) {
                 soldier = new Barbarian(EntitySymbol.BARBARIAN, generateRandomSoldierPosition());
+                //soldier.setAttackType();
             } else if (entitySymbol == EntitySymbol.DRAGON) {
                 soldier = new Dragon(EntitySymbol.DRAGON, generateRandomSoldierPosition());
             } else {
