@@ -43,7 +43,9 @@ public class MainGamePage implements GamePage, UiUpdatable {
     private GameInputProcessor inputProcessor;
     private final ClanInvasion app;
     private Stage entitiesStage;
-    private final List<ArrowAnimated> fireballs = Collections.synchronizedList(new CopyOnWriteArrayList<>());
+    private final List<FireAnimated> fireballs = Collections.synchronizedList(new CopyOnWriteArrayList<>());
+    private final List<ArrowAnimated> arrows = Collections.synchronizedList(new CopyOnWriteArrayList<>());
+
     private final MainGamePageUI mainGamePageUI;
     private TiledMap map;
     private final FireFromEntity<Tower, Soldier> fireFromEntity = this::fireTower;
@@ -126,9 +128,15 @@ public class MainGamePage implements GamePage, UiUpdatable {
     private void fireTower(Tower tower, Soldier soldier) {
         Vector2 positionSrc = app.getMap().transformMapPositionToIso(tower.getPosition());
         Vector2 positionDest = app.getMap().transformMapPositionToIso(soldier.getPosition());
-        ArrowAnimated animated = new ArrowAnimated(positionSrc,
-                positionDest, (SpriteBatch) renderer.getBatch());
-        fireballs.add(animated);
+        if (tower.getAttackTypeName() == Attacks.ARCHER) {
+            ArrowAnimated animated = new ArrowAnimated(positionSrc,
+                    positionDest, (SpriteBatch) renderer.getBatch());
+            arrows.add(animated);
+        } else if (tower.getAttackTypeName() == Attacks.FIRE) {
+            FireAnimated animated = new FireAnimated(positionSrc,
+                    positionDest, (SpriteBatch) renderer.getBatch());
+            fireballs.add(animated);
+        }
     }
 
     private <T extends ArtificialEntity>
@@ -190,8 +198,14 @@ public class MainGamePage implements GamePage, UiUpdatable {
     /* Create fire animation
      */
     private void createFireAnimated() {
-        for (ArrowAnimated fireAnimated : fireballs) {
+        for (FireAnimated fireAnimated : fireballs) {
             fireAnimated.create();
+        }
+    }
+
+    private void createArrowAnimated() {
+        for (ArrowAnimated arrowAnimated : arrows) {
+            arrowAnimated.create();
         }
     }
 
@@ -211,6 +225,7 @@ public class MainGamePage implements GamePage, UiUpdatable {
 
         // create fire
         createFireAnimated();
+        createArrowAnimated();
 
         app.getCamera().update();
         inputProcessor.onRender();
@@ -232,6 +247,7 @@ public class MainGamePage implements GamePage, UiUpdatable {
 
         // render animated object (fireballs, arrows, etc.)
         updateAnimated();
+        updateAnimatedArcher();
 
         // render game page ui
         mainGamePageUI.render();
@@ -239,12 +255,23 @@ public class MainGamePage implements GamePage, UiUpdatable {
 
 
     private void updateAnimated() {
-        for (ArrowAnimated fireAnimated : fireballs) {
+        for (FireAnimated fireAnimated : fireballs) {
             fireAnimated.setView(app.getCamera());
             fireAnimated.render();
             if (fireAnimated.isDone()) {
                 fireAnimated.dispose();
                 fireballs.remove(fireAnimated);
+            }
+        }
+    }
+
+    private void updateAnimatedArcher() {
+        for (ArrowAnimated arrowAnimated : arrows) {
+            arrowAnimated.setView(app.getCamera());
+            arrowAnimated.render();
+            if (arrowAnimated.isDone()) {
+                arrowAnimated.dispose();
+                arrows.remove(arrowAnimated);
             }
         }
     }
