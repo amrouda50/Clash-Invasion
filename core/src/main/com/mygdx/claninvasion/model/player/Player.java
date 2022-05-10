@@ -533,6 +533,9 @@ public class Player implements Winnable {
             case SPEAR:
                 cost = 50;
                 break;
+            case FIRE:
+                cost = 100;
+                break;
             default:
                 cost =  0;
         }

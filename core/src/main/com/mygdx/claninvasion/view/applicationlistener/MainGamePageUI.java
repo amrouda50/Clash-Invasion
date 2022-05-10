@@ -93,13 +93,26 @@ public final class MainGamePageUI implements ApplicationListener {
             this.tableWithOptions.setIsOpen(false);
         });
 
+        TableWithOptions.Option AttackTypeFire = new TableWithOptions.Option(
+                "Attack Type Fire",
+                player.getAttackCost(Attacks.FIRE),
+                atlasSkin,
+                app.getFont(),
+                0
+        );
+        AttackTypeFire.setActionable((option) -> {
+            methods.createBarbarian(Attacks.FIRE);
+            this.tableWithOptions.setIsOpen(false);
+        });
+
+
         // train soldiers
         TableWithOptions.Option trainBarbarian = new TableWithOptions.Option(
                 "Train Barbarian",
                 player.getBarbarianCost(),
                 atlasSkin,
                 app.getFont(),
-                new ArrayList<>(List.of(AttackTypeSword,AttackTypeSpear)),
+                new ArrayList<>(List.of(AttackTypeSword,AttackTypeSpear,AttackTypeFire)),
                 0
         );
         trainBarbarian.setActionable((option) -> {
