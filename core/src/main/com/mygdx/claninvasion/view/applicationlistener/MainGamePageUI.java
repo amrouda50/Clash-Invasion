@@ -103,7 +103,8 @@ public final class MainGamePageUI implements ApplicationListener {
                 0
         );
         AttackTypeFire.setActionable((option) -> {
-            methods.createBarbarian(Attacks.FIRE);
+            //methods.createBarbarian(Attacks.FIRE);
+            methods.createTower(Attacks.FIRE);
             this.tableWithOptions.setIsOpen(false);
         });
 
@@ -152,12 +153,24 @@ public final class MainGamePageUI implements ApplicationListener {
             this.tableWithOptions.setIsOpen(false);
         });
 
+        TableWithOptions.Option AttackTypeArtillery = new TableWithOptions.Option(
+                "Attack Type Artillery",
+                player.getAttackCost(Attacks.ARTILLERY),
+                atlasSkin,
+                app.getFont(),
+                0
+        );
+        AttackTypeArtillery.setActionable((option) -> {
+            methods.createTower(Attacks.ARTILLERY);
+            this.tableWithOptions.setIsOpen(false);
+        });
+
         // create towers
         TableWithOptions.Option trainTowers = new TableWithOptions.Option("Train tower",
                 player.getTowerCost(),
                 atlasSkin,
                 app.getFont(),
-                new ArrayList<>(List.of(AttackTypeArcher)),
+                new ArrayList<>(List.of(AttackTypeArcher,AttackTypeFire,AttackTypeArtillery)),
                 0);
         trainTowers.setActionable((option) -> {
             tableWithOptions.goIntoChildOptions(option.getIndex());
