@@ -10,8 +10,8 @@ import org.javatuples.Pair;
  * TODO: Logic part is missing
  */
 public class HillTower extends Tower {
-    HillTower(EntitySymbol entitySymbol, Pair<Integer, Integer> position) {
-        super(entitySymbol, position);
+    HillTower(EntitySymbol entitySymbol, Pair<Integer, Integer> position , int mapsize) {
+        super(entitySymbol, position , mapsize);
     }
 
     HillTower(LevelIterator<Level> levelIterator) {

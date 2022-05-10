@@ -15,8 +15,8 @@ public class MiningFarm extends ArtificialEntity implements Runnable, Mineable {
     private final int healthDecreaseRate = 10;
     private static final int HP_OFFSET_X = 20;
 
-    public MiningFarm(EntitySymbol entitySymbol, Pair<Integer, Integer> position, BlockingQueue<Integer> queue) {
-        super(entitySymbol, position);
+    public MiningFarm(EntitySymbol entitySymbol, Pair<Integer, Integer> position, BlockingQueue<Integer> queue , int mapsize) {
+        super(entitySymbol, position , mapsize);
         coins = queue;
         level = Levels.createMiningLevelIterator();
     }

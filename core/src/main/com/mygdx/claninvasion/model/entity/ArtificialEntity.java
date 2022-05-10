@@ -25,8 +25,8 @@ public abstract class ArtificialEntity extends Entity {
     protected Direction direction;
     private UUID id;
 
-    ArtificialEntity(EntitySymbol entitySymbol, Pair<Integer, Integer> position) {
-        super(entitySymbol, position);
+    ArtificialEntity(EntitySymbol entitySymbol, Pair<Integer, Integer> position , int mapsize) {
+        super(entitySymbol, position, mapsize);
         level = Levels.createLevelIterator();
         init();
         initHealth = health.get();

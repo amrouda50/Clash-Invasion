@@ -10,8 +10,8 @@ import org.javatuples.Pair;
 public class NaturalEntity extends Entity {
     private final boolean isPassed;
 
-    public NaturalEntity(EntitySymbol entitySymbol, Pair<Integer, Integer> position) {
-        super(entitySymbol, position);
+    public NaturalEntity(EntitySymbol entitySymbol, Pair<Integer, Integer> position, int mapsize) {
+        super(entitySymbol, position , mapsize);
         this.isPassed = false;
     }
 

@@ -8,8 +8,8 @@ import org.javatuples.Pair;
  */
 public class Dragon extends Soldier {
     public static int COST = 240;
-    public Dragon(EntitySymbol entitySymbol, Pair<Integer, Integer> position) {
-        super(entitySymbol, position);
+    public Dragon(EntitySymbol entitySymbol, Pair<Integer, Integer> position , int mapsize) {
+        super(entitySymbol, position , mapsize);
     }
 
     @Override

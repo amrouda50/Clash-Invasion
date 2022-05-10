@@ -8,8 +8,8 @@ import org.javatuples.Pair;
  */
 public class Barbarian extends Soldier {
     public static int COST = 100;
-    public Barbarian(EntitySymbol entitySymbol, Pair<Integer, Integer> position) {
-        super(entitySymbol, position);
+    public Barbarian(EntitySymbol entitySymbol, Pair<Integer, Integer> position , int mapsize) {
+        super(entitySymbol, position , mapsize);
         initHealth = initHealth - 300;
         health.set(initHealth);
     }

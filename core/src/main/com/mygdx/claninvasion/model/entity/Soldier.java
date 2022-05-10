@@ -19,8 +19,8 @@ public abstract class Soldier extends ArtificialEntity {
     private static final int STEP = 1;
     private final AtomicBoolean hasTrained = new AtomicBoolean(false);
 
-    public Soldier(EntitySymbol entitySymbol, Pair<Integer, Integer> position) {
-        super(entitySymbol, position);
+    public Soldier(EntitySymbol entitySymbol, Pair<Integer, Integer> position , int mapsize) {
+        super(entitySymbol, position ,mapsize);
         level = Levels.createSoldierLevelIterator();
     }
 

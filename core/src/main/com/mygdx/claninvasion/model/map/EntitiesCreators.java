@@ -10,17 +10,17 @@ import java.util.concurrent.BlockingQueue;
 
 public class EntitiesCreators {
     public interface EntityCreator<T> {
-        Entity create(EntitySymbol entitySymbol, Pair<Integer, Integer> position, Object args);
+        Entity create(EntitySymbol entitySymbol, Pair<Integer, Integer> position, Object args, int mapSize);
     }
 
     private static final Map<EntitySymbol, EntityCreator<?>> creators = new HashMap<>(Map.of(
-            EntitySymbol.BARBARIAN, (EntityCreator<Void>) (entitySymbol, position, args) -> new Barbarian(entitySymbol, position),
-            EntitySymbol.DRAGON, (EntityCreator<Void>)  (entitySymbol, position, args) -> new Dragon(entitySymbol, position),
-            EntitySymbol.TOWER, (EntityCreator<Void>) (entitySymbol, position, args) -> new Tower(entitySymbol, position),
-            EntitySymbol.MINING, (EntityCreator<BlockingQueue<Integer>>) (entitySymbol, position, queue) -> new MiningFarm(entitySymbol, position, (BlockingQueue<Integer>) queue)
+            EntitySymbol.BARBARIAN, (EntityCreator<Void>) (entitySymbol, position, args, mapSize) -> new Barbarian(entitySymbol, position , mapSize),
+            EntitySymbol.DRAGON, (EntityCreator<Void>)  (entitySymbol, position, args ,  mapSize) -> new Dragon(entitySymbol, position, mapSize),
+            EntitySymbol.TOWER, (EntityCreator<Void>) (entitySymbol, position, args ,  mapSize) -> new Tower(entitySymbol, position , mapSize),
+            EntitySymbol.MINING, (EntityCreator<BlockingQueue<Integer>>) (entitySymbol, position, queue ,  mapSize) -> new MiningFarm(entitySymbol, position, (BlockingQueue<Integer>) queue , mapSize)
     ));
 
-    public static Entity createEntity(EntitySymbol entitySymbol, Pair<Integer, Integer> position, Object obj) {
-        return creators.get(entitySymbol).create(entitySymbol, position, obj);
+    public static Entity createEntity(EntitySymbol entitySymbol, Pair<Integer, Integer> position, Object obj , int mapSize) {
+        return creators.get(entitySymbol).create(entitySymbol, position, obj ,  mapSize);
     }
 }

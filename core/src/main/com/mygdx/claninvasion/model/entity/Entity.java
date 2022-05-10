@@ -17,9 +17,17 @@ public class Entity {
         entitySymbol = EntitySymbol.TREE;
     }
 
-    public Entity(EntitySymbol entitySymbol, Pair<Integer, Integer> position) {
-        this.entitySymbol = entitySymbol;
-        this.position = position;
+    public Entity(EntitySymbol entitySymbol, Pair<Integer, Integer> position , int worldMapSize) throws IndexOutOfBoundsException {
+
+
+            if( position.getValue0() < 0 || position.getValue1() < 0 || position.getValue0() > worldMapSize ||  position.getValue1() > worldMapSize){
+            throw new IndexOutOfBoundsException();
+            }
+            this.entitySymbol = entitySymbol;
+
+            this.position = position;
+
+
     }
 
     /** Returns map symbol

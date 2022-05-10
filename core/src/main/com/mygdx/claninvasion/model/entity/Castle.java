@@ -20,9 +20,11 @@ public final class Castle extends ArtificialEntity {
     private final Stack<Soldier> soldiers;
     public static int AMOUNT_OF_SOLDIERS = 1;
     private Pair<Integer, Integer> soldierPosition;
+    private int mapsize;
 
-    public Castle(EntitySymbol symbol, Pair<Integer, Integer> position, Player player) {
-        super(symbol, position);
+    public Castle(EntitySymbol symbol, Pair<Integer, Integer> position, Player player , int mapsize) {
+        super(symbol, position ,  mapsize);
+        this.mapsize = mapsize;
         health = new AtomicInteger(level.current().getMaxHealth() + 1000);
         initHealth = health.get();
         soldiers = new Stack<>();
@@ -64,9 +66,9 @@ public final class Castle extends ArtificialEntity {
         for (int i = 0; i < AMOUNT_OF_SOLDIERS; i++) {
             Soldier soldier;
             if (entitySymbol == EntitySymbol.BARBARIAN) {
-                soldier = new Barbarian(EntitySymbol.BARBARIAN, generateRandomSoldierPosition());
+                soldier = new Barbarian(EntitySymbol.BARBARIAN, generateRandomSoldierPosition() , this.mapsize);
             } else if (entitySymbol == EntitySymbol.DRAGON) {
-                soldier = new Dragon(EntitySymbol.DRAGON, generateRandomSoldierPosition());
+                soldier = new Dragon(EntitySymbol.DRAGON, generateRandomSoldierPosition() , this.mapsize);
             } else {
                 throw new IllegalArgumentException("No such soldier exists");
             }
