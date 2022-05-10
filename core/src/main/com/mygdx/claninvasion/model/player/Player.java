@@ -531,7 +531,7 @@ public class Player implements Winnable {
             case SWORD:
                 break;
             case SPEAR:
-                // code block
+                cost = 50;
                 break;
             default:
                 cost =  0;
