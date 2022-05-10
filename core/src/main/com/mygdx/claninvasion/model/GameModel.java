@@ -53,6 +53,8 @@ public class GameModel implements GameState {
      */
     private GameState gameState;
 
+    private Runnable changeTurnCallback = () -> {};
+
     public GameModel() {
         this.phase = GamePhase.BUILDING;
         this.gameEnded = false;
@@ -194,5 +196,13 @@ public class GameModel implements GameState {
      */
     public WorldMap getWorldMap() {
         return worldMap;
+    }
+
+    public void setChangeTurnCallback(Runnable runnable) {
+        changeTurnCallback = runnable;
+    }
+
+    public Runnable getChangeTurnCallback() {
+        return changeTurnCallback;
     }
 }

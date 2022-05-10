@@ -54,6 +54,11 @@ public class MainGamePage implements GamePage, UiUpdatable {
         this.app = app;
         mainGamePageUI = new MainGamePageUI(app, this);
         chosenSymbol = null;
+
+        app.getModel().setChangeTurnCallback(() -> {
+            chosenSymbol = null;
+            mainGamePageUI.resetDropdown();
+        });
     }
 
     public void setChosenSymbol(EntitySymbol entity) {

@@ -142,6 +142,11 @@ public final class MainGamePageUI implements ApplicationListener {
         });
     }
 
+    public void resetDropdown() {
+        this.tableWithOptions.goBack();
+        this.tableWithOptions.setIsOpen(false);
+    }
+
     private void init() {
         uiStage = new Stage(new StretchViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), camera));
         Label.LabelStyle labelStyle = new Label.LabelStyle();
@@ -373,7 +378,7 @@ public final class MainGamePageUI implements ApplicationListener {
 
         actionsButtonPlayer2 = new GameButton(
                 atlasSkin,
-                "Acton " + app.getModel().getPlayerTwo().getName(),
+                "Action " + app.getModel().getPlayerTwo().getName(),
                 app.getFont(),
                 Globals.ATLAS_BUTTON_SECONDARY
         );

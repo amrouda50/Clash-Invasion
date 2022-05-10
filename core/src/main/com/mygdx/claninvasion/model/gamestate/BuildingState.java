@@ -53,6 +53,12 @@ public class BuildingState extends CommonGameState implements Building {
     }
 
     @Override
+    public void changeTurn() {
+        super.changeTurn();
+        game.getChangeTurnCallback().run();
+    }
+
+    @Override
     public void updateTime(Runnable runnable) {
         if (counter > 0) {
             totalTime++;

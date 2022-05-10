@@ -40,8 +40,8 @@ public class Globals {
 
     public static final String COLOR_BLACK_BLUE = "#090919";
     public static final String COLOR_ROSE = "#E06367";
-    public static final String COLOR_PLAYER_2 = "#6763E0";
-    public static final String COLOR_PLAYER_1 = "#E06367";
+    public static final String COLOR_PLAYER_2 = "#E06367";
+    public static final String COLOR_PLAYER_1 = "#6763E0";
 
     public static final TextureAtlas DEFAULT_ATLAS = new TextureAtlas(PATH_ATLAS);
     public static final Texture APP_LOGO_TEXTURE = new Texture(Gdx.files.internal("splash/clashmenulogo.png"));
