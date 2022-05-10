@@ -13,6 +13,7 @@ import com.mygdx.claninvasion.model.entity.attacktype.Attacks;
 import com.mygdx.claninvasion.model.gamestate.BattleState;
 import com.mygdx.claninvasion.model.map.WorldCell;
 import com.mygdx.claninvasion.view.actors.HealthBar;
+import com.mygdx.claninvasion.view.applicationlistener.ArrowAnimated;
 import com.mygdx.claninvasion.view.applicationlistener.FireAnimated;
 import com.mygdx.claninvasion.view.applicationlistener.FireFromEntity;
 import com.mygdx.claninvasion.view.applicationlistener.MainGamePageUI;
@@ -42,7 +43,7 @@ public class MainGamePage implements GamePage, UiUpdatable {
     private GameInputProcessor inputProcessor;
     private final ClanInvasion app;
     private Stage entitiesStage;
-    private final List<FireAnimated> fireballs = Collections.synchronizedList(new CopyOnWriteArrayList<>());
+    private final List<ArrowAnimated> fireballs = Collections.synchronizedList(new CopyOnWriteArrayList<>());
     private final MainGamePageUI mainGamePageUI;
     private TiledMap map;
     private final FireFromEntity<Tower, Soldier> fireFromEntity = this::fireTower;
@@ -125,7 +126,7 @@ public class MainGamePage implements GamePage, UiUpdatable {
     private void fireTower(Tower tower, Soldier soldier) {
         Vector2 positionSrc = app.getMap().transformMapPositionToIso(tower.getPosition());
         Vector2 positionDest = app.getMap().transformMapPositionToIso(soldier.getPosition());
-        FireAnimated animated = new FireAnimated(positionSrc,
+        ArrowAnimated animated = new ArrowAnimated(positionSrc,
                 positionDest, (SpriteBatch) renderer.getBatch());
         fireballs.add(animated);
     }
@@ -189,7 +190,7 @@ public class MainGamePage implements GamePage, UiUpdatable {
     /* Create fire animation
      */
     private void createFireAnimated() {
-        for (FireAnimated fireAnimated : fireballs) {
+        for (ArrowAnimated fireAnimated : fireballs) {
             fireAnimated.create();
         }
     }
@@ -237,9 +238,8 @@ public class MainGamePage implements GamePage, UiUpdatable {
     }
 
 
-
     private void updateAnimated() {
-        for (FireAnimated fireAnimated : fireballs) {
+        for (ArrowAnimated fireAnimated : fireballs) {
             fireAnimated.setView(app.getCamera());
             fireAnimated.render();
             if (fireAnimated.isDone()) {
