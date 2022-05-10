@@ -10,14 +10,10 @@ import java.util.ArrayList;
  * simple attack on for a soldier in radius of 1 square cell
  */
 public class AttackTypeSword extends AttackTypeSoldier{
-    @Override
-    public int getVisibleArea() {
-        return 1;
-    }
 
     @Override
     public void attack(Soldier soldier) {
-        //
+
     }
 
     @Override
