@@ -18,6 +18,7 @@ import com.mygdx.claninvasion.model.player.Player;
 import com.mygdx.claninvasion.view.actors.GameButton;
 import com.mygdx.claninvasion.view.actors.HealthBar;
 import com.mygdx.claninvasion.view.actors.TableWithOptions;
+import com.mygdx.claninvasion.view.screens.MainGamePage;
 import com.mygdx.claninvasion.view.utils.InputClicker;
 import com.mygdx.claninvasion.view.utils.PlayerUIData;
 import org.javatuples.Pair;
@@ -31,11 +32,11 @@ public final class MainGamePageUI implements ApplicationListener {
     private final Skin atlasSkin = new Skin(atlas);
     private final OrthographicCamera camera;
     private final ClanInvasion app;
+    private final MainGamePage page;
 
     private Label timeLabel;
     private Label phaseLabel;
     private Label turnLabel;
-    private EntitySymbol chosenSymbol;
     private Table tableTwo;
     private Table tableOne;
 
@@ -55,9 +56,10 @@ public final class MainGamePageUI implements ApplicationListener {
     private final Texture towerTexture = Globals.TOWER_TEXTURE;
 
 
-    public MainGamePageUI(ClanInvasion app) {
+    public MainGamePageUI(ClanInvasion app, MainGamePage gamePage) {
         this.app = app;
         camera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        page = gamePage;
     }
 
     private void initializeActions(Player player) {
@@ -121,6 +123,7 @@ public final class MainGamePageUI implements ApplicationListener {
         updateLevel.setActionable(option -> {
             player.levelUp();
             System.out.println("Level Successfully Updated");
+            page.setChosenSymbol(null);
             this.tableWithOptions.setIsOpen(false);
         });
         options.add(updateLevel);
@@ -132,6 +135,16 @@ public final class MainGamePageUI implements ApplicationListener {
             tableWithOptions.initBounds();
             tableWithOptions.removeBackButton();
         }
+
+        tableWithOptions.setOnGoBack(() -> {
+            page.setChosenSymbol(null);
+            InputClicker.enabled = false;
+        });
+    }
+
+    public void resetDropdown() {
+        this.tableWithOptions.goBack();
+        this.tableWithOptions.setIsOpen(false);
     }
 
     private void init() {
@@ -148,7 +161,6 @@ public final class MainGamePageUI implements ApplicationListener {
         // table one
         tableOne = new Table();
         tableTwo = new Table();
-        chosenSymbol = null;
     }
 
     private String getPlayerTopBar() {
@@ -366,7 +378,7 @@ public final class MainGamePageUI implements ApplicationListener {
 
         actionsButtonPlayer2 = new GameButton(
                 atlasSkin,
-                "Acton " + app.getModel().getPlayerTwo().getName(),
+                "Action " + app.getModel().getPlayerTwo().getName(),
                 app.getFont(),
                 Globals.ATLAS_BUTTON_SECONDARY
         );
@@ -424,7 +436,7 @@ public final class MainGamePageUI implements ApplicationListener {
 
         public void createTower() {
             if (player.canCreateTower()) {
-                chosenSymbol = EntitySymbol.TOWER;
+                page.setChosenSymbol(EntitySymbol.TOWER);
                 InputClicker.enabled = true;
             } else {
                 System.out.println("Not enough money for this action");
@@ -434,7 +446,7 @@ public final class MainGamePageUI implements ApplicationListener {
         public void createGoldmine() {
             if (disableClick()) return;
             if (player.canCreateMining()) {
-                chosenSymbol = EntitySymbol.MINING;
+                page.setChosenSymbol(EntitySymbol.MINING);
                 InputClicker.enabled = true;
             } else {
                 System.out.println("Not enough money for this action");
@@ -509,9 +521,5 @@ public final class MainGamePageUI implements ApplicationListener {
     @Override
     public void dispose() {
         uiStage.dispose();
-    }
-
-    public EntitySymbol getChosenSymbol() {
-        return chosenSymbol;
     }
 }

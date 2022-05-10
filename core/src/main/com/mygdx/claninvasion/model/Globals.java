@@ -21,7 +21,7 @@ public class Globals {
     /**
      * Change to true if you want to debug main screen page
      */
-    public static final boolean DEBUG = false;
+    public static final boolean DEBUG = true;
 //    public static final boolean DEBUG = false;
 
     public static final String ATLAS_WINDOW = "window";
@@ -40,8 +40,8 @@ public class Globals {
 
     public static final String COLOR_BLACK_BLUE = "#090919";
     public static final String COLOR_ROSE = "#E06367";
-    public static final String COLOR_PLAYER_2 = "#6763E0";
-    public static final String COLOR_PLAYER_1 = "#E06367";
+    public static final String COLOR_PLAYER_2 = "#E06367";
+    public static final String COLOR_PLAYER_1 = "#6763E0";
 
     public static final TextureAtlas DEFAULT_ATLAS = new TextureAtlas(PATH_ATLAS);
     public static final Texture APP_LOGO_TEXTURE = new Texture(Gdx.files.internal("splash/clashmenulogo.png"));
@@ -55,6 +55,9 @@ public class Globals {
     public static final Texture GOLDMINE_TEXTURE = new Texture(Gdx.files.internal("Buidlings/goldmine.png"));
     public static final Texture TOWER_TEXTURE = new Texture(Gdx.files.internal("BuildingBlocks/tower.png"));
 
+    public static float MAX_ENTITY_CREATION_DISTANCE = 200f;
+
+    public static String DISABLE_CURSOR = "raw/disable-cursor.png";
     public static final String PLAYER1_DEFAULT_NAME = "Player 1";
     public static final String PLAYER2_DEFAULT_NAME = "Player 2";
 

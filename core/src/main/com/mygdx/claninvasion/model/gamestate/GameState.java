@@ -25,6 +25,9 @@ public interface GameState {
      * Turns will be shifted between players
      */
     void changeTurn();
+    default void changeTurn(Runnable runnable) {
+        runnable.run();
+    }
 
     /**
      * State of the game changer
