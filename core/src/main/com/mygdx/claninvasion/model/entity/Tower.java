@@ -1,51 +1,61 @@
 package com.mygdx.claninvasion.model.entity;
 
-import com.mygdx.claninvasion.model.level.Level;
-import com.mygdx.claninvasion.model.level.LevelIterator;
+import com.mygdx.claninvasion.model.level.Levels;
 import org.javatuples.Pair;
-
-import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class Tower extends ArtificialEntity implements Defensible {
-    public static int COST = 200;
+    private final int radius = 4;
     public Soldier targetedSolider = null;
-    public Tower(EntitySymbol entitySymbol, Pair<Integer, Integer> position) {
-        super(entitySymbol, position);
-
-    }
-
-    Tower(LevelIterator<Level> levelIterator) {
-        super(levelIterator);
+    /**
+     * @param entitySymbol - sprite type (location, name etc.)
+     * @param position - position in the cells array
+     * @param mapsize - size of the map, helps identifying if entity is not creatable
+     */
+    public Tower(EntitySymbol entitySymbol, Pair<Integer, Integer> position, int mapsize) {
+        super(entitySymbol, position, mapsize);
+        level = Levels.createTowerLevelIterator();
+        health = new AtomicInteger();
+        super.setHealth(level.current().getMaxHealth());
     }
 
     @Override
     public void damage(int amount) {
-        super.damage(amount);
+        if (isAlive()) {
+            super.damage(amount);
+        }
     }
 
-    @Override
-    public void heal() {
-        super.heal();
-    }
-
-    public static int RADIUS = 4;
-
+    /**
+     * @param entity - entity to fire at
+     * @return if firing is allowed
+     */
     public boolean canFire(ArtificialEntity entity) {
         float distance = getVec2Position().dst(
                 entity.getVec2Position().x,
                 entity.getVec2Position().y
         );
-
-        return distance <= RADIUS;
+        return distance <= radius;
     }
 
-
+    /**
+     * Attacking the entity in a radius
+     * @param artificialEntity - entity which was being attacked
+     */
     @Override
     public void attack(ArtificialEntity artificialEntity) {
         if (!artificialEntity.isAlive()) {
             return;
         }
-        artificialEntity.setDecreaseHealth(85);
-        System.out.println("Descresing.. Current is" + artificialEntity.getHealth() + ", Entity " + artificialEntity);
+        artificialEntity.setDecreaseHealth(getDescreaseRate());
+    }
+
+    public int getDescreaseRate() {
+        return 85;
+    }
+
+    public int getRadius() {
+        return radius;
     }
 }
+

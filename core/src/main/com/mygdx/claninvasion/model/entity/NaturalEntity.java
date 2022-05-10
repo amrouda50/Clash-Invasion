@@ -8,10 +8,13 @@ import org.javatuples.Pair;
  * TODO: Logic part is missing
  */
 public class NaturalEntity extends Entity {
+    /**
+     * if the entities can pass the objects
+     */
     private final boolean isPassed;
 
-    public NaturalEntity(EntitySymbol entitySymbol, Pair<Integer, Integer> position) {
-        super(entitySymbol, position);
+    public NaturalEntity(EntitySymbol entitySymbol, Pair<Integer, Integer> position, int mapsize) {
+        super(entitySymbol, position , mapsize);
         this.isPassed = false;
     }
 

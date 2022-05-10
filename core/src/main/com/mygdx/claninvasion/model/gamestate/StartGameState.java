@@ -15,4 +15,9 @@ public class StartGameState extends CommonGameState {
     public StartGameState(GameModel game) {
         super(game);
     }
+
+    @Override
+    public void startGame() {
+        game.reset();
+    }
 }
