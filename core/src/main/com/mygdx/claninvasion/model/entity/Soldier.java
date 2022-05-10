@@ -1,6 +1,9 @@
 package com.mygdx.claninvasion.model.entity;
 
 import com.mygdx.claninvasion.model.entity.attacktype.AttackType;
+import com.mygdx.claninvasion.model.entity.attacktype.AttackTypeSoldier;
+import com.mygdx.claninvasion.model.entity.attacktype.AttackTypeSword;
+import com.mygdx.claninvasion.model.entity.attacktype.Attacks;
 import com.mygdx.claninvasion.model.helpers.Direction;
 import com.mygdx.claninvasion.model.level.GameSoldierLevelIterator;
 import org.javatuples.Pair;
@@ -21,6 +24,14 @@ public abstract class Soldier extends ArtificialEntity {
 
     public Soldier(EntitySymbol entitySymbol, Pair<Integer, Integer> position) {
         super(entitySymbol, position);
+        attackType = new AttackTypeSoldier();
+    }
+
+
+    public void setAttackType(Attacks attackType) {
+        if(attackType == Attacks.SWORD) {
+            this.attackType = new AttackTypeSword();
+        }
     }
 
     /**
@@ -32,8 +43,12 @@ public abstract class Soldier extends ArtificialEntity {
         float distance = getVec2Position().dst(castle.getVec2Position().x, castle.getVec2Position().y);
 
         GameSoldierLevelIterator level = (GameSoldierLevelIterator) this.level;
-        if (distance < level.current().getVisibleArea()) {
+        try {
+        if (distance < (level.current().getVisibleArea() + getAttackType().getVisibleArea())) {
             castle.damage(ATTACK + level.current().getAttackIncrease());
+        } }
+        catch (Exception e) {
+            System.out.println("Attack Type not set");
         }
     }
 
@@ -97,8 +112,4 @@ public abstract class Soldier extends ArtificialEntity {
         return attackType;
     }
 
-    public void setAttackType(AttackType attackType) {
-        this.attackType = attackType;
-    }
-    
 }

@@ -14,4 +14,5 @@ public interface AttackType {
     void attack(Soldier soldier);
     Attacks getName();
 
+    int getVisibleArea();
 }

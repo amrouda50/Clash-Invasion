@@ -27,4 +27,9 @@ public class AttackTypeSoldier implements AttackType{
     public Attacks getName() {
         return null;
     }
+
+    @Override
+    public int getVisibleArea() {
+        return 0;
+    }
 }

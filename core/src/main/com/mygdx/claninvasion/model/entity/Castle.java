@@ -1,5 +1,6 @@
 package com.mygdx.claninvasion.model.entity;
 
+import com.mygdx.claninvasion.model.entity.attacktype.Attacks;
 import com.mygdx.claninvasion.model.player.Player;
 import org.javatuples.Pair;
 
@@ -65,7 +66,8 @@ public final class Castle extends ArtificialEntity {
             Soldier soldier;
             if (entitySymbol == EntitySymbol.BARBARIAN) {
                 soldier = new Barbarian(EntitySymbol.BARBARIAN, generateRandomSoldierPosition());
-                //soldier.setAttackType();
+                soldier.setAttackType(Attacks.SWORD);
+
             } else if (entitySymbol == EntitySymbol.DRAGON) {
                 soldier = new Dragon(EntitySymbol.DRAGON, generateRandomSoldierPosition());
             } else {

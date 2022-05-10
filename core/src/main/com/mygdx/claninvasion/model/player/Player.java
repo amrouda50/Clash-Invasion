@@ -223,13 +223,13 @@ public class Player implements Winnable {
      * This will add more soldiers
      * to player's army
      */
-    public CompletionStage<Void> trainSoldiers(EntitySymbol entitySymbol) {
+    public CompletionStage<Void> trainSoldiers(EntitySymbol entitySymbol, Attacks attackType) {
         return castle
                 .trainSoldiers(entitySymbol, (cost) -> {
-                    wealth.set(wealth.get() - cost);
+                    wealth.set(wealth.get() - (cost + getAttackCost(attackType)));
                     return false;
                 })
-                .thenRunAsync(() -> System.out.println("New soldiers were successfully added"));
+                .thenRunAsync(() -> System.out.println("New soldiers were successfully added with attack type" + attackType));
     }
 
     /*
@@ -265,7 +265,7 @@ public class Player implements Winnable {
      * to player's army
      */
     public void trainSoldiers(EntitySymbol entitySymbol, Attacks attackType, Runnable after) {
-        trainSoldiers(entitySymbol)
+        trainSoldiers(entitySymbol,attackType)
                 .thenRunAsync(after);
     }
 
