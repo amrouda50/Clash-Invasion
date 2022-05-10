@@ -3,7 +3,6 @@ package com.mygdx.claninvasion.model.entity;
 import com.mygdx.claninvasion.model.player.Player;
 import org.javatuples.Pair;
 
-import java.util.Optional;
 import java.util.Stack;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -13,15 +12,21 @@ import static java.util.concurrent.Executors.newFixedThreadPool;
 
 /**
  * Castle entity
- * TODO: Logic part is missing
  */
 public final class Castle extends ArtificialEntity {
     private final Player player;
     private final Stack<Soldier> soldiers;
     public static int AMOUNT_OF_SOLDIERS = 1;
-    private Pair<Integer, Integer> soldierPosition;
-    private int mapsize;
+    private final Pair<Integer, Integer> soldierPosition;
+    private final int mapsize;
 
+
+    /**
+     * @param symbol - sprite type (location, name etc.)
+     * @param position - position in the cells array
+     * @param player - player which has current castle
+     * @param mapsize - size of the map, helps identifying if entity is not creatable
+     */
     public Castle(EntitySymbol symbol, Pair<Integer, Integer> position, Player player , int mapsize) {
         super(symbol, position ,  mapsize);
         this.mapsize = mapsize;
@@ -41,6 +46,10 @@ public final class Castle extends ArtificialEntity {
         );
     }
 
+    /**
+     * Not possible for this entity
+     * @param position - position where to go
+     */
     @Override
     public void changePosition(Pair<Integer, Integer> position) {
         throw new RuntimeException("Can not change castle position");
@@ -55,11 +64,11 @@ public final class Castle extends ArtificialEntity {
         this.health.set(this.health.get() - amount);
     }
 
-    public int getSoldiersMoneyCost() {
-        Optional<Integer> sum = soldiers.stream().map(Soldier::getCost).reduce(Integer::sum);
-        return sum.orElse(0);
-    }
-
+    /**
+     * @param entitySymbol - symbol of the trained soldiers
+     * @param run - callback for running after execution is over
+     * @return - future of the trained
+     */
     public CompletionStage<Integer> trainSoldiers(EntitySymbol entitySymbol, Predicate<Integer> run) {
         ExecutorService executor = newFixedThreadPool(2);
         int money = 0;
@@ -92,16 +101,8 @@ public final class Castle extends ArtificialEntity {
     }
 
     /**
-     * Damage attacked soldier
-     * TODO Implement logic
+     * @return - trained soldiers
      */
-    public void damageOpponents() {
-    }
-
-    public void healHealthIncrease(int amount){
-        this.health = new AtomicInteger(getHealth() + amount);
-    }
-
     public Stack<Soldier> getSoldiers() {
         return soldiers;
     }

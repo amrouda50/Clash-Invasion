@@ -3,6 +3,7 @@ package com.mygdx.claninvasion.model.player;
 import com.badlogic.gdx.graphics.Color;
 import com.mygdx.claninvasion.model.GameModel;
 import com.mygdx.claninvasion.model.entity.*;
+import com.mygdx.claninvasion.model.gamestate.BattleState;
 import com.mygdx.claninvasion.model.level.*;
 import com.mygdx.claninvasion.model.map.WorldCell;
 import com.mygdx.claninvasion.model.map.WorldMap;
@@ -49,7 +50,7 @@ public class Player implements Winnable {
 
     private static final int INITIAL_WEALTH = 1000;
     private static final int INCREASE_LEVEL_COST = 500;
-    private static final int MAX_GOLDMINE = 3;
+    private static final int MAX_GOLDMINE = 10;
     /**
      * Opponent of the active player
      */
@@ -153,11 +154,11 @@ public class Player implements Winnable {
                 wealth.addAndGet(gold);
                 System.out.println("Updated wealth: " + wealth.get());
                 // for thread debugging
-                // int active = Thread.activeCount();
-                // if (miningFarms.stream().noneMatch(ArtificialEntity::isAlive)) {
-                //   shutdownThreads();
-                //    break;
-                // }
+//                 int active = Thread.activeCount();
+                 if (miningFarms.size() == 0 && game.getState() instanceof BattleState) {
+                    shutdownThreads();
+                    break;
+                 }
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -294,6 +295,7 @@ public class Player implements Winnable {
         while (positionSrc != positionDest) {
             positionSrc = moveSoldier(soldier, positionSrc, positionDest, 0);
             if (counter == 2 && upcoming != null) {
+                upcoming.setDaemon(true);
                 upcoming.start();
             }
             counter++;
@@ -424,7 +426,7 @@ public class Player implements Winnable {
     }
 
     public boolean canCreateMining() {
-        return getWealth() >= miningLevelIterator.current().getCreationCost();
+        return getWealth() >= miningLevelIterator.current().getCreationCost() && miningFarms.size() < MAX_GOLDMINE;
     }
 
     public boolean canUpdateLevel() {

@@ -47,12 +47,13 @@ public class MiningFarm extends ArtificialEntity implements Runnable, Mineable {
                 throw new RuntimeException("Coins blocking queue is not initialized");
             }
 
+            CountDownLatch latch = new CountDownLatch(1);
             try {
                 int reaction = level.current().getReactionTime();
                 int boundedRandomValue = ThreadLocalRandom.current().nextInt(reaction / 2, reaction);
                 int gold = ((GameMiningLevelIterator)level).current().getGoldBonus();
                 setDecreaseHealth(healthDecreaseRate);
-                Thread.sleep(boundedRandomValue);
+                latch.await(boundedRandomValue, TimeUnit.MILLISECONDS);
                 coins.put(gold);
             } catch (InterruptedException e) {
                 e.printStackTrace();
