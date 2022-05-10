@@ -30,7 +30,6 @@ import static com.mygdx.claninvasion.model.level.Levels.*;
  * @author andreicristea
  * @author omarashour
  * @author Dinari
- * TODO: Logic part is missing
  */
 
 public class Player implements Winnable {
@@ -206,15 +205,10 @@ public class Player implements Winnable {
         return tower;
     }
 
+    /*
+    * This method removes the mining farms once they are exhausted
+    * */
     public void removeDeadMiningFarm() {
-    public Entity getTower(WorldCell cell) {
-        if(cell.hasOccupier()) {
-            return cell.getOccupier();
-        }
-        return null;
-    }
-
-    public void removeDead() {
         for (MiningFarm farm : miningFarms) {
             if (!farm.isAlive()) {
                 miningFarms.remove(farm);
@@ -236,6 +230,9 @@ public class Player implements Winnable {
                 .thenRunAsync(() -> System.out.println("New soldiers were successfully added"));
     }
 
+    /*
+    * This method adds the trained soldier onto the map
+    * */
     public void addTrainedToMapSoldier() {
         Soldier soldier = castle.getSoldiers().pop();
         try {
@@ -279,29 +276,13 @@ public class Player implements Winnable {
         return true;
     }
 
+    /**
+     * This method is used to attack the castle of the opponent during attacking phase
+     * */
     public void attackCastle(Soldier soldier) {
         soldier.attackCastle(opponent.castle);
         if (soldier.getPosition().equals(opponent.castle.getPosition())) {
             soldier.attackCastle(opponent.castle);
-        }
-
-
-    }
-
-    public void attack() {
-        System.out.println("Towers have started to attack");
-        for (Tower tower : towers) {
-            List<Pair<Integer,Integer>> neighbors  =  game.getWorldMap().getNeighborsOfPoint(tower.getPositionX(),tower.getPositionY());
-            //tower.attack(neighbors, opponent.soldiers);
-            //System.out.println("Tower attack type is " + tower.getAttackType().getName());
-            tower.getAttackType().attack(tower);
-        }
-
-        for (Soldier soldier : soldiers) {
-            List<Pair<Integer,Integer>> neighbors  =  game.getWorldMap().getNeighborsOfPoint(soldier.getPositionX(),soldier.getPositionY());
-            //tower.attack(neighbors, opponent.soldiers);
-            //System.out.println("Soldier attack type is " + soldier.getAttackType().getName());
-            //soldier.getAttackType().attack(soldier);
         }
     }
 
@@ -407,7 +388,6 @@ public class Player implements Winnable {
                 getMap().removeMapEntity(soldiers.get(i));
                 soldiers.remove(soldiers.get(i));
             }
-
         }
     }
 

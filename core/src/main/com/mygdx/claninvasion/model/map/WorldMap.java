@@ -73,6 +73,9 @@ public class WorldMap {
         return createMapEntity(symbol, cell, obj);
     }
 
+    /*
+     *  This makes the entity occupy the position in the cell
+     *  */
     public void occupyPosition(WorldCell worldCell, Entity occupier, TiledMapTileLayer.Cell cell) {
         getLayer2().setCell(
                 worldCell.getMapPosition().getValue1(),
@@ -254,7 +257,9 @@ public class WorldMap {
         cell2.setOccupier(entity);
     }
 
-    /**/
+    /*
+    * This method changes the position of entity in the map
+    * */
     public void mutate(int index1, int index2) {
         try {
             WorldCell cell1 = getCell(index1);

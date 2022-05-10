@@ -62,6 +62,7 @@ public final class MainGamePageUI implements ApplicationListener {
         page = gamePage;
     }
 
+
     private void initializeActions(Player player) {
         options = new ArrayList<>();
         PlayerActionMethods methods = new PlayerActionMethods(player);
