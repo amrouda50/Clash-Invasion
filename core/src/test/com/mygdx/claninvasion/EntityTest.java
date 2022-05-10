@@ -1,4 +1,5 @@
 package com.mygdx.claninvasion;
+import com.mygdx.claninvasion.exceptions.EntityOutsideOfBoundsException;
 import com.mygdx.claninvasion.model.entity.Entity;
 import com.mygdx.claninvasion.model.entity.EntitySymbol;
 import com.mygdx.claninvasion.model.map.WorldCell;
@@ -39,7 +40,7 @@ public class EntityTest {
         //test y axis position
         Assert.assertEquals(x.getPositionY() , position.getValue1());
     }
-    @Test(expected = IndexOutOfBoundsException.class)
+    @Test(expected = EntityOutsideOfBoundsException.class)
     public void testPositionOutOfBounds(){
         x = new Entity(EntitySymbol.BARBARIAN , new Pair<>(32, 12) , 12);
     }

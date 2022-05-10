@@ -1,6 +1,7 @@
 package com.mygdx.claninvasion.model.entity;
 
 import com.badlogic.gdx.math.Vector2;
+import com.mygdx.claninvasion.exceptions.EntityOutsideOfBoundsException;
 import org.javatuples.Pair;
 
 /**
@@ -9,6 +10,9 @@ import org.javatuples.Pair;
  * @version 0.01
  */
 public class Entity {
+    /**
+     * symbol this represents type of sprite use
+     */
     protected final EntitySymbol entitySymbol;
     protected Pair<Integer , Integer> position;
 
@@ -17,17 +21,19 @@ public class Entity {
         entitySymbol = EntitySymbol.TREE;
     }
 
+    private Boolean isNotInsideMap(Pair<Integer, Integer> position , int worldMapSize) {
+        return  position.getValue0() < 0
+                || position.getValue1() < 0
+                || position.getValue0() > worldMapSize
+                ||  position.getValue1() > worldMapSize;
+    }
+
     public Entity(EntitySymbol entitySymbol, Pair<Integer, Integer> position , int worldMapSize) throws IndexOutOfBoundsException {
-
-
-            if( position.getValue0() < 0 || position.getValue1() < 0 || position.getValue0() > worldMapSize ||  position.getValue1() > worldMapSize){
-            throw new IndexOutOfBoundsException();
-            }
-            this.entitySymbol = entitySymbol;
-
-            this.position = position;
-
-
+        if (isNotInsideMap(position, worldMapSize)) {
+            throw new EntityOutsideOfBoundsException(position);
+        }
+        this.entitySymbol = entitySymbol;
+        this.position = position;
     }
 
     /** Returns map symbol
