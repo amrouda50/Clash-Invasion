@@ -26,6 +26,7 @@ public class TableWithOptions extends Table {
     private final List<Option> parentOptions;
     private final Skin skin;
     private final Image back = new Image(Globals.BACK_TEXTURE);
+    public Runnable onGoBack;
 
     public interface OptionActionable {
         void action(Option option);
@@ -122,6 +123,7 @@ public class TableWithOptions extends Table {
         initBackButton();
         parentOptions = new ArrayList<>();
         parentOptions.addAll(options);
+        onGoBack = () -> {};
     }
 
     private void initBackButton() {
@@ -139,6 +141,10 @@ public class TableWithOptions extends Table {
 
     public void setIsOpen(boolean isOpen) {
         this.setVisible(isOpen);
+    }
+
+    public void setOnGoBack(Runnable runnable) {
+        onGoBack = runnable;
     }
 
     private void clearOptions() {
@@ -175,6 +181,7 @@ public class TableWithOptions extends Table {
             options.addAll(parentOptions);
             initOptions();
             initBounds();
+            onGoBack.run();
         }
     }
 
