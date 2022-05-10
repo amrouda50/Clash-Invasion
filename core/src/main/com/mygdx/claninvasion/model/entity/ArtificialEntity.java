@@ -25,7 +25,12 @@ public abstract class ArtificialEntity extends Entity {
     protected Direction direction;
     private UUID id;
 
-    ArtificialEntity(EntitySymbol entitySymbol, Pair<Integer, Integer> position , int mapsize) {
+
+    protected void setHealth(int newHealth) {
+        this.health.set(newHealth);
+    }
+
+    ArtificialEntity(EntitySymbol entitySymbol, Pair<Integer, Integer> position, int mapsize) {
         super(entitySymbol, position, mapsize);
         level = Levels.createLevelIterator();
         init();
@@ -72,7 +77,7 @@ public abstract class ArtificialEntity extends Entity {
             return;
         }
 
-         Thread thread = new Thread(() -> {
+       Thread thread = new Thread(() -> {
             while (getPercentage().get() < level.current().getHealGoalPoint()) {
                 try {
                     setIncreaseHealth();
@@ -119,8 +124,8 @@ public abstract class ArtificialEntity extends Entity {
     }
 
     protected void setIncreaseHealth() {
-        float percent = level.current().getHealHealthIncrease() / (float)health.get();
-        health.set(level.current().getHealHealthIncrease() + health.get());
+        float percent = level.current().getHealGoalPoint() / (float)health.get();
+        health.set(level.current().getHealGoalPoint() + health.get());
         hpBar.addStamina(percent);
     }
 
@@ -145,14 +150,27 @@ public abstract class ArtificialEntity extends Entity {
         return level;
     }
 
+    public boolean changeLevel() {
+        if (level.hasNext()) {
+            level.next();
+            return true;
+        }
+
+        return false;
+    }
+
     /**
      * Change level
      */
-    public void setLevel(LevelIterator<Level> level) {
+    public <T extends Level>void setLevel(LevelIterator<T> level) {
         this.level = level;
     }
 
     public UUID getId() {
         return id;
+    }
+
+    public AtomicInteger getReactionTime() {
+        return reactionTime;
     }
 }

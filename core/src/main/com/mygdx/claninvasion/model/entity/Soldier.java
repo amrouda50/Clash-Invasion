@@ -1,7 +1,9 @@
 package com.mygdx.claninvasion.model.entity;
 
 import com.mygdx.claninvasion.model.helpers.Direction;
+import com.mygdx.claninvasion.model.level.GameSoldierLevel;
 import com.mygdx.claninvasion.model.level.GameSoldierLevelIterator;
+import com.mygdx.claninvasion.model.level.GameTowerLevel;
 import com.mygdx.claninvasion.model.level.Levels;
 import com.mygdx.claninvasion.model.map.WorldCell;
 import com.mygdx.claninvasion.view.actors.HealthBar;
@@ -9,6 +11,8 @@ import org.javatuples.Pair;
 
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicBoolean;
+
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
 
 /**
  * Soldier class implementation
@@ -19,9 +23,8 @@ public abstract class Soldier extends ArtificialEntity {
     private static final int STEP = 1;
     private final AtomicBoolean hasTrained = new AtomicBoolean(false);
 
-    public Soldier(EntitySymbol entitySymbol, Pair<Integer, Integer> position , int mapsize) {
-        super(entitySymbol, position ,mapsize);
-        level = Levels.createSoldierLevelIterator();
+    public Soldier(EntitySymbol entitySymbol, Pair<Integer, Integer> position, int mapsize) {
+        super(entitySymbol, position, mapsize);
     }
 
     /**
@@ -59,7 +62,7 @@ public abstract class Soldier extends ArtificialEntity {
 
     private int trainCall() {
         try {
-            Thread.sleep(500);
+            Thread.sleep(level.current().getCreationTime());
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

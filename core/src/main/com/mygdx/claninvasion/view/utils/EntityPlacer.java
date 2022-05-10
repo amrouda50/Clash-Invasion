@@ -30,8 +30,8 @@ public class EntityPlacer implements Placer {
         Pair<Integer, Integer>
                 reverseCastlePositions = getCastlePositions(castleReversePositions);
 
-        Castle player1Castle = new Castle(EntitySymbol.CASTEL_REVERSED, reverseCastlePositions, model.getPlayerOne() , model.getWorldMap().getRootedSizeMap());
-        Castle player2Castle = new Castle(EntitySymbol.CASTEL, castlePosition, model.getPlayerTwo() , model.getWorldMap().getRootedSizeMap());
+        Castle player1Castle = new Castle(EntitySymbol.CASTEL, reverseCastlePositions, model.getPlayerOne(), model.getWorldMap().getRootedSizeMap());
+        Castle player2Castle = new Castle(EntitySymbol.CASTEL_REVERSED, castlePosition, model.getPlayerTwo(), model.getWorldMap().getRootedSizeMap());
 
         setCastleCellOccupier(map, player1Castle);
         setCastleCellOccupier(map, player2Castle);

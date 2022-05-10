@@ -7,13 +7,12 @@ import org.javatuples.Pair;
  * TODO: Logic part is missing
  */
 public class Dragon extends Soldier {
-    public static int COST = 240;
-    public Dragon(EntitySymbol entitySymbol, Pair<Integer, Integer> position , int mapsize) {
-        super(entitySymbol, position , mapsize);
+    public Dragon(EntitySymbol entitySymbol, Pair<Integer, Integer> position, int mapsize) {
+        super(entitySymbol, position, mapsize);
     }
 
     @Override
     public int getCost() {
-        return COST;
+        return level.current().getCreationCost();
     }
 }

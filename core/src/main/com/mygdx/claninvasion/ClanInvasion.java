@@ -5,6 +5,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.mygdx.claninvasion.model.GameModel;
 import com.mygdx.claninvasion.model.Globals;
 import com.mygdx.claninvasion.model.player.Player;
@@ -26,6 +27,8 @@ import java.util.Collections;
  */
 public class ClanInvasion extends Game {
     private final GameScreens screens;
+    private FreeTypeFontGenerator generator;
+    private FreeTypeFontGenerator.FreeTypeFontParameter parameter;
     private BitmapFont font;
     private OrthographicCamera camera;
     private ArrayList<GamePage> gamePages;
@@ -34,7 +37,7 @@ public class ClanInvasion extends Game {
      * * GameModel responsible for the model handling
      * and is working as a bridge between UI/Logic
      */
-    private final GameModel gameModel;
+    private GameModel gameModel;
 
     /** Creates a Clan Invasion object.
      */
@@ -48,30 +51,34 @@ public class ClanInvasion extends Game {
      */
     @Override
     public void create() {
+        font = new BitmapFont(Gdx.files.internal(Globals.PATH_FONT));
+
         camera = new OrthographicCamera();
         camera.setToOrtho(false, Globals.V_WIDTH, Globals.V_HEIGHT);
-        font = new BitmapFont();
         //addMusic();
 
-        this.gamePages = Globals.DEBUG
-        ? new ArrayList<>(
-            Collections.singletonList(new MainGamePage(this))
-        )
-        : new ArrayList<>(
-            Arrays.asList(
-                new GameEndedPage(this),
-                new MainGamePage(this),
-                new ConfigureGameScreen(this),
-                new LoadingScreen(this),
-                new SplashScreen(this)
-            )
-        );
+        initPages();
 
         initScreens();
 
         setScreen(screens.pop());
     }
 
+    private void initPages() {
+        this.gamePages = Globals.DEBUG
+                ? new ArrayList<>(
+                Collections.singletonList(new MainGamePage(this))
+        )
+                : new ArrayList<>(
+                Arrays.asList(
+                        new GameEndedPage(this),
+                        new MainGamePage(this),
+                        new ConfigureGameScreen(this),
+                        new LoadingScreen(this),
+                        new SplashScreen(this)
+                )
+        );
+    }
 
     /** Used to add the screen one after the other.
     * It goes through the array list and pushes the screens.
@@ -102,6 +109,10 @@ public class ClanInvasion extends Game {
      */
     public void changeScreen() {
         if (screens.isEmpty()) {
+            gameModel = new GameModel();
+            camera = new OrthographicCamera();
+            camera.setToOrtho(false, Globals.V_WIDTH, Globals.V_HEIGHT);
+            initPages();
             initScreens();
         }
         setScreen(screens.pop());

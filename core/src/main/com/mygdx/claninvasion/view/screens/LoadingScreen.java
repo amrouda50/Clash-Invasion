@@ -4,11 +4,15 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.RepeatAction;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.viewport.FillViewport;
+import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mygdx.claninvasion.ClanInvasion;
 import com.mygdx.claninvasion.model.Globals;
 import com.badlogic.gdx.audio.Sound;
@@ -30,6 +34,7 @@ public class LoadingScreen implements GamePage {
     private float elapsedTime = 0f;
     private RepeatAction loadingAction;
     private final OrthographicCamera camera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+    private Viewport viewport;
 
     /**
      * @param app - app instance
@@ -43,14 +48,40 @@ public class LoadingScreen implements GamePage {
     }
 
     private void initAnimation() {
-        stage = new Stage(new FillViewport(Globals.V_WIDTH, Globals.V_HEIGHT, camera));
+        viewport = new FillViewport(Globals.V_WIDTH, Globals.V_HEIGHT, camera);
+        stage = new Stage(viewport);
         Gdx.input.setInputProcessor(stage);
-        Texture texture = new Texture(Gdx.files.internal("LoadingscreenAnimation/Loading-Screen-icon0.png"));
+        Texture texture = Globals.LOADING_TEXTURE;
         animated = new Image(texture);
         animated.setSize(200, 200);
-        animated.setPosition((stage.getWidth() / 2) - 100, stage.getHeight() / 4);
+        animated.setPosition(Gdx.graphics.getWidth() / 3.1f, Gdx.graphics.getHeight() / 3.4f);
 
+
+        // background
+        Texture backgroundTexture = Globals.APP_BACKGROUND_TEXTURE;
+        Image background = new Image(backgroundTexture);
+        background.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+
+        // table
+        TextureAtlas atlas = Globals.DEFAULT_ATLAS;
+        Skin skin = new Skin(atlas);
+        Table table = new Table(skin);
+        table.background(skin.getDrawable(Globals.ATLAS_WINDOW));
+        float tableWidthRation = 0.625f;
+        float tableHeightRation = 0.73f;
+        table.setBounds(
+                Gdx.graphics.getWidth() / 6f,
+                Gdx.graphics.getHeight() / 6f,
+                tableWidthRation * Gdx.graphics.getWidth(),
+                tableHeightRation * Gdx.graphics.getHeight()
+        );
+
+
+        // add actors
+        stage.addActor(background);
+        stage.addActor(table);
         stage.addActor(animated);
+
         sound = Gdx.audio.newSound(Gdx.files.internal("SoundEffects/LoadingScreen.ogg"));
         long id = sound.play(1.0f);
         sound.setPitch(id, 2);
@@ -101,6 +132,8 @@ public class LoadingScreen implements GamePage {
         stage.act(delta);
     }
 
+
+    private boolean firstResize = true;
     /**
      * Fired on every resize event by libgdx
      * See GamePage interface
@@ -109,7 +142,12 @@ public class LoadingScreen implements GamePage {
      */
     @Override
     public void resize(int width, int height) {
-
+        camera.setToOrtho(false, width, height);
+        if (firstResize) {
+            viewport.setWorldSize(width, height);
+            firstResize = false;
+        }
+        stage.getViewport().update(width, height, true);
     }
 
     /**

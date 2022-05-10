@@ -57,8 +57,8 @@ public class GameModel implements GameState {
         this.phase = GamePhase.BUILDING;
         this.gameEnded = false;
         this.gamePause = false;
-        playerOne = new Player(this , Color.RED);
-        playerTwo = new Player(this ,Color.BLUE );
+        playerOne = new Player(this , Color.valueOf(Globals.COLOR_PLAYER_1));
+        playerTwo = new Player(this , Color.valueOf(Globals.COLOR_PLAYER_2));
 
         playerOne.setOpponent(playerTwo);
         playerTwo.setOpponent(playerOne);
@@ -67,8 +67,8 @@ public class GameModel implements GameState {
         worldMap = new WorldMap();
 
         if (Globals.DEBUG) {
-            playerTwo.setName("Player 2");
-            playerOne.setName("Player 1");
+            playerTwo.setName(Globals.PLAYER2_DEFAULT_NAME);
+            playerOne.setName(Globals.PLAYER1_DEFAULT_NAME);
         }
     }
 
