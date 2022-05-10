@@ -1,4 +1,5 @@
-package com.mygdx.claninvasion;
+package com.mygdx.claninvasion.entities;
+import com.badlogic.gdx.math.Vector2;
 import com.mygdx.claninvasion.exceptions.EntityOutsideOfBoundsException;
 import com.mygdx.claninvasion.model.entity.Entity;
 import com.mygdx.claninvasion.model.entity.EntitySymbol;
@@ -40,15 +41,39 @@ public class EntityTest {
         //test y axis position
         Assert.assertEquals(x.getPositionY() , position.getValue1());
     }
+
     @Test(expected = EntityOutsideOfBoundsException.class)
     public void testPositionOutOfBounds(){
         x = new Entity(EntitySymbol.BARBARIAN , new Pair<>(32, 12) , 12);
     }
 
+    @Test(expected = IllegalArgumentException.class)
+    public void testLessOneSizeException() {
+        x = new Entity(EntitySymbol.BARBARIAN , new Pair<>(32, 12) , 0);
+    }
+
     @Test
     public void testPositionInBounds(){
         x = new Entity(EntitySymbol.BARBARIAN , new Pair<>(12, 12) , 12);
-        Entity y = new Entity(EntitySymbol.BARBARIAN , new Pair<>(0, 0) , 12);
-        Entity z = new Entity(EntitySymbol.BARBARIAN , new Pair<>(6, 6) , 12);
+        new Entity(EntitySymbol.BARBARIAN , new Pair<>(0, 0) , 12);
+        new Entity(EntitySymbol.BARBARIAN , new Pair<>(6, 6) , 12);
+    }
+
+    @Test
+    public void testPositions() {
+        x = new Entity(EntitySymbol.BARBARIAN , new Pair<>(12, 12) , 12);
+        Assert.assertEquals(new Vector2(12, 12), x.getVec2Position());
+        x = new Entity(EntitySymbol.BARBARIAN , new Pair<>(12, 0) , 12);
+        Assert.assertEquals(new Vector2(12, 0), x.getVec2Position());
+
+        Assert.assertEquals(new Pair<>(12, 0), x.getPosition());
+    }
+
+    @Test
+    public void testMapSize() {
+        x = new Entity(EntitySymbol.BARBARIAN , new Pair<>(12, 12) , 12);
+        Assert.assertEquals(12, x.getMapSize());
+        x = new Entity(EntitySymbol.BARBARIAN , new Pair<>(0, 0) , 1);
+        Assert.assertEquals(1, x.getMapSize());
     }
 }

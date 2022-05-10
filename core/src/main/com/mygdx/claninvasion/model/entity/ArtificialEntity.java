@@ -4,6 +4,7 @@ import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
+import com.mygdx.claninvasion.exceptions.EntityOutsideOfBoundsException;
 import com.mygdx.claninvasion.model.helpers.Direction;
 import com.mygdx.claninvasion.model.level.Level;
 import com.mygdx.claninvasion.model.level.LevelIterator;
@@ -25,23 +26,15 @@ public abstract class ArtificialEntity extends Entity {
     protected Direction direction;
     private UUID id;
 
-
-    protected void setHealth(int newHealth) {
-        this.health.set(newHealth);
-    }
-
-    ArtificialEntity(EntitySymbol entitySymbol, Pair<Integer, Integer> position, int mapsize) {
+    public ArtificialEntity(EntitySymbol entitySymbol, Pair<Integer, Integer> position, int mapsize) {
         super(entitySymbol, position, mapsize);
         level = Levels.createLevelIterator();
         init();
         initHealth = health.get();
     }
 
-    ArtificialEntity(LevelIterator<Level> levelIterator) {
-        super();
-        level = levelIterator;
-        init();
-        initHealth = health.get();
+    protected void setHealth(int newHealth) {
+        this.health.set(newHealth);
     }
 
     private void init() {
@@ -93,7 +86,7 @@ public abstract class ArtificialEntity extends Entity {
 
     /**
      * Damage
-     * @param amount - percent of injury
+     * @param amount - amount of injury
      */
     public void damage(int amount) {
         setDecreaseHealth(amount);
@@ -103,6 +96,9 @@ public abstract class ArtificialEntity extends Entity {
      * Position change function
      */
     public void changePosition(Pair<Integer, Integer> position) {
+       if (isNotInsideMap(position)) {
+           throw new EntityOutsideOfBoundsException(position);
+       }
        this.position = position;
     }
 
@@ -114,10 +110,14 @@ public abstract class ArtificialEntity extends Entity {
     }
 
     protected void setDecreaseHealth(int amount) {
-        if (health.get() <= 0) {
-            health.set(0);
+        if (hpBar == null) {
+            throw new NullPointerException("Instantiate health bar before");
+        }
+        if (amount > health.get()) {
+            health.set(level.current().getMinHealth());
             return;
         }
+
         float percent = amount / (float)health.get();
         health.set(health.get() - amount);
         hpBar.substStamina(percent);
@@ -130,13 +130,15 @@ public abstract class ArtificialEntity extends Entity {
     }
 
     public float getHealthPercentage() {
-        return health.get() < 0
+        return health.get() <= 0
                 ? 0 :
                 (health.get() / (float) initHealth) * 100;
     }
 
     public AtomicLong getPercentage() {
-        return new AtomicLong(health.get() / (long) initHealth * 100);
+        return new AtomicLong(health.get() <= 0
+                ? 0 :
+                (long) ((health.get() / (float) initHealth) * 100));
     }
 
     public boolean isAlive() {

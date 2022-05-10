@@ -7,13 +7,13 @@ import org.javatuples.Septet;
 
 public class Levels {
     // creationTime, creationCost, maxHealth, minHealth, reactionTime, healHealthIncrease, healGoalPoint
-    private static final Septet<Integer, Integer, Integer, Integer, Integer, Integer, Integer> level0 =
+    public static final Septet<Integer, Integer, Integer, Integer, Integer, Integer, Integer> level0 =
             new Septet<>(600, 200, 1000, 0, 600, 10, 30);
-    private static final Septet<Integer, Integer, Integer, Integer, Integer, Integer, Integer> level1 =
+    public static final Septet<Integer, Integer, Integer, Integer, Integer, Integer, Integer> level1 =
             new Septet<>(500, 210, 1090, 0, 500, 10, 35);
-    private static final Septet<Integer, Integer, Integer, Integer, Integer, Integer, Integer> level2 =
+    public static final Septet<Integer, Integer, Integer, Integer, Integer, Integer, Integer> level2 =
             new Septet<>(350, 280, 1090, 0, 460, 10, 35);
-    private static final Septet<Integer, Integer, Integer, Integer, Integer, Integer, Integer> level3 =
+    public static final Septet<Integer, Integer, Integer, Integer, Integer, Integer, Integer> level3 =
             new Septet<>(320, 400, 1190, 0, 420, 20, 38);
 
     private static final ArrayList<GameTowerLevel> towerLevels = new ArrayList<>(

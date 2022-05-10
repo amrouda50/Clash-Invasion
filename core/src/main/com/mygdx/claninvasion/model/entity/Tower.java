@@ -1,25 +1,17 @@
 package com.mygdx.claninvasion.model.entity;
 
-import com.mygdx.claninvasion.model.level.Level;
-import com.mygdx.claninvasion.model.level.LevelIterator;
 import com.mygdx.claninvasion.model.level.Levels;
 import org.javatuples.Pair;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
 public class Tower extends ArtificialEntity implements Defensible {
-    private final int radius = 4;
-
     public Tower(EntitySymbol entitySymbol, Pair<Integer, Integer> position, int mapsize) {
         super(entitySymbol, position, mapsize);
 
         level = Levels.createTowerLevelIterator();
         health = new AtomicInteger();
         super.setHealth(level.current().getMaxHealth());
-    }
-
-    Tower(LevelIterator<Level> levelIterator) {
-        super(levelIterator);
     }
 
     @Override
@@ -50,6 +42,7 @@ public class Tower extends ArtificialEntity implements Defensible {
                 entity.getVec2Position().y
         );
 
+        int radius = 4;
         return distance <= radius;
     }
 
