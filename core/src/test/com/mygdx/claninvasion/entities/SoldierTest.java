@@ -5,8 +5,6 @@ import com.mygdx.claninvasion.model.entity.Castle;
 import com.mygdx.claninvasion.model.entity.EntitySymbol;
 import com.mygdx.claninvasion.model.entity.Soldier;
 import com.mygdx.claninvasion.model.level.GameSoldierLevel;
-import com.mygdx.claninvasion.model.level.GameSoldierLevelIterator;
-import com.mygdx.claninvasion.model.level.Level;
 import com.mygdx.claninvasion.model.level.Levels;
 import org.javatuples.Pair;
 import org.junit.Assert;
@@ -23,12 +21,11 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public class SoldierTest {
     public Castle castle;
-    private int mapSize = 32;
+    private final int mapSize = 32;
 
     @Before
     public void init() {
         castle = mock(Castle.class);
-//        when(castle.getPosition()).thenReturn(new Pair<>(5, 5));
     }
 
 
