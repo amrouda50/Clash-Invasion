@@ -6,7 +6,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class Tower extends ArtificialEntity implements Defensible {
     private final int radius = 4;
-    public Soldier targetedSolider = null;
+    private Soldier targetedSolider = null;
     /**
      * @param entitySymbol - sprite type (location, name etc.)
      * @param position - position in the cells array
@@ -56,6 +56,14 @@ public class Tower extends ArtificialEntity implements Defensible {
 
     public int getRadius() {
         return radius;
+    }
+
+    public void setTargetedSolider(Soldier targetedSolider) {
+        this.targetedSolider = targetedSolider;
+    }
+
+    public Soldier getTargetedSolider() {
+        return targetedSolider;
     }
 }
 

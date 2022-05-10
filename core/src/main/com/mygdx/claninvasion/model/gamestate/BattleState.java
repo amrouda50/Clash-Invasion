@@ -94,13 +94,13 @@ public class BattleState extends CommonGameState {
                                     if (!tower.canFire(soldier)) {
                                         break;
                                     }
-                                    if (tower.targetedSolider == null || !tower.targetedSolider.isAlive()) {
-                                        tower.targetedSolider = soldier;
+                                    if (tower.getTargetedSolider() == null || !tower.getTargetedSolider().isAlive()) {
+                                        tower.setTargetedSolider(soldier);
                                     }
                                     if (fireFromEntity != null) {
-                                        fireFromEntity.fire(tower, tower.targetedSolider);
+                                        fireFromEntity.fire(tower, tower.getTargetedSolider());
                                     }
-                                    tower.attack(tower.targetedSolider);
+                                    tower.attack(tower.getTargetedSolider());
 
                                 }
                             }, 200, TimeUnit.MILLISECONDS);
