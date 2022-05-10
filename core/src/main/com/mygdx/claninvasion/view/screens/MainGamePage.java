@@ -13,10 +13,7 @@ import com.mygdx.claninvasion.model.entity.attacktype.Attacks;
 import com.mygdx.claninvasion.model.gamestate.BattleState;
 import com.mygdx.claninvasion.model.map.WorldCell;
 import com.mygdx.claninvasion.view.actors.HealthBar;
-import com.mygdx.claninvasion.view.applicationlistener.ArrowAnimated;
-import com.mygdx.claninvasion.view.applicationlistener.FireAnimated;
-import com.mygdx.claninvasion.view.applicationlistener.FireFromEntity;
-import com.mygdx.claninvasion.view.applicationlistener.MainGamePageUI;
+import com.mygdx.claninvasion.view.applicationlistener.*;
 import com.mygdx.claninvasion.view.tiledmap.TiledMapStage;
 import com.mygdx.claninvasion.view.utils.EntityPlacer;
 import com.mygdx.claninvasion.view.utils.GameInputProcessor;
@@ -43,8 +40,10 @@ public class MainGamePage implements GamePage, UiUpdatable {
     private GameInputProcessor inputProcessor;
     private final ClanInvasion app;
     private Stage entitiesStage;
+
     private final List<FireAnimated> fireballs = Collections.synchronizedList(new CopyOnWriteArrayList<>());
     private final List<ArrowAnimated> arrows = Collections.synchronizedList(new CopyOnWriteArrayList<>());
+    private final List<ArtilleryAnimated> bombs = Collections.synchronizedList(new CopyOnWriteArrayList<>());
 
     private final MainGamePageUI mainGamePageUI;
     private TiledMap map;
@@ -79,8 +78,11 @@ public class MainGamePage implements GamePage, UiUpdatable {
     public Attacks getChosenAttackType() {
         if (chosenAttackType == Attacks.ARCHER) {
             return Attacks.ARCHER;
+        } else if (chosenAttackType == Attacks.FIRE) {
+            return Attacks.FIRE;
+        } else if (chosenAttackType == Attacks.ARTILLERY) {
+            return Attacks.ARTILLERY;
         }
-
         return null;
     }
 
@@ -136,6 +138,10 @@ public class MainGamePage implements GamePage, UiUpdatable {
             FireAnimated animated = new FireAnimated(positionSrc,
                     positionDest, (SpriteBatch) renderer.getBatch());
             fireballs.add(animated);
+        } else if (tower.getAttackTypeName() == Attacks.ARTILLERY) {
+            ArtilleryAnimated animated = new ArtilleryAnimated(positionSrc,
+                    positionDest, (SpriteBatch) renderer.getBatch());
+            bombs.add(animated);
         }
     }
 
@@ -209,6 +215,12 @@ public class MainGamePage implements GamePage, UiUpdatable {
         }
     }
 
+    private void createArtilleryAnimated() {
+        for (ArtilleryAnimated artilleryAnimated : bombs) {
+            artilleryAnimated.create();
+        }
+    }
+
     /**
      * Fired on every frame update
      * See GamePage interface
@@ -223,9 +235,10 @@ public class MainGamePage implements GamePage, UiUpdatable {
             ((BattleState) app.getModel().getState()).setFireFromEntity(fireFromEntity);
         }
 
-        // create fire
+        // create fire, arrow and artillery
         createFireAnimated();
         createArrowAnimated();
+        createArtilleryAnimated();
 
         app.getCamera().update();
         inputProcessor.onRender();
@@ -248,6 +261,7 @@ public class MainGamePage implements GamePage, UiUpdatable {
         // render animated object (fireballs, arrows, etc.)
         updateAnimated();
         updateAnimatedArcher();
+        updateAnimatedArtillery();
 
         // render game page ui
         mainGamePageUI.render();
@@ -272,6 +286,17 @@ public class MainGamePage implements GamePage, UiUpdatable {
             if (arrowAnimated.isDone()) {
                 arrowAnimated.dispose();
                 arrows.remove(arrowAnimated);
+            }
+        }
+    }
+
+    private void updateAnimatedArtillery() {
+        for (ArtilleryAnimated artilleryAnimated : bombs) {
+            artilleryAnimated.setView(app.getCamera());
+            artilleryAnimated.render();
+            if (artilleryAnimated.isDone()) {
+                artilleryAnimated.dispose();
+                bombs.remove(artilleryAnimated);
             }
         }
     }
