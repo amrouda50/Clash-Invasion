@@ -6,22 +6,19 @@ import com.mygdx.claninvasion.ClanInvasion;
 import com.mygdx.claninvasion.model.adapters.IsometricToOrthogonalAdapt;
 import com.mygdx.claninvasion.model.entity.ArtificialEntity;
 import com.mygdx.claninvasion.model.entity.EntitySymbol;
-import com.mygdx.claninvasion.model.entity.MiningFarm;
-import com.mygdx.claninvasion.model.entity.Tower;
-import com.mygdx.claninvasion.model.entity.attacktype.Attacks;
 import com.mygdx.claninvasion.model.map.WorldCell;
 import com.mygdx.claninvasion.view.actors.HealthBar;
-import com.mygdx.claninvasion.view.applicationlistener.MainGamePageUI;
+import com.mygdx.claninvasion.view.screens.MainGamePage;
 import org.javatuples.Pair;
 
 public class InputClicker implements RunnableTouchEvent {
     private final ClanInvasion app;
-    private final MainGamePageUI mainGamePageUI;
+    private final MainGamePage page;
     public static boolean enabled = false;
 
-    public InputClicker(ClanInvasion app , MainGamePageUI mainGamePageUI) {
+    public InputClicker(ClanInvasion app , MainGamePage mainGame) {
         this.app = app;
-        this.mainGamePageUI = mainGamePageUI;
+        this.page = mainGame;
     }
 
     @Override
@@ -34,17 +31,9 @@ public class InputClicker implements RunnableTouchEvent {
                 if (worldCell.contains(mouseOrtho3)) {
                     HealthBar healthBar = new HealthBar(app.getCurrentPlayer().getColor());
                     ArtificialEntity artificialEntity = null;
-                    if (worldCell.getOccupier() == null && EntitySymbol.TOWER == mainGamePageUI.getChosenSymbol()) {
+                    if (worldCell.getOccupier() == null && EntitySymbol.TOWER == page.getChosenSymbol()) {
                         artificialEntity = app.getCurrentPlayer().buildTower(worldCell);
-                        Tower tower= (Tower) app.getCurrentPlayer().getTower(worldCell);
-                        if(mainGamePageUI.getChosenAttackTypeForTower() == Attacks.ARCHER) {
-                            tower.setAttackType(Attacks.ARCHER);
-                        } else if(mainGamePageUI.getChosenAttackTypeForTower() == Attacks.POISON) {
-                            tower.setAttackType(Attacks.POISON);
-                        } else {
-                            tower.setAttackType(Attacks.ARCHER);
-                        }
-                    } else if (worldCell.getOccupier() == null && EntitySymbol.MINING == mainGamePageUI.getChosenSymbol()) {
+                    } else if (worldCell.getOccupier() == null && EntitySymbol.MINING == page.getChosenSymbol()) {
                         artificialEntity = app.getCurrentPlayer().createNewMining(worldCell);
                     }
 

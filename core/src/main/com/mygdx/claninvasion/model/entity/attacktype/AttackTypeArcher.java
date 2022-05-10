@@ -15,7 +15,7 @@ public class AttackTypeArcher extends AttackTypeTower {
     @Override
     public void attack(Tower tower) {
         ArrayList<Soldier> enemies;
-        enemies = tower.getNeighbors();
+        //enemies = tower.getNeighbors();
        /* for(Soldier enemy: enemies) {
             enemy.damage(3); //Arbitrary value can change later
         }*/

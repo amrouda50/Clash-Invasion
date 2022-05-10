@@ -13,6 +13,7 @@ import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.mygdx.claninvasion.ClanInvasion;
 import com.mygdx.claninvasion.model.Globals;
 import com.mygdx.claninvasion.model.entity.*;
+import com.mygdx.claninvasion.model.entity.attacktype.AttackType;
 import com.mygdx.claninvasion.model.gamestate.Building;
 import com.mygdx.claninvasion.model.player.Player;
 import com.mygdx.claninvasion.view.actors.GameButton;
@@ -67,17 +68,31 @@ public final class MainGamePageUI implements ApplicationListener {
         options = new ArrayList<>();
         PlayerActionMethods methods = new PlayerActionMethods(player);
 
+        TableWithOptions.Option AttackTypeSword = new TableWithOptions.Option(
+                "Attack Type Sword",
+                player.getBarbarianCost(),
+                atlasSkin,
+                app.getFont(),
+                0
+        );
+        AttackTypeSword.setActionable((option) -> {
+            methods.createBarbarianSword();
+            this.tableWithOptions.setIsOpen(false);
+        });
+
         // train soldiers
         TableWithOptions.Option trainBarbarian = new TableWithOptions.Option(
                 "Train Barbarian",
                 player.getBarbarianCost(),
                 atlasSkin,
                 app.getFont(),
+                new ArrayList<>(List.of(AttackTypeSword)),
                 0
         );
         trainBarbarian.setActionable((option) -> {
-            methods.createBarbarian();
-            this.tableWithOptions.setIsOpen(false);
+            //methods.createBarbarian();
+            //this.tableWithOptions.setIsOpen(false);
+            tableWithOptions.goIntoChildOptions(option.getIndex());
         });
         TableWithOptions.Option trainDragon = new TableWithOptions.Option("Train Dragon", player.getDragonCost(), atlasSkin, app.getFont(), 1);
         trainDragon.setActionable((option) -> {
@@ -472,6 +487,10 @@ public final class MainGamePageUI implements ApplicationListener {
             } else {
                 System.out.println("Not enough money for this action");
             }
+        }
+
+        public void createBarbarianSword() {
+            createBarbarian();
         }
     }
 

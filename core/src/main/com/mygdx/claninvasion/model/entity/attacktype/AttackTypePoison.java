@@ -23,7 +23,7 @@ public class AttackTypePoison extends AttackTypeTower{
     @Override
     public void attack(Tower tower) {
         timer.schedule(new TimerTask() {
-            ArrayList<Soldier> finalEnemies = tower.getNeighbors();
+            //ArrayList<Soldier> finalEnemies = tower.getNeighbors();
             int count = 0;
             @Override
             public void run() {
@@ -43,7 +43,7 @@ public class AttackTypePoison extends AttackTypeTower{
     @Override
     public void attack(Soldier soldier) {
         timer.schedule(new TimerTask() {
-            ArrayList<Tower> finalEnemies = soldier.getNeighbors();
+            //ArrayList<Tower> finalEnemies = soldier.getNeighbors();
             int count = 0;
             @Override
             public void run() {
