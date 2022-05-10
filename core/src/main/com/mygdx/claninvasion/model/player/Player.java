@@ -546,6 +546,9 @@ public class Player implements Winnable {
             case ARCHER:
                 cost = 0;
                 break;
+            case ARTILLERY:
+                cost = 200;
+                break;
             default:
                 cost =  0;
         }
