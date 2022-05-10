@@ -1,5 +1,6 @@
 package com.mygdx.claninvasion.model.entity;
 
+import com.mygdx.claninvasion.model.entity.attacktype.Attacks;
 import com.mygdx.claninvasion.model.level.Level;
 import com.mygdx.claninvasion.model.level.LevelIterator;
 import com.mygdx.claninvasion.model.level.Levels;
@@ -10,7 +11,18 @@ import java.util.concurrent.atomic.AtomicLong;
 public class Tower extends ArtificialEntity implements Defensible {
     private final int radius = 4;
 
+    protected Attacks attackTypeName;
+
+    public Attacks getAttackTypeName() {
+        return attackTypeName;
+    }
+
+    public void setAttackTypeName(Attacks attackTypeName) {
+        this.attackTypeName = attackTypeName;
+    }
+
     public Tower(EntitySymbol entitySymbol, Pair<Integer, Integer> position) {
+        //Change later
         super(entitySymbol, position);
 
         level = Levels.createTowerLevelIterator();

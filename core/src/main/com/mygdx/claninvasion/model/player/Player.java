@@ -194,13 +194,14 @@ public class Player implements Winnable {
     /**
      * This method starts building towers for the active player
      */
-    public Tower buildTower(WorldCell cell) {
+    public Tower buildTower(WorldCell cell, Attacks chosenAttackType) {
         if (!canCreateTower()) {
             System.out.println("Not enough money for this action");
             return null;
         }
         Tower tower = (Tower) game.getWorldMap().createMapEntity(EntitySymbol.TOWER, cell, null);
         tower.setLevel(gameTowerLevelIterator);
+        tower.setAttackTypeName(chosenAttackType);
 
         towers.add(tower);
         wealth.set(wealth.get() - tower.getLevel().current().getCreationCost());
@@ -228,8 +229,8 @@ public class Player implements Winnable {
                 .trainSoldiers(entitySymbol, (cost) -> {
                     wealth.set(wealth.get() - (cost + getAttackCost(attackType)));
                     return false;
-                })
-                .thenRunAsync(() -> System.out.println("New soldiers were successfully added with attack type" + attackType));
+                },attackType)
+                .thenRunAsync(() -> System.out.println("New soldiers were successfully added with attack type " + attackType));
     }
 
     /*
@@ -286,13 +287,19 @@ public class Player implements Winnable {
         if (soldier.getPosition().equals(opponent.castle.getPosition())) {
             soldier.attackCastle(opponent.castle);
         }
+
+        int i=0;
+        for (Tower tower : towers) {
+            i++;
+            System.out.println("Attack type of Tower" + i + " is " + tower.getAttackTypeName());
+        }
     }
 
-    public void attackCastle() {
+  /*  public void attackCastle() {
         for (Soldier soldier : soldiers) {
             attackCastle(soldier);
         }
-    }
+    }*/
 
     public void moveSoldier(int index, Thread upcoming) {
         Soldier soldier = getSoldiers().get(index);
@@ -535,6 +542,9 @@ public class Player implements Winnable {
                 break;
             case FIRE:
                 cost = 100;
+                break;
+            case ARCHER:
+                cost = 0;
                 break;
             default:
                 cost =  0;

@@ -44,7 +44,7 @@ public abstract class Soldier extends ArtificialEntity {
 
         GameSoldierLevelIterator level = (GameSoldierLevelIterator) this.level;
         try {
-        if (distance < (level.current().getVisibleArea() + getAttackType().getVisibleArea())) {
+        if (distance < (level.current().getVisibleArea())) {
             castle.damage(ATTACK + level.current().getAttackIncrease());
         } }
         catch (Exception e) {

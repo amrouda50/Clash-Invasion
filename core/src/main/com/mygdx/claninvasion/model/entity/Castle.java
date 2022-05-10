@@ -59,7 +59,7 @@ public final class Castle extends ArtificialEntity {
         return sum.orElse(0);
     }
 
-    public CompletionStage<Integer> trainSoldiers(EntitySymbol entitySymbol, Predicate<Integer> run) {
+    public CompletionStage<Integer> trainSoldiers(EntitySymbol entitySymbol, Predicate<Integer> run, Attacks attackType) {
         ExecutorService executor = newFixedThreadPool(2);
         int money = 0;
         for (int i = 0; i < AMOUNT_OF_SOLDIERS; i++) {

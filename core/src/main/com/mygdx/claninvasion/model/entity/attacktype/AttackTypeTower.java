@@ -25,9 +25,4 @@ public class AttackTypeTower implements AttackType{
         return Attacks.TOWER;
     }
 
-    @Override
-    public int getVisibleArea() {
-        return 0;
-    }
-
 }

@@ -1,5 +1,6 @@
 package com.mygdx.claninvasion.model.entity;
 
+import com.mygdx.claninvasion.model.entity.attacktype.Attacks;
 import com.mygdx.claninvasion.model.level.*;
 import org.javatuples.Pair;
 import java.util.concurrent.*;
@@ -14,6 +15,7 @@ public class MiningFarm extends ArtificialEntity implements Runnable, Mineable {
     private static final int HP_OFFSET_X = 20;
 
     public MiningFarm(EntitySymbol entitySymbol, Pair<Integer, Integer> position, BlockingQueue<Integer> queue) {
+       //Change later
         super(entitySymbol, position);
         coins = queue;
         level = Levels.createMiningLevelIterator();

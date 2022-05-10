@@ -9,6 +9,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.mygdx.claninvasion.ClanInvasion;
 import com.mygdx.claninvasion.model.Globals;
 import com.mygdx.claninvasion.model.entity.*;
+import com.mygdx.claninvasion.model.entity.attacktype.Attacks;
 import com.mygdx.claninvasion.model.gamestate.BattleState;
 import com.mygdx.claninvasion.model.map.WorldCell;
 import com.mygdx.claninvasion.view.actors.HealthBar;
@@ -47,6 +48,8 @@ public class MainGamePage implements GamePage, UiUpdatable {
     private final FireFromEntity<Tower, Soldier> fireFromEntity = this::fireTower;
     private EntitySymbol chosenSymbol;
 
+    private Attacks chosenAttackType;
+
     /**
      * @param app - app instance
      */
@@ -54,6 +57,7 @@ public class MainGamePage implements GamePage, UiUpdatable {
         this.app = app;
         mainGamePageUI = new MainGamePageUI(app, this);
         chosenSymbol = null;
+        chosenAttackType = null;
 
         app.getModel().setChangeTurnCallback(() -> {
             chosenSymbol = null;
@@ -63,6 +67,18 @@ public class MainGamePage implements GamePage, UiUpdatable {
 
     public void setChosenSymbol(EntitySymbol entity) {
         chosenSymbol = entity;
+    }
+
+    public void setChosenAttackType(Attacks attackType) {
+        chosenAttackType = attackType;
+    }
+
+    public Attacks getChosenAttackType() {
+        if (chosenAttackType == Attacks.ARCHER) {
+            return Attacks.ARCHER;
+        }
+
+        return null;
     }
 
     public EntitySymbol getChosenSymbol() {

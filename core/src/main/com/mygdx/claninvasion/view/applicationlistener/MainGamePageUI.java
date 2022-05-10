@@ -14,6 +14,7 @@ import com.mygdx.claninvasion.ClanInvasion;
 import com.mygdx.claninvasion.model.Globals;
 import com.mygdx.claninvasion.model.entity.*;
 import com.mygdx.claninvasion.model.entity.attacktype.AttackType;
+import com.mygdx.claninvasion.model.entity.attacktype.AttackTypeArcher;
 import com.mygdx.claninvasion.model.entity.attacktype.Attacks;
 import com.mygdx.claninvasion.model.gamestate.Building;
 import com.mygdx.claninvasion.model.player.Player;
@@ -77,6 +78,7 @@ public final class MainGamePageUI implements ApplicationListener {
                 0
         );
         AttackTypeSword.setActionable((option) -> {
+            System.out.println("Creating a barbarian with attack name SWORD");
             methods.createBarbarian(Attacks.SWORD);
             this.tableWithOptions.setIsOpen(false);
         });
@@ -137,11 +139,28 @@ public final class MainGamePageUI implements ApplicationListener {
         chooseTrainSoldier.setActionable((option) -> tableWithOptions.goIntoChildOptions(option.getIndex()));
         options.add(chooseTrainSoldier);
 
-        // create towers
-        TableWithOptions.Option trainTowers = new TableWithOptions.Option("Train tower", player.getTowerCost(), atlasSkin, app.getFont(), 0);
-        trainTowers.setActionable((option) -> {
-            methods.createTower();
+        //Tower attack types
+        TableWithOptions.Option AttackTypeArcher = new TableWithOptions.Option(
+                "Attack Type Archer",
+                player.getAttackCost(Attacks.ARCHER),
+                atlasSkin,
+                app.getFont(),
+                0
+        );
+        AttackTypeArcher.setActionable((option) -> {
+            methods.createTower(Attacks.ARCHER);
             this.tableWithOptions.setIsOpen(false);
+        });
+
+        // create towers
+        TableWithOptions.Option trainTowers = new TableWithOptions.Option("Train tower",
+                player.getTowerCost(),
+                atlasSkin,
+                app.getFont(),
+                new ArrayList<>(List.of(AttackTypeArcher)),
+                0);
+        trainTowers.setActionable((option) -> {
+            tableWithOptions.goIntoChildOptions(option.getIndex());
         });
 
         TableWithOptions.Option chooseTowerType = new TableWithOptions.Option(
@@ -476,9 +495,10 @@ public final class MainGamePageUI implements ApplicationListener {
             return !player.equals(app.getCurrentPlayer());
         }
 
-        public void createTower() {
+        public void createTower(Attacks attackTypeName) {
             if (player.canCreateTower()) {
                 page.setChosenSymbol(EntitySymbol.TOWER);
+                page.setChosenAttackType(attackTypeName);
                 InputClicker.enabled = true;
             } else {
                 System.out.println("Not enough money for this action");

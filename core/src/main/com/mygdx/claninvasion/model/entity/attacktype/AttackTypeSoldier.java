@@ -28,8 +28,4 @@ public class AttackTypeSoldier implements AttackType{
         return null;
     }
 
-    @Override
-    public int getVisibleArea() {
-        return 0;
-    }
 }
