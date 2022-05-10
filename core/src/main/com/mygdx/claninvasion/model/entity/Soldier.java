@@ -22,14 +22,17 @@ public abstract class Soldier extends ArtificialEntity {
      * @param castle - opponents castle
      * @see Castle
      */
-    public void attackCastle(Castle castle) {
+    public boolean attackCastle(Castle castle) {
         float distance = getVec2Position().dst(castle.getVec2Position().x, castle.getVec2Position().y);
 
         GameSoldierLevelIterator level = (GameSoldierLevelIterator) this.level;
         if (distance < level.current().getVisibleArea()) {
             int attack = 5;
             castle.damage(attack + level.current().getAttackIncrease());
+            return true;
         }
+
+        return false;
     }
 
     private int trainCall() {
