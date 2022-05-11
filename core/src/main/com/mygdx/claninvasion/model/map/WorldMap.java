@@ -30,6 +30,10 @@ public class WorldMap {
         this.worldCells = new ArrayList<>();
     }
 
+    /*
+     * This method adds the cell to the map
+     * @return Boolean
+     * */
     public void addCell(WorldCell worldCell) {
         this.worldCells.add(worldCell);
     }
@@ -44,6 +48,10 @@ public class WorldMap {
         this.tilesets = tilesets;
     }
 
+    /*
+     * This method creates the entity on map
+     * @return Boolean
+     * */
     public Entity createMapEntity(EntitySymbol symbol, WorldCell worldCell, Object obj) {
         TiledMapTileLayer.Cell cell = new TiledMapTileLayer.Cell();
         cell.setTile(tilesets.getTile(symbol.id));
@@ -56,6 +64,10 @@ public class WorldMap {
         return (int) Math.sqrt(worldCells.size());
     }
 
+    /*
+     * This method removes any entity from the map
+     * @return Boolean
+     * */
     public boolean removeMapEntity(Entity entity) {
         List<WorldCell> cells = getCells(entity.getPosition());
         if (cells == null || cells.size() == 0) return false;
@@ -128,6 +140,10 @@ public class WorldMap {
         return worldCells.stream().filter(cell -> cell.getMapPosition().equals(cellPlace)).toArray().length > 1;
     }
 
+    /*
+     * This method checks if the following cell exists
+     * @return Boolean
+     * */
     public Boolean hasCell(int index) {
         try {
             return worldCells.get(index) != null;
