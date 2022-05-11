@@ -59,6 +59,7 @@ public class Globals {
     public static final Texture TOWER_TEXTURE = new Texture(Gdx.files.internal("BuildingBlocks/tower.png"));
 
     public static float MAX_ENTITY_CREATION_DISTANCE = 200f;
+    public static final int TURN_TIME = 30;
 
     public static String BACKGROUND_LAYER = "Layer1";
     public static String ENTITIES_LAYER = "Layer2";

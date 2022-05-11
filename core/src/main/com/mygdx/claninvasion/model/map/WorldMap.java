@@ -301,7 +301,9 @@ public class WorldMap {
     }
 
     public void setGraph(int size) {
-        System.out.println(size);
+        if (Globals.DEBUG) {
+            System.out.println(size);
+        }
         this.G = new Graph(size, this);
     }
 

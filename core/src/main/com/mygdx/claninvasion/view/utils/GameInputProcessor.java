@@ -34,7 +34,6 @@ public class GameInputProcessor extends InputAdapter {
     public GameInputProcessor(RunnableTouchEvent event, ClanInvasion app) {
         onTouchEvent = event;
         this.app = app;
-        System.out.println(app.getScreen());
         previousPosition = new Pair<>(0,0);
     }
 

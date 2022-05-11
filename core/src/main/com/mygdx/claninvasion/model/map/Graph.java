@@ -1,5 +1,7 @@
 package com.mygdx.claninvasion.model.map;
 
+import com.mygdx.claninvasion.model.Globals;
+
 import java.util.ArrayList;
 import java.util.LinkedList;
 
@@ -115,7 +117,9 @@ public class Graph {
         }
 
         // Print distance
-        System.out.println("Shortest path length is: " + dist[dest]);
+        if (Globals.DEBUG) {
+            System.out.println("Shortest path length is: " + dist[dest]);
+        }
 
         return path;
 
