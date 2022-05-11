@@ -1,6 +1,8 @@
 package com.mygdx.claninvasion.model.entity;
 
 import java.util.UUID;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 import com.mygdx.claninvasion.model.helpers.Direction;
@@ -106,10 +108,11 @@ public abstract class ArtificialEntity extends Entity {
         }
 
        Thread thread = new Thread(() -> {
+           CountDownLatch latch = new CountDownLatch(1);
             while (getPercentage().get() < level.current().getHealGoalPoint()) {
                 try {
                     setIncreaseHealth();
-                    Thread.sleep(level.current().getReactionTime());
+                    latch.await(level.current().getReactionTime(), TimeUnit.MILLISECONDS);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
