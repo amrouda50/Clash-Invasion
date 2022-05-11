@@ -1,8 +1,5 @@
 package com.mygdx.claninvasion.model.entity;
 
-import com.mygdx.claninvasion.model.level.Level;
-import com.mygdx.claninvasion.model.level.LevelIterator;
-import com.mygdx.claninvasion.model.level.Levels;
 import com.mygdx.claninvasion.model.player.Player;
 import org.javatuples.Pair;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -54,6 +51,7 @@ public abstract class Tower extends ArtificialEntity implements Defensible {
     public abstract int getDecreaseRate();
     public abstract int getRadius();
     public abstract void setLevel(Player player);
+    public abstract String getProjectileSource();
 
     public void setTargetedSolider(Soldier targetedSolider) {
         this.targetedSolider = targetedSolider;

@@ -103,9 +103,9 @@ public class BattleState extends CommonGameState {
                                     tower.attack(tower.getTargetedSolider());
 
                                 }
-                            }, 200, TimeUnit.MILLISECONDS);
+                            }, 20, TimeUnit.MILLISECONDS);
                     try {
-                        scheduledExecutorService.awaitTermination(500, TimeUnit.MILLISECONDS);
+                        scheduledExecutorService.awaitTermination(tower.getLevel().current().getReactionTime(), TimeUnit.MILLISECONDS);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }

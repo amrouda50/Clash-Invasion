@@ -7,7 +7,6 @@ import org.javatuples.Pair;
 /**
  * Hill tower
  * @version 0.01
- * TODO: Logic part is missing
  */
 public class HillTower extends Tower {
     public HillTower(EntitySymbol entitySymbol, Pair<Integer, Integer> position , int mapsize) {
@@ -17,7 +16,7 @@ public class HillTower extends Tower {
 
     @Override
     public int getDecreaseRate() {
-        return 30;
+        return 40;
     }
 
     @Override
@@ -28,5 +27,10 @@ public class HillTower extends Tower {
     @Override
     public void setLevel(Player player) {
         level = player.getGameHillTowerIterator();
+    }
+
+    @Override
+    public String getProjectileSource() {
+        return "BuildingBlocks/bomb.png";
     }
 }

@@ -22,11 +22,16 @@ public class StrategicTower extends Tower {
 
     @Override
     public int getRadius() {
-        return 10;
+        return 1;
     }
 
     @Override
     public void setLevel(Player player) {
         level = player.getGameStrategicTowerIterator();
+    }
+
+    @Override
+    public String getProjectileSource() {
+        return "BuildingBlocks/fire.png";
     }
 }

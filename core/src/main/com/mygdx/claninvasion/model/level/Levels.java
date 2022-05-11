@@ -31,11 +31,11 @@ public class Levels {
     private static final ArrayList<GameTowerLevel> hillTowerLevels = new ArrayList<>(
             Arrays.asList(
                     // level 0
-                    new GameTowerLevel(new Septet<>(1000, 500, 2000, 0, 700, 20, 10), 200, 0, 0),
+                    new GameTowerLevel(new Septet<>(1000, 500, 2000, 0, 3500, 20, 10), 200, 0, 0),
                     // level 1
-                    new GameTowerLevel(new Septet<>(950, 550, 2000, 0, 700, 20, 10), 200, 1, 1),
-                    new GameTowerLevel(new Septet<>(920, 609, 2200, 0, 640, 20, 10), 200, 2, 1),
-                    new GameTowerLevel(new Septet<>(860, 664, 2300, 0, 610, 20, 10), 200, 2, 7)
+                    new GameTowerLevel(new Septet<>(950, 550, 2000, 0, 3200, 20, 10), 200, 1, 1),
+                    new GameTowerLevel(new Septet<>(920, 609, 2200, 0, 3100, 20, 10), 200, 2, 1),
+                    new GameTowerLevel(new Septet<>(860, 664, 2300, 0, 2900, 20, 10), 200, 2, 7)
             )
     );
 

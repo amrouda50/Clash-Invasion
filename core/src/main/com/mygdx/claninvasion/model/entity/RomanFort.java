@@ -28,4 +28,9 @@ public class RomanFort extends Tower {
     public void setLevel(Player player) {
         level = player.getGameRomanFortIterator();
     }
+
+    @Override
+    public String getProjectileSource() {
+        return "BuildingBlocks/fire.png";
+    }
 }
