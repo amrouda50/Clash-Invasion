@@ -57,9 +57,6 @@ public class Ammo implements ApplicationListener {
             create();
         }
 
-        System.out.println("render fire at position " + currentPosition.toString());
-        System.out.println("destination " + positionDest);
-
         batch.begin();
         sprite.translate(currentPosition.x, currentPosition.y);
         sprite.draw(batch);
