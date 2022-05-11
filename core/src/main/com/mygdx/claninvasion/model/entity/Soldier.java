@@ -14,8 +14,6 @@ public abstract class Soldier extends ArtificialEntity {
     private final AtomicBoolean hasTrained = new AtomicBoolean(false);
     private AttackType attackType;
 
-    public abstract int getCost();
-
     public Soldier(EntitySymbol entitySymbol, Pair<Integer, Integer> position, int mapsize) {
         super(entitySymbol, position, mapsize);
     }

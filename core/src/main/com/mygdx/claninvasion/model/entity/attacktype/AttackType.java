@@ -13,10 +13,12 @@ public interface AttackType {
     /**
      * Should represent the way of attacking of certain entity
      */
-    default void attack(Castle castle, float distance, GameSoldierLevel level) {
+    default boolean attack(Castle castle, float distance, GameSoldierLevel level) {
         if (distance < level.getVisibleArea() + maxDistance()) {
             castle.damage(level.getAttackIncrease() - damageAmount());
+            return true;
         }
+        return false;
     }
     int damageAmount();
     int maxDistance();

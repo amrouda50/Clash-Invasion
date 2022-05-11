@@ -1,7 +1,9 @@
 package com.mygdx.claninvasion.model.entity;
 
+import com.badlogic.gdx.graphics.Color;
 import com.mygdx.claninvasion.model.entity.attacktype.AttackType;
 import com.mygdx.claninvasion.model.player.Player;
+import com.mygdx.claninvasion.view.actors.HealthBar;
 import org.javatuples.Pair;
 
 import java.util.Stack;
@@ -28,10 +30,11 @@ public final class Castle extends ArtificialEntity {
      * @param player - player which has current castle
      * @param mapsize - size of the map, helps identifying if entity is not creatable
      */
-    public Castle(EntitySymbol symbol, Pair<Integer, Integer> position, Player player , int mapsize) {
+    public Castle(EntitySymbol symbol, Pair<Integer, Integer> position, Player player , int mapsize, HealthBar healthBar) {
         super(symbol, position ,  mapsize);
         this.mapsize = mapsize;
         health = new AtomicInteger(level.current().getMaxHealth() + 1000);
+        hpBar = healthBar;
         initHealth = health.get();
         soldiers = new Stack<>();
         this.player = player;

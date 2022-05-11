@@ -8,12 +8,14 @@ import com.mygdx.claninvasion.model.level.GameSoldierLevel;
 public class AttackTypeArcher implements AttackType {
     @Override
     // sometimes archer does not hit the goal
-    public void attack(Castle castle, float distance, GameSoldierLevel level) {
+    public boolean attack(Castle castle, float distance, GameSoldierLevel level) {
         Random random = new Random();
         boolean success = random.nextBoolean();
         if (success && distance < level.getVisibleArea() + maxDistance()) {
             castle.damage(level.getAttackIncrease() - damageAmount());
+            return true;
         }
+        return false;
     }
 
     @Override

@@ -3,14 +3,14 @@ package com.mygdx.claninvasion.model.entity;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
-
-import com.mygdx.claninvasion.exceptions.EntityOutsideOfBoundsException;
 import com.mygdx.claninvasion.model.helpers.Direction;
 import com.mygdx.claninvasion.model.level.Level;
 import com.mygdx.claninvasion.model.level.LevelIterator;
 import com.mygdx.claninvasion.model.level.Levels;
 import com.mygdx.claninvasion.view.actors.HealthBar;
 import org.javatuples.Pair;
+
+import com.mygdx.claninvasion.exceptions.EntityOutsideOfBoundsException;
 
 /**
  * Artificial entities are all entities except unmoving ones
