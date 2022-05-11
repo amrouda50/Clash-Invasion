@@ -6,6 +6,8 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.tiled.*;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.mygdx.claninvasion.ClanInvasion;
 import com.mygdx.claninvasion.model.Globals;
 import com.mygdx.claninvasion.model.entity.*;
@@ -46,6 +48,10 @@ public class MainGamePage implements GamePage, UiUpdatable {
     private TiledMap map;
     private final FireFromEntity<Tower, Soldier> fireFromEntity = this::fireTower;
     private EntitySymbol chosenSymbol;
+    private final Texture backgroundTexture = new Texture(Globals.PATH_GAME_BACKGROUND);
+    private final Image backgroundImage = new Image(backgroundTexture);
+    private OrthographicCamera camera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+    private Stage uiStage;
 
     /**
      * @param app - app instance
@@ -69,6 +75,12 @@ public class MainGamePage implements GamePage, UiUpdatable {
         return chosenSymbol;
     }
 
+    private void initCameraPosition() {
+        // transform camera position ans scale to be in the center
+        app.getCamera().translate(translateCamera);
+        app.getCamera().zoom -= -.7;
+    }
+
     /**
      * Is fired once the page becomes active in application
      * See GamePage interface
@@ -80,9 +92,11 @@ public class MainGamePage implements GamePage, UiUpdatable {
         } else {
             app.getModel().changePhase();
         }
+        uiStage = new Stage(new StretchViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), camera));
+        uiStage.addActor(backgroundImage);
 
         app.getCamera().update();
-        inputProcessor = new GameInputProcessor(app.getCamera(), new InputClicker(app, this), app);
+        inputProcessor = new GameInputProcessor(new InputClicker(app, this), app);
         map = new TmxMapLoader().load(Gdx.files.getLocalStoragePath() + Globals.PATH_TILEMAP);
         app.getMap().setTileset(map.getTileSets());
         renderer = new IsometricTiledMapGameRenderer(
@@ -91,9 +105,7 @@ public class MainGamePage implements GamePage, UiUpdatable {
                 new EntityPlacer(app.getModel())
         );
 
-        // transform camera position ans scale to be in the center
-        app.getCamera().translate(translateCamera);
-        app.getCamera().zoom -= -.7;
+        initCameraPosition();
         renderer.setView(app.getCamera());
         renderer.render(app.getMap(), true);
         entitiesStage = new TiledMapStage();
@@ -174,6 +186,8 @@ public class MainGamePage implements GamePage, UiUpdatable {
         }
     }
 
+    private boolean cameraReset = false;
+
     /**
      * Fired on every frame update
      * See GamePage interface
@@ -184,7 +198,15 @@ public class MainGamePage implements GamePage, UiUpdatable {
         Gdx.gl.glClearColor(1.0f, 1.0f, 1.0f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
+        uiStage.act(Gdx.graphics.getDeltaTime());
+        uiStage.draw();
+
         if (app.getModel().getState() instanceof BattleState) {
+            if (!cameraReset) {
+                app.resetCamera();
+                initCameraPosition();
+                cameraReset = true;
+            }
             ((BattleState) app.getModel().getState()).setFireFromEntity(fireFromEntity);
         }
 
@@ -241,6 +263,7 @@ public class MainGamePage implements GamePage, UiUpdatable {
 
         renderer.setView(app.getCamera());
         renderer.render();
+        uiStage.getViewport().update(width, height, true);
 
         entitiesStage.getViewport().setScreenBounds(
                 (int) renderer.getViewBounds().x,

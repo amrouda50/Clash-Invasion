@@ -39,6 +39,8 @@ public class Globals {
     public static final String PATH_ATLAS = "skin/custom-skin/skin.atlas";
     public static final String PATH_TILEMAP = "/TileMap/Tilemap.tmx";
 
+    public static final  String PATH_GAME_BACKGROUND = "splash/game-background.png";
+
     public static final String COLOR_BLACK_BLUE = "#090919";
     public static final String COLOR_ROSE = "#E06367";
     public static final String COLOR_PLAYER_2 = "#E06367";
@@ -57,6 +59,9 @@ public class Globals {
     public static final Texture TOWER_TEXTURE = new Texture(Gdx.files.internal("BuildingBlocks/tower.png"));
 
     public static float MAX_ENTITY_CREATION_DISTANCE = 200f;
+
+    public static String BACKGROUND_LAYER = "Layer1";
+    public static String ENTITIES_LAYER = "Layer2";
 
     public static String DISABLE_CURSOR = "raw/disable-cursor.png";
     public static final String PLAYER1_DEFAULT_NAME = "Player 1";

@@ -139,6 +139,11 @@ public class ClanInvasion extends Game {
         return camera;
     }
 
+    public void resetCamera() {
+        camera = new OrthographicCamera();
+        camera.setToOrtho(false, Globals.V_WIDTH, Globals.V_HEIGHT);
+    }
+
     /**
      * @return - WorldMap class, which handles map interactions
      * and contains virtual map representation
