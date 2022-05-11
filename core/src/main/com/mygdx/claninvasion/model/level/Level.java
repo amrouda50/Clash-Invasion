@@ -10,7 +10,6 @@ import org.javatuples.Sextet;
  * @author andreicristea
  * @author omarashour
  * @author Dinari
- * TODO: Logic part is missing
  */
 public class Level {
     protected int creationTime;

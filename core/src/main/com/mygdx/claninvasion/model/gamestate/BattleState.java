@@ -36,6 +36,10 @@ public class BattleState extends CommonGameState {
         fireTower(game.getPlayerTwo());
     }
 
+    /*
+     * This method is responsible for the starting movement of the player
+     * @params player
+     * */
     private void initializePlayerMove(Player player) {
         Thread tempThread = null;
         int size = player.getTrainingSoldiers().size();
@@ -82,6 +86,9 @@ public class BattleState extends CommonGameState {
         return false;
     }
 
+    /*
+     * This method is responsible for the firing from tower
+     * */
     private void fireTower(Player player) {
         List<Tower> towers = player.getTowers();
         List<Soldier> soldiers = player.getOpponent().getSoldiers();
@@ -119,6 +126,11 @@ public class BattleState extends CommonGameState {
         fireFromEntity = fire;
     }
 
+    /*
+    * This method checks if both the players have enough soldiers to update the state or if
+    * one of the players has won
+    * @params delta, runnable
+    * */
     @Override
     public void updateState(float delta, Runnable runnable) {
         Boolean noSoldiers1 = game.getPlayerOne().getTrainingSoldiers().size() == 0 && game.getPlayerOne().getSoldiers().size() == 0;

@@ -71,8 +71,9 @@ public class Graph {
         return (coordinate   % (arraysize)) ;
     }
 
-    // A utility function to print the adjacency list
-    // representation of graph
+    /*
+     * A utility function to print the adjacency list representation of graph
+     * */
     public void printGraph() {
         for (int i = 0; i < adj.size(); i++) {
             System.out.println("\nAdjacency list of vertex"
@@ -89,8 +90,9 @@ public class Graph {
 
 
 
-    // function to print the shortest distance and path
-    // between source vertex and destination vertex
+    /*function to print the shortest distance and path
+     between source vertex and destination vertex
+    */
     public LinkedList<Integer> getShortestDistance(int s, int dest, int v) {
         // predecessor[i] array stores predecessor of
         // i and distance array stores distance of i
@@ -119,9 +121,11 @@ public class Graph {
 
     }
 
-    // a modified version of BFS that stores predecessor
-    // of each vertex in array pred
-    // and its distance from source in array dist
+    /* a modified version of BFS that stores predecessor
+    * of each vertex in array pred
+    * and its distance from source in array dist
+    * @returns Boolean
+    */
     private static boolean BFS(ArrayList<ArrayList<Integer>> adj, int src,
                                int dest, int v, int[] pred, int[] dist) {
         // a queue to maintain queue of vertices whose

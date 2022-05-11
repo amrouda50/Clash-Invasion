@@ -22,6 +22,9 @@ public class EntitiesCreators {
             EntitySymbol.MINING, (EntityCreator<BlockingQueue<Integer>>) (entitySymbol, position, queue ,  mapSize) -> new MiningFarm(entitySymbol, position, (BlockingQueue<Integer>) queue , mapSize)
     ));
 
+    /*
+    * This method creates the entity and places it on the map
+    * */
     public static Entity createEntity(EntitySymbol entitySymbol, Pair<Integer, Integer> position, Object obj , int mapSize) {
         return creators.get(entitySymbol).create(entitySymbol, position, obj ,  mapSize);
     }
