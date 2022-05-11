@@ -15,7 +15,7 @@ public enum EntitySymbol {
     HILL_TOWER("tower", 'H', "tower", 20),
     ROMAN_FORT("splashtower", 'F', "tower", 25),
     // TDDO: change later for appropriate tile
-    STRATEGIC_TOWER("splashtower", 'F', "tower", 25),
+    STRATEGIC_TOWER("strategy", 'S', "strategy", 27),
     MINING("goldmine", 'G', "goldmine", 22);
 
     public final String sourcePart;
