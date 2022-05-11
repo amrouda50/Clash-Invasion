@@ -69,6 +69,12 @@ public class MainGamePage implements GamePage, UiUpdatable {
         return chosenSymbol;
     }
 
+    private void initCameraPosition() {
+        // transform camera position ans scale to be in the center
+        app.getCamera().translate(translateCamera);
+        app.getCamera().zoom -= -.7;
+    }
+
     /**
      * Is fired once the page becomes active in application
      * See GamePage interface
@@ -91,9 +97,7 @@ public class MainGamePage implements GamePage, UiUpdatable {
                 new EntityPlacer(app.getModel())
         );
 
-        // transform camera position ans scale to be in the center
-        app.getCamera().translate(translateCamera);
-        app.getCamera().zoom -= -.7;
+        initCameraPosition();
         renderer.setView(app.getCamera());
         renderer.render(app.getMap(), true);
         entitiesStage = new TiledMapStage();
@@ -174,6 +178,8 @@ public class MainGamePage implements GamePage, UiUpdatable {
         }
     }
 
+    private boolean cameraReset = false;
+
     /**
      * Fired on every frame update
      * See GamePage interface
@@ -185,6 +191,11 @@ public class MainGamePage implements GamePage, UiUpdatable {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         if (app.getModel().getState() instanceof BattleState) {
+            if (!cameraReset) {
+                app.resetCamera();
+                initCameraPosition();
+                cameraReset = true;
+            }
             ((BattleState) app.getModel().getState()).setFireFromEntity(fireFromEntity);
         }
 

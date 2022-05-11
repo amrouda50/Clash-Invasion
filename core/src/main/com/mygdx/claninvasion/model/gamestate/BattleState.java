@@ -25,6 +25,7 @@ public class BattleState extends CommonGameState {
     }
     private BattleStateChangeVariants battleStateChangeVariants = null;
     private FireFromEntity<Tower, Soldier> fireFromEntity = null;
+    int countOnGoToBuilding = 0;
 
     public BattleState(GameModel game) {
         super(game);
@@ -127,7 +128,14 @@ public class BattleState extends CommonGameState {
         game.getPlayerTwo().removeDeadSoldiers();
 
         if (noSoldiers1 && noSoldiers2) {
+            countOnGoToBuilding++;
+        } else {
+            countOnGoToBuilding = 0;
+        }
+
+        if (countOnGoToBuilding > 300) {
             battleStateChangeVariants = BattleStateChangeVariants.BUILDING;
+            countOnGoToBuilding = 0;
         }
 
         if (game.getPlayerOne().hasLost()) {

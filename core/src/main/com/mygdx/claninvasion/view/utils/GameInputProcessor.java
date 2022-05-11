@@ -86,7 +86,6 @@ public class GameInputProcessor extends InputAdapter {
     }
 
     private void moveCamera() {
-        System.out.println(app.getModel().restrictCameraManipulations() + "Camera");
         if (app.getModel().restrictCameraManipulations()) {
             return;
         }
