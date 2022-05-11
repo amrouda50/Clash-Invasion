@@ -1,6 +1,7 @@
 package com.mygdx.claninvasion.model;
 
 import com.badlogic.gdx.graphics.Color;
+import com.mygdx.claninvasion.model.gamestate.BattleState;
 import com.mygdx.claninvasion.model.gamestate.GamePhase;
 import com.mygdx.claninvasion.model.gamestate.GameState;
 import com.mygdx.claninvasion.model.gamestate.StartGameState;
@@ -148,9 +149,13 @@ public class GameModel implements GameState {
         return activePlayer;
     }
 
-    public Player getPlayerOne() { return playerOne; }
+    public Player getPlayerOne() {
+        return playerOne;
+    }
 
-    public Player getPlayerTwo() { return playerTwo; }
+    public Player getPlayerTwo() {
+        return playerTwo;
+    }
 
     /**
      * Changes the active player
@@ -205,5 +210,9 @@ public class GameModel implements GameState {
 
     public Runnable getChangeTurnCallback() {
         return changeTurnCallback;
+    }
+
+    public boolean restrictCameraManipulations() {
+        return getState() instanceof BattleState;
     }
 }

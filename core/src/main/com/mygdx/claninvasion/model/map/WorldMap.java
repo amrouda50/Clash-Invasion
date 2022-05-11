@@ -86,8 +86,6 @@ public class WorldMap {
                 cell
         );
         worldCell.setOccupier(occupier);
-        System.out.println(worldCell.getMapPosition().toString());
-        System.out.println(worldCell.getOccupier().getPosition());
     }
 
     public void clear() {
