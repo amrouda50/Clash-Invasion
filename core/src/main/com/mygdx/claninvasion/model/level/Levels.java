@@ -5,6 +5,9 @@ import java.util.ArrayList;
 
 import org.javatuples.Septet;
 
+/*
+* This class creates all the attributes of a level packaged into a single level
+* */
 public class Levels {
     // creationTime, creationCost, maxHealth, minHealth, reactionTime, healHealthIncrease, healGoalPoint
     public static final Septet<Integer, Integer, Integer, Integer, Integer, Integer, Integer> level0 =
@@ -110,14 +113,20 @@ public class Levels {
         return new GameSoldierLevelIterator(dragonLevels);
     }
 
+    /*
+     * @return all the levels of the strategic tower*/
     public static GameTowerLevelIterator createStrategicTowerIterator() {
         return new GameTowerLevelIterator(strategicTowerLevels);
     }
 
+    /*
+     * @return all the levels of the roman fort tower*/
     public static GameTowerLevelIterator createRomanFortTowerIterator() {
         return new GameTowerLevelIterator(romanFortLevels);
     }
 
+    /*
+     * @return all the levels of the hill tower*/
     public static GameTowerLevelIterator createHillTowerIterator() {
         return new GameTowerLevelIterator(hillTowerLevels);
     }
