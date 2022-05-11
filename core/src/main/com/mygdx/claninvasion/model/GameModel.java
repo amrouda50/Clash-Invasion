@@ -6,6 +6,7 @@ import com.mygdx.claninvasion.model.gamestate.GameState;
 import com.mygdx.claninvasion.model.gamestate.StartGameState;
 import com.mygdx.claninvasion.model.map.WorldMap;
 import com.mygdx.claninvasion.model.player.Player;
+import com.badlogic.gdx.graphics.Color;
 
 /**
  * This class is responsible for handling

@@ -1,18 +1,13 @@
 package com.mygdx.claninvasion.model.entity.attacktype;
 
-import java.util.Random;
-
 import com.mygdx.claninvasion.model.entity.Castle;
 import com.mygdx.claninvasion.model.level.GameSoldierLevel;
 
-public class AttackTypeArcher implements AttackType {
+public class AttackTypeDefault implements AttackType {
     @Override
-    // sometimes archer does not hit the goal
     public boolean attack(Castle castle, float distance, GameSoldierLevel level) {
-        Random random = new Random();
-        boolean success = random.nextBoolean();
-        if (success && distance < level.getVisibleArea() + maxDistance()) {
-            castle.damage(level.getAttackIncrease() - damageAmount());
+        if (distance < level.getVisibleArea()) {
+            castle.damage(level.getAttackIncrease());
             return true;
         }
         return false;
@@ -20,16 +15,16 @@ public class AttackTypeArcher implements AttackType {
 
     @Override
     public int damageAmount() {
-        return 1;
+        return 0;
     }
 
     @Override
     public int maxDistance() {
-        return 10;
+        return 0;
     }
 
     @Override
     public int getCost() {
-        return 200;
+        return 0;
     }
 }

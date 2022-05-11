@@ -13,6 +13,10 @@ import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.mygdx.claninvasion.ClanInvasion;
 import com.mygdx.claninvasion.model.Globals;
 import com.mygdx.claninvasion.model.entity.*;
+import com.mygdx.claninvasion.model.entity.attacktype.AttackType;
+import com.mygdx.claninvasion.model.entity.attacktype.AttackTypeArcher;
+import com.mygdx.claninvasion.model.entity.attacktype.AttackTypeDefault;
+import com.mygdx.claninvasion.model.entity.attacktype.AttackTypeSword;
 import com.mygdx.claninvasion.model.gamestate.Building;
 import com.mygdx.claninvasion.model.player.Player;
 import com.mygdx.claninvasion.view.actors.GameButton;
@@ -25,6 +29,7 @@ import org.javatuples.Pair;
 
 import java.util.*;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 
 public final class MainGamePageUI implements ApplicationListener {
     private Stage uiStage;
@@ -62,9 +67,58 @@ public final class MainGamePageUI implements ApplicationListener {
         page = gamePage;
     }
 
+    enum CreateSoldier {
+        BARBARIAN,
+        DRAGON
+    }
+
+
     private void initializeActions(Player player) {
         options = new ArrayList<>();
         PlayerActionMethods methods = new PlayerActionMethods(player);
+        AttackType attackTypeSword = new AttackTypeSword();
+        AttackType attackTypeArcher = new AttackTypeArcher();
+        AttackType attackTypeDefault = new AttackTypeDefault();
+        AtomicReference<CreateSoldier> soldier = new AtomicReference<>(CreateSoldier.BARBARIAN);
+
+        TableWithOptions.Option noAttackTypeOption = new TableWithOptions.Option(
+                "Default attack type",
+                attackTypeDefault.getCost(),
+                atlasSkin,
+                app.getFont(),
+                0
+        );
+        noAttackTypeOption.setActionable((option) -> {
+            //methods.createBarbarian(Attacks.FIRE);
+            methods.createSoldier(soldier.get(),attackTypeDefault);
+            this.tableWithOptions.setIsOpen(false);
+        });
+
+        TableWithOptions.Option attackTypeSwordOption = new TableWithOptions.Option(
+                "Attack Type Sword",
+                attackTypeSword.getCost(),
+                atlasSkin,
+                app.getFont(),
+                0
+        );
+        attackTypeSwordOption.setActionable((option) -> {
+            System.out.println("Creating a barbarian with attack name SWORD");
+            methods.createSoldier(soldier.get(), attackTypeSword);
+            this.tableWithOptions.setIsOpen(false);
+        });
+
+        TableWithOptions.Option attackTypeArcherOption = new TableWithOptions.Option(
+                "Attack Type Archer",
+                attackTypeArcher.getCost(),
+                atlasSkin,
+                app.getFont(),
+                0
+        );
+        attackTypeArcherOption.setActionable((option) -> {
+            methods.createSoldier(soldier.get(), attackTypeArcher);
+            this.tableWithOptions.setIsOpen(false);
+        });
+
 
         // train soldiers
         TableWithOptions.Option trainBarbarian = new TableWithOptions.Option(
@@ -72,16 +126,25 @@ public final class MainGamePageUI implements ApplicationListener {
                 player.getBarbarianCost(),
                 atlasSkin,
                 app.getFont(),
+                new ArrayList<>(List.of(noAttackTypeOption, attackTypeSwordOption, attackTypeArcherOption)),
                 0
         );
         trainBarbarian.setActionable((option) -> {
-            methods.createBarbarian();
-            this.tableWithOptions.setIsOpen(false);
+            soldier.set(CreateSoldier.BARBARIAN);
+            tableWithOptions.goIntoChildOptions(option.getIndex());
         });
-        TableWithOptions.Option trainDragon = new TableWithOptions.Option("Train Dragon", player.getDragonCost(), atlasSkin, app.getFont(), 1);
+
+        TableWithOptions.Option trainDragon = new TableWithOptions.Option(
+                "Train Dragon",
+                player.getDragonCost(),
+                atlasSkin,
+                app.getFont(),
+                new ArrayList<>(List.of(noAttackTypeOption, attackTypeSwordOption, attackTypeArcherOption)),
+                1
+        );
         trainDragon.setActionable((option) -> {
-            methods.createDragon();
-            this.tableWithOptions.setIsOpen(false);
+            soldier.set(CreateSoldier.DRAGON);
+            tableWithOptions.goIntoChildOptions(option.getIndex());
         });
         TableWithOptions.Option chooseTrainSoldier = new TableWithOptions.Option(
                 "Choose Train Soldier",
@@ -465,25 +528,34 @@ public final class MainGamePageUI implements ApplicationListener {
             }
         }
 
-        public void createBarbarian() {
+        public void createSoldier(CreateSoldier soldier, AttackType type) {
+            if (soldier == CreateSoldier.BARBARIAN) {
+                createBarbarian(type);
+            } else {
+                createDragon(type);
+            }
+        }
+
+        public void createBarbarian(AttackType type) {
             if (disableClick()) return;
             if (player.canCreateBarbarian()) {
                 InputClicker.enabled = false;
-                player.trainSoldiers(EntitySymbol.BARBARIAN, () -> System.out.println("New barbarian trained"));
+                player.trainSoldiers(EntitySymbol.BARBARIAN, type, () -> System.out.println("New barbarian trained"));
             } else {
                 System.out.println("Not enough money for this action");
             }
         }
 
-        public void createDragon() {
+        public void createDragon(AttackType type) {
             if (disableClick()) return;
             if (player.canCreateDragon()) {
                 InputClicker.enabled = false;
-                player.trainSoldiers(EntitySymbol.DRAGON, () -> System.out.println("New dragon trained"));
+                player.trainSoldiers(EntitySymbol.DRAGON, type, () -> System.out.println("New dragon trained"));
             } else {
                 System.out.println("Not enough money for this action");
             }
         }
+
     }
 
     private void addButtonListeners() {

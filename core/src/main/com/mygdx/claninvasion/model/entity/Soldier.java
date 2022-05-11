@@ -1,8 +1,9 @@
 package com.mygdx.claninvasion.model.entity;
 
+import com.mygdx.claninvasion.model.entity.attacktype.AttackType;
+import com.mygdx.claninvasion.model.entity.attacktype.AttackTypeDefault;
 import com.mygdx.claninvasion.model.level.GameSoldierLevelIterator;
 import org.javatuples.Pair;
-
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -12,9 +13,19 @@ import java.util.concurrent.atomic.AtomicBoolean;
  */
 public abstract class Soldier extends ArtificialEntity {
     private final AtomicBoolean hasTrained = new AtomicBoolean(false);
+    private AttackType attackType;
 
     public Soldier(EntitySymbol entitySymbol, Pair<Integer, Integer> position, int mapsize) {
         super(entitySymbol, position, mapsize);
+        attackType = new AttackTypeDefault();
+    }
+
+
+    public void setAttackType(AttackType attackType) {
+        if (attackType == null) {
+            throw new NullPointerException("Attack type can not be null");
+        }
+        this.attackType = attackType;
     }
 
     /**
@@ -26,15 +37,14 @@ public abstract class Soldier extends ArtificialEntity {
         float distance = getVec2Position().dst(castle.getVec2Position().x, castle.getVec2Position().y);
 
         GameSoldierLevelIterator level = (GameSoldierLevelIterator) this.level;
-        if (distance < level.current().getVisibleArea()) {
-            int attack = 5;
-            castle.damage(attack + level.current().getAttackIncrease());
-            return true;
-        }
-
-        return false;
+        // without attack type soldier is weak, like in dark souls to hit only with palm
+        return attackType.attack(castle, distance, level.current());
     }
 
+    /*
+    * Thread sleeps for the training of soldier
+    * @return - integer COST
+    * */
     private int trainCall() {
         try {
             Thread.sleep(level.current().getCreationTime());

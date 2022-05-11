@@ -1,6 +1,9 @@
 package com.mygdx.claninvasion.model.entity;
 
+import com.badlogic.gdx.graphics.Color;
+import com.mygdx.claninvasion.model.entity.attacktype.AttackType;
 import com.mygdx.claninvasion.model.player.Player;
+import com.mygdx.claninvasion.view.actors.HealthBar;
 import org.javatuples.Pair;
 
 import java.util.Stack;
@@ -27,10 +30,11 @@ public final class Castle extends ArtificialEntity {
      * @param player - player which has current castle
      * @param mapsize - size of the map, helps identifying if entity is not creatable
      */
-    public Castle(EntitySymbol symbol, Pair<Integer, Integer> position, Player player , int mapsize) {
+    public Castle(EntitySymbol symbol, Pair<Integer, Integer> position, Player player , int mapsize, HealthBar healthBar) {
         super(symbol, position ,  mapsize);
         this.mapsize = mapsize;
         health = new AtomicInteger(level.current().getMaxHealth() + 1000);
+        hpBar = healthBar;
         initHealth = health.get();
         soldiers = new Stack<>();
         this.player = player;
@@ -64,12 +68,7 @@ public final class Castle extends ArtificialEntity {
         this.health.set(this.health.get() - amount);
     }
 
-    /**
-     * @param entitySymbol - symbol of the trained soldiers
-     * @param run - callback for running after execution is over
-     * @return - future of the trained
-     */
-    public CompletionStage<Integer> trainSoldiers(EntitySymbol entitySymbol, Predicate<Integer> run) {
+    public CompletionStage<Integer> trainSoldiers(EntitySymbol entitySymbol, Predicate<Integer> run, AttackType attackType) {
         ExecutorService executor = newFixedThreadPool(2);
         int money = 0;
         for (int i = 0; i < AMOUNT_OF_SOLDIERS; i++) {
@@ -81,6 +80,7 @@ public final class Castle extends ArtificialEntity {
             } else {
                 throw new IllegalArgumentException("No such soldier exists");
             }
+            soldier.setAttackType(attackType);
             soldiers.add(soldier);
             money += soldier.getCost();
         }

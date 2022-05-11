@@ -21,4 +21,5 @@ public class Barbarian extends Soldier {
     public int getCost() {
         return level.current().getCreationCost();
     }
+
 }
