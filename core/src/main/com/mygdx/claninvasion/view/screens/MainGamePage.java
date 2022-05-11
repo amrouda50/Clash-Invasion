@@ -188,7 +188,7 @@ public class MainGamePage implements GamePage, UiUpdatable {
             ((BattleState) app.getModel().getState()).setFireFromEntity(fireFromEntity);
         }
 
-        // create fire
+        // create fire, arrow and artillery
         createFireAnimated();
 
         app.getCamera().update();
@@ -215,7 +215,6 @@ public class MainGamePage implements GamePage, UiUpdatable {
         // render game page ui
         mainGamePageUI.render();
     }
-
 
 
     private void updateAnimated() {

@@ -33,6 +33,11 @@ public class TowerTest {
 
             @Override
             public void setLevel(Player player) {}
+
+            @Override
+            public String getProjectileSource() {
+                return null;
+            }
         };
 
         boolean canFire = tower.canFire(artificialEntity);
@@ -78,6 +83,11 @@ public class TowerTest {
 
             @Override
             public void setLevel(Player player) {}
+
+            @Override
+            public String getProjectileSource() {
+                return null;
+            }
         };
         tower.attack(artificialEntity);
         Assert.assertEquals(

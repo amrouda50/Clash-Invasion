@@ -3,6 +3,7 @@ package com.mygdx.claninvasion.model.map;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TiledMapTileSets;
 import com.badlogic.gdx.math.Vector2;
+import com.mygdx.claninvasion.model.Globals;
 import com.mygdx.claninvasion.model.entity.Entity;
 import com.mygdx.claninvasion.model.entity.EntitySymbol;
 import com.mygdx.claninvasion.model.entity.Soldier;
@@ -13,11 +14,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+
 /**
  * Map modal of the application
  * Should represent all the map manipulations and connected to the view libgdx tilemap
  * @version 0.01
- * TODO Logic implementation required
  */
 public class WorldMap {
     private final List<WorldCell> worldCells;
@@ -75,6 +76,9 @@ public class WorldMap {
         return createMapEntity(symbol, cell, obj);
     }
 
+    /*
+     *  This makes the entity occupy the position in the cell
+     *  */
     public void occupyPosition(WorldCell worldCell, Entity occupier, TiledMapTileLayer.Cell cell) {
         getLayer2().setCell(
                 worldCell.getMapPosition().getValue1(),
@@ -149,6 +153,10 @@ public class WorldMap {
        return  this.entitiesLayer ;
     }
 
+    /*
+     * Shows the maximum row position in the map
+     * @return integer
+     * */
     public int maxCellRowPosition() {
         return worldCells
                 .stream()
@@ -158,6 +166,10 @@ public class WorldMap {
                 .getValue0();
     }
 
+    /*
+     * Shows the minimum row position in the map
+     * @return integer
+     * */
     public int minCellRowPosition() {
         return worldCells
                 .stream()
@@ -167,6 +179,10 @@ public class WorldMap {
                 .getValue0();
     }
 
+    /*
+     * Shows the maximum column position in the map
+     * @return integer
+     * */
     public int maxCellColumnPosition() {
         return worldCells
                 .stream()
@@ -176,6 +192,10 @@ public class WorldMap {
                 .getValue1();
     }
 
+    /*
+     * Shows the minimum column position in the map
+     * @return integer
+     * */
     public int minCellColumnPosition() {
         return worldCells
                 .stream()
@@ -189,6 +209,9 @@ public class WorldMap {
         return worldCells;
     }
 
+    /*
+    * Prints the symbol of entity if the entity has an occupier
+    * */
     public void printEntitiesLayer() {
         for (int i = minCellRowPosition(); i <= maxCellRowPosition(); i++) {
             System.out.print("{");
@@ -237,6 +260,9 @@ public class WorldMap {
         cell2.setOccupier(entity);
     }
 
+    /*
+    * This method changes the position of entity in the map
+    * */
     public void mutate(int index1, int index2) {
         try {
             WorldCell cell1 = getCell(index1);
@@ -264,4 +290,13 @@ public class WorldMap {
         System.out.println(size);
         this.G = new Graph(size, this);
     }
+
+    /*
+    * Checks if a point is on map or not
+    * @return Boolean
+    * */
+    public boolean isOnMap(int x, int y) {
+        return x >= 0 && y >= 0 && x < Globals.V_WIDTH && y < Globals.V_HEIGHT;
+    }
+
 }

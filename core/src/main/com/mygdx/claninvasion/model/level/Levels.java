@@ -86,18 +86,26 @@ public class Levels {
             )
     );
 
+    /*
+     * @return all the levels*/
     public static DefaultGameLevelIterator createLevelIterator() {
         return new DefaultGameLevelIterator(defaultLevels);
     }
 
+    /*
+     * @return all the levels of the minings*/
     public static GameMiningLevelIterator createMiningLevelIterator() {
         return new GameMiningLevelIterator(miningLevels);
     }
 
+    /*
+     * @return all the levels of the barbarians*/
     public static GameSoldierLevelIterator createBarbarianLevelIterator() {
         return new GameSoldierLevelIterator(barbarianLevels);
     }
 
+    /*
+     * @return all the levels of the dragon*/
     public static GameSoldierLevelIterator createDragonLevelIterator() {
         return new GameSoldierLevelIterator(dragonLevels);
     }

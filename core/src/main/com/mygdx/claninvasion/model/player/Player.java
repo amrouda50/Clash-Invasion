@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.mygdx.claninvasion.model.GameModel;
 import com.mygdx.claninvasion.model.entity.*;
 import com.mygdx.claninvasion.model.gamestate.BattleState;
+import com.mygdx.claninvasion.model.entity.attacktype.AttackType;
 import com.mygdx.claninvasion.model.level.*;
 import com.mygdx.claninvasion.model.map.WorldCell;
 import com.mygdx.claninvasion.model.map.WorldMap;
@@ -26,7 +27,6 @@ import static com.mygdx.claninvasion.model.level.Levels.*;
  * @author andreicristea
  * @author omarashour
  * @author Dinari
- * TODO: Logic part is missing
  */
 
 public class Player implements Winnable {
@@ -202,10 +202,13 @@ public class Player implements Winnable {
         tower.setLevel(this);
 
         towers.add(tower);
-        wealth.set(wealth.get() - tower.getLevel().current().getCreationCost());
+        wealth.set(wealth.get() - (tower.getLevel().current().getCreationCost()));
         return tower;
     }
 
+    /*
+    * This method removes the mining farms once they are exhausted
+    * */
     public void removeDeadMiningFarm() {
         for (MiningFarm farm : miningFarms) {
             if (!farm.isAlive()) {
@@ -219,15 +222,19 @@ public class Player implements Winnable {
      * This will add more soldiers
      * to player's army
      */
-    public CompletionStage<Void> trainSoldiers(EntitySymbol entitySymbol) {
+    public CompletionStage<Void> trainSoldiers(EntitySymbol entitySymbol, AttackType attackType) {
         return castle
                 .trainSoldiers(entitySymbol, (cost) -> {
-                    wealth.set(wealth.get() - cost);
+                    int attackTypeCost = attackType == null ? 0 : attackType.getCost();
+                    wealth.set(wealth.get() - (cost + attackTypeCost));
                     return false;
-                })
-                .thenRunAsync(() -> System.out.println("New soldiers were successfully added"));
+                },attackType)
+                .thenRunAsync(() -> System.out.println("New soldiers were successfully added with attack type " + attackType));
     }
 
+    /*
+    * This method adds the trained soldier onto the map
+    * */
     public void addTrainedToMapSoldier() {
         Soldier soldier = castle.getSoldiers().pop();
         try {
@@ -257,8 +264,8 @@ public class Player implements Winnable {
      * This will add more soldiers
      * to player's army
      */
-    public void trainSoldiers(EntitySymbol entitySymbol, Runnable after) {
-        trainSoldiers(entitySymbol)
+    public void trainSoldiers(EntitySymbol entitySymbol, AttackType attackType, Runnable after) {
+        trainSoldiers(entitySymbol, attackType)
                 .thenRunAsync(after);
     }
 
@@ -271,6 +278,9 @@ public class Player implements Winnable {
         return true;
     }
 
+    /**
+     * This method is used to attack the castle of the opponent during attacking phase
+     * */
     public void attackCastle(Soldier soldier) {
         soldier.attackCastle(opponent.castle);
     }
@@ -378,7 +388,6 @@ public class Player implements Winnable {
                 getMap().removeMapEntity(soldiers.get(i));
                 soldiers.remove(soldiers.get(i));
             }
-
         }
     }
 

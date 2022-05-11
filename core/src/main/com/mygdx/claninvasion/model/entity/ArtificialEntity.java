@@ -1,16 +1,18 @@
 package com.mygdx.claninvasion.model.entity;
 
 import java.util.UUID;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
-
-import com.mygdx.claninvasion.exceptions.EntityOutsideOfBoundsException;
 import com.mygdx.claninvasion.model.helpers.Direction;
 import com.mygdx.claninvasion.model.level.Level;
 import com.mygdx.claninvasion.model.level.LevelIterator;
 import com.mygdx.claninvasion.model.level.Levels;
 import com.mygdx.claninvasion.view.actors.HealthBar;
 import org.javatuples.Pair;
+
+import com.mygdx.claninvasion.exceptions.EntityOutsideOfBoundsException;
 
 /**
  * Artificial entities are all entities except unmoving ones
@@ -106,10 +108,11 @@ public abstract class ArtificialEntity extends Entity {
         }
 
        Thread thread = new Thread(() -> {
+           CountDownLatch latch = new CountDownLatch(1);
             while (getPercentage().get() < level.current().getHealGoalPoint()) {
                 try {
                     setIncreaseHealth();
-                    Thread.sleep(level.current().getReactionTime());
+                    latch.await(level.current().getReactionTime(), TimeUnit.MILLISECONDS);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -155,13 +158,17 @@ public abstract class ArtificialEntity extends Entity {
 
         float percent = amount / (float)health.get();
         health.set(health.get() - amount);
-        hpBar.substStamina(percent);
+        if (hpBar != null) {
+            hpBar.substStamina(percent);
+        }
     }
 
     protected void setIncreaseHealth() {
         float percent = level.current().getHealGoalPoint() / (float)health.get();
         health.set(level.current().getHealGoalPoint() + health.get());
-        hpBar.addStamina(percent);
+        if (hpBar != null) {
+            hpBar.addStamina(percent);
+        }
     }
 
     /**
