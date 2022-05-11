@@ -12,7 +12,9 @@ import com.mygdx.claninvasion.model.entity.*;
 import com.mygdx.claninvasion.model.gamestate.BattleState;
 import com.mygdx.claninvasion.model.map.WorldCell;
 import com.mygdx.claninvasion.view.actors.HealthBar;
-import com.mygdx.claninvasion.view.applicationlistener.*;
+import com.mygdx.claninvasion.view.applicationlistener.Ammo;
+import com.mygdx.claninvasion.view.applicationlistener.FireFromEntity;
+import com.mygdx.claninvasion.view.applicationlistener.MainGamePageUI;
 import com.mygdx.claninvasion.view.tiledmap.TiledMapStage;
 import com.mygdx.claninvasion.view.utils.EntityPlacer;
 import com.mygdx.claninvasion.view.utils.GameInputProcessor;
@@ -39,11 +41,7 @@ public class MainGamePage implements GamePage, UiUpdatable {
     private GameInputProcessor inputProcessor;
     private final ClanInvasion app;
     private Stage entitiesStage;
-
-    private final List<FireAnimated> fireballs = Collections.synchronizedList(new CopyOnWriteArrayList<>());
-    private final List<ArrowAnimated> arrows = Collections.synchronizedList(new CopyOnWriteArrayList<>());
-    private final List<ArtilleryAnimated> bombs = Collections.synchronizedList(new CopyOnWriteArrayList<>());
-
+    private final List<Ammo> ammo = Collections.synchronizedList(new CopyOnWriteArrayList<>());
     private final MainGamePageUI mainGamePageUI;
     private TiledMap map;
     private final FireFromEntity<Tower, Soldier> fireFromEntity = this::fireTower;
@@ -71,10 +69,6 @@ public class MainGamePage implements GamePage, UiUpdatable {
         return chosenSymbol;
     }
 
-    public MainGamePageUI getUI() {
-        return mainGamePageUI;
-    }
-
     /**
      * Is fired once the page becomes active in application
      * See GamePage interface
@@ -89,7 +83,7 @@ public class MainGamePage implements GamePage, UiUpdatable {
 
         app.getCamera().update();
         inputProcessor = new GameInputProcessor(app.getCamera(), new InputClicker(app, this), app);
-        map = new TmxMapLoader().load(Gdx.files.getLocalStoragePath() + "/TileMap/Tilemap.tmx");
+        map = new TmxMapLoader().load(Gdx.files.getLocalStoragePath() + Globals.PATH_TILEMAP);
         app.getMap().setTileset(map.getTileSets());
         renderer = new IsometricTiledMapGameRenderer(
                 map,
@@ -111,10 +105,9 @@ public class MainGamePage implements GamePage, UiUpdatable {
     private void fireTower(Tower tower, Soldier soldier) {
         Vector2 positionSrc = app.getMap().transformMapPositionToIso(tower.getPosition());
         Vector2 positionDest = app.getMap().transformMapPositionToIso(soldier.getPosition());
-        FireAnimated animated = new FireAnimated(positionSrc,
-                positionDest, (SpriteBatch) renderer.getBatch());
-        fireballs.add(animated);
-        fireballs.add(animated);
+        Ammo animated = new Ammo(positionSrc,
+                positionDest, (SpriteBatch) renderer.getBatch(), tower.getProjectileSource());
+        ammo.add(animated);
     }
 
     private <T extends ArtificialEntity>
@@ -176,20 +169,8 @@ public class MainGamePage implements GamePage, UiUpdatable {
     /* Create fire animation
      */
     private void createFireAnimated() {
-        for (FireAnimated fireAnimated : fireballs) {
-            fireAnimated.create();
-        }
-    }
-
-    private void createArrowAnimated() {
-        for (ArrowAnimated arrowAnimated : arrows) {
-            arrowAnimated.create();
-        }
-    }
-
-    private void createArtilleryAnimated() {
-        for (ArtilleryAnimated artilleryAnimated : bombs) {
-            artilleryAnimated.create();
+        for (Ammo ammo : ammo) {
+            ammo.create();
         }
     }
 
@@ -209,8 +190,6 @@ public class MainGamePage implements GamePage, UiUpdatable {
 
         // create fire, arrow and artillery
         createFireAnimated();
-        createArrowAnimated();
-        createArtilleryAnimated();
 
         app.getCamera().update();
         inputProcessor.onRender();
@@ -232,8 +211,6 @@ public class MainGamePage implements GamePage, UiUpdatable {
 
         // render animated object (fireballs, arrows, etc.)
         updateAnimated();
-        updateAnimatedArcher();
-        updateAnimatedArtillery();
 
         // render game page ui
         mainGamePageUI.render();
@@ -241,34 +218,12 @@ public class MainGamePage implements GamePage, UiUpdatable {
 
 
     private void updateAnimated() {
-        for (FireAnimated fireAnimated : fireballs) {
-            fireAnimated.setView(app.getCamera());
-            fireAnimated.render();
-            if (fireAnimated.isDone()) {
-                fireAnimated.dispose();
-                fireballs.remove(fireAnimated);
-            }
-        }
-    }
-
-    private void updateAnimatedArcher() {
-        for (ArrowAnimated arrowAnimated : arrows) {
-            arrowAnimated.setView(app.getCamera());
-            arrowAnimated.render();
-            if (arrowAnimated.isDone()) {
-                arrowAnimated.dispose();
-                arrows.remove(arrowAnimated);
-            }
-        }
-    }
-
-    private void updateAnimatedArtillery() {
-        for (ArtilleryAnimated artilleryAnimated : bombs) {
-            artilleryAnimated.setView(app.getCamera());
-            artilleryAnimated.render();
-            if (artilleryAnimated.isDone()) {
-                artilleryAnimated.dispose();
-                bombs.remove(artilleryAnimated);
+        for (Ammo ammo : ammo) {
+            ammo.setView(app.getCamera());
+            ammo.render();
+            if (ammo.isDone()) {
+                ammo.dispose();
+                this.ammo.remove(ammo);
             }
         }
     }

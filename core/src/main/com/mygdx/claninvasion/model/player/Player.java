@@ -3,6 +3,7 @@ package com.mygdx.claninvasion.model.player;
 import com.badlogic.gdx.graphics.Color;
 import com.mygdx.claninvasion.model.GameModel;
 import com.mygdx.claninvasion.model.entity.*;
+import com.mygdx.claninvasion.model.gamestate.BattleState;
 import com.mygdx.claninvasion.model.entity.attacktype.AttackType;
 import com.mygdx.claninvasion.model.level.*;
 import com.mygdx.claninvasion.model.map.WorldCell;
@@ -49,7 +50,7 @@ public class Player implements Winnable {
 
     private static final int INITIAL_WEALTH = 1000;
     private static final int INCREASE_LEVEL_COST = 500;
-    private static final int MAX_GOLDMINE = 3;
+    private static final int MAX_GOLDMINE = 10;
     /**
      * Opponent of the active player
      */
@@ -95,7 +96,9 @@ public class Player implements Winnable {
     private final ExecutorService executorService;
     private final Color color;
 
-    private final GameTowerLevelIterator gameTowerLevelIterator;
+    private final GameTowerLevelIterator gameRomanFortIterator;
+    private final GameTowerLevelIterator gameHillTowerIterator;
+    private final GameTowerLevelIterator gameStrategicTowerIterator;
     private final GameMiningLevelIterator miningLevelIterator;
     private final GameSoldierLevelIterator barbarianLevelIterator;
     private final GameSoldierLevelIterator dragonLevelIterator;
@@ -113,7 +116,9 @@ public class Player implements Winnable {
         executorService.execute(this::consumeGold);
         winningState = WinningState.UKNOWN;
 
-        gameTowerLevelIterator = createTowerLevelIterator();
+        gameRomanFortIterator = createRomanFortTowerIterator();
+        gameHillTowerIterator = createHillTowerIterator();
+        gameStrategicTowerIterator = createStrategicTowerIterator();
         miningLevelIterator = createMiningLevelIterator();
         barbarianLevelIterator = createBarbarianLevelIterator();
         dragonLevelIterator = createDragonLevelIterator();
@@ -153,11 +158,11 @@ public class Player implements Winnable {
                 wealth.addAndGet(gold);
                 System.out.println("Updated wealth: " + wealth.get());
                 // for thread debugging
-                // int active = Thread.activeCount();
-                // if (miningFarms.stream().noneMatch(ArtificialEntity::isAlive)) {
-                //   shutdownThreads();
-                //    break;
-                // }
+//                 int active = Thread.activeCount();
+                 if (miningFarms.size() == 0 && game.getState() instanceof BattleState) {
+                    shutdownThreads();
+                    break;
+                 }
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -188,13 +193,13 @@ public class Player implements Winnable {
     /**
      * This method starts building towers for the active player
      */
-    public Tower buildTower(WorldCell cell) {
-        if (!canCreateTower()) {
+    public Tower buildTower(WorldCell cell, EntitySymbol entitySymbol) {
+        if (!canCreateTower(entitySymbol)) {
             System.out.println("Not enough money for this action");
             return null;
         }
-        Tower tower = (Tower) game.getWorldMap().createMapEntity(EntitySymbol.TOWER, cell, null);
-        tower.setLevel(gameTowerLevelIterator);
+        Tower tower = (Tower) game.getWorldMap().createMapEntity(entitySymbol, cell, null);
+        tower.setLevel(this);
 
         towers.add(tower);
         wealth.set(wealth.get() - (tower.getLevel().current().getCreationCost()));
@@ -278,9 +283,6 @@ public class Player implements Winnable {
      * */
     public void attackCastle(Soldier soldier) {
         soldier.attackCastle(opponent.castle);
-        if (soldier.getPosition().equals(opponent.castle.getPosition())) {
-            soldier.attackCastle(opponent.castle);
-        }
     }
 
     public void attackCastle() {
@@ -307,6 +309,7 @@ public class Player implements Winnable {
         while (positionSrc != positionDest) {
             positionSrc = moveSoldier(soldier, positionSrc, positionDest, 0);
             if (counter == 2 && upcoming != null) {
+                upcoming.setDaemon(true);
                 upcoming.start();
             }
             counter++;
@@ -423,8 +426,41 @@ public class Player implements Winnable {
         return castle.getHealthPercentage();
     }
 
-    public boolean canCreateTower() {
-        return getWealth() >= gameTowerLevelIterator.current().getCreationCost();
+//    public boolean canCreateTower() {
+//        return getWealth() >= gameTowerLevelIterator.current().getCreationCost();
+//    }
+
+    private boolean canCreateTower(LevelIterator<? extends Level> it) {
+        return getWealth() >= it.current().getCreationCost();
+    }
+
+    public boolean canCreateTower(EntitySymbol entitySymbol) {
+        switch (entitySymbol) {
+            case HILL_TOWER -> {
+                return canCreateHillTower();
+            }
+            case STRATEGIC_TOWER -> {
+                return canCreateStrategicTower();
+            }
+            case ROMAN_FORT -> {
+                return canCreateRomanFort();
+            }
+            default -> {
+                return false;
+            }
+        }
+    }
+
+    public boolean canCreateHillTower() {
+        return canCreateTower(gameHillTowerIterator);
+    }
+
+    public boolean canCreateStrategicTower() {
+        return canCreateTower(gameStrategicTowerIterator);
+    }
+
+    public boolean canCreateRomanFort() {
+        return canCreateTower(gameRomanFortIterator);
     }
 
     public boolean canCreateDragon() {
@@ -436,7 +472,7 @@ public class Player implements Winnable {
     }
 
     public boolean canCreateMining() {
-        return getWealth() >= miningLevelIterator.current().getCreationCost();
+        return getWealth() >= miningLevelIterator.current().getCreationCost() && miningFarms.size() < MAX_GOLDMINE;
     }
 
     public boolean canUpdateLevel() {
@@ -455,12 +491,24 @@ public class Player implements Winnable {
         return castle.isAlive();
     }
 
-    public int getTowerCost() {
-        return gameTowerLevelIterator.current().getCreationCost();
+//    public int getTowerCost() {
+//        return gameTowerLevelIterator.current().getCreationCost();
+//    }
+
+    public int getHillTowerCost() {
+        return gameHillTowerIterator.current().getCreationCost();
+    }
+
+    public int getRomanFortCost() {
+        return gameRomanFortIterator.current().getCreationCost();
+    }
+
+    public int getStrategicTowerCost() {
+        return gameStrategicTowerIterator.current().getCreationCost();
     }
 
     public int getBarbarianCost() {
-        return gameTowerLevelIterator.current().getCreationCost();
+        return barbarianLevelIterator.current().getCreationCost();
     }
 
     public int getDragonCost() {
@@ -490,8 +538,16 @@ public class Player implements Winnable {
         if (castle.getLevel().hasNext()) {
             castle.changeLevel();
             wealth.set(wealth.get() - INCREASE_LEVEL_COST);
-            if (gameTowerLevelIterator.hasNext()) {
-                gameTowerLevelIterator.next();
+            if (gameStrategicTowerIterator.hasNext()) {
+                gameStrategicTowerIterator.next();
+            }
+
+            if (gameHillTowerIterator.hasNext()) {
+                gameHillTowerIterator.next();
+            }
+
+            if (gameRomanFortIterator.hasNext()) {
+                gameRomanFortIterator.next();
             }
 
             if (miningLevelIterator.hasNext()) {
@@ -518,6 +574,18 @@ public class Player implements Winnable {
                 tower.changeLevel();
             }
         }
+    }
+
+    public GameTowerLevelIterator getGameRomanFortIterator() {
+        return gameRomanFortIterator;
+    }
+
+    public GameTowerLevelIterator getGameHillTowerIterator() {
+        return gameHillTowerIterator;
+    }
+
+    public GameTowerLevelIterator getGameStrategicTowerIterator() {
+        return gameStrategicTowerIterator;
     }
 }
 

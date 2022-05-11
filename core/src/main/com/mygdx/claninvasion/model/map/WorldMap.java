@@ -48,9 +48,12 @@ public class WorldMap {
         TiledMapTileLayer.Cell cell = new TiledMapTileLayer.Cell();
         cell.setTile(tilesets.getTile(symbol.id));
 
-        Entity entity = EntitiesCreators.createEntity(symbol, worldCell.getMapPosition(), obj);
+        Entity entity = EntitiesCreators.createEntity(symbol, worldCell.getMapPosition(), obj ,getRootedSizeMap() );
         occupyPosition(worldCell, entity, cell);
         return entity;
+    }
+    public int getRootedSizeMap(){
+        return (int) Math.sqrt(worldCells.size());
     }
 
     public boolean removeMapEntity(Entity entity) {

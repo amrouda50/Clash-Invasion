@@ -16,8 +16,8 @@ public abstract class Soldier extends ArtificialEntity {
 
     public abstract int getCost();
 
-    public Soldier(EntitySymbol entitySymbol, Pair<Integer, Integer> position) {
-        super(entitySymbol, position);
+    public Soldier(EntitySymbol entitySymbol, Pair<Integer, Integer> position, int mapsize) {
+        super(entitySymbol, position, mapsize);
     }
 
 
@@ -30,16 +30,19 @@ public abstract class Soldier extends ArtificialEntity {
      * @param castle - opponents castle
      * @see Castle
      */
-    public void attackCastle(Castle castle) {
+    public boolean attackCastle(Castle castle) {
         float distance = getVec2Position().dst(castle.getVec2Position().x, castle.getVec2Position().y);
 
         GameSoldierLevelIterator level = (GameSoldierLevelIterator) this.level;
         // without attack type soldier is weak, like in dark souls to hit only with palm
         if (attackType == null &&  (distance < (level.current().getVisibleArea()))) {
             castle.setDecreaseHealth(level.current().getAttackIncrease());
+            return true;
         } else if (attackType != null) {
-            attackType.attack(castle, distance, level.current());
+            return attackType.attack(castle, distance, level.current());
         }
+
+        return false;
     }
 
     /*
@@ -56,6 +59,8 @@ public abstract class Soldier extends ArtificialEntity {
         return getCost();
     }
 
+    public abstract int getCost();
+
     @Override
     public Pair<Float, Float> getHealthBarOffset() {
         return new Pair<>(-22f , 20f);
@@ -66,15 +71,13 @@ public abstract class Soldier extends ArtificialEntity {
         return new Pair<>(14f, 5f);
     }
 
+
     /**
      * Train soldier algorithm
+     * @param service - who will execute future
      * @return - boolean promise
      * @see CompletableFuture
      */
-    public CompletableFuture<Integer> train() {
-        return CompletableFuture.supplyAsync(this::trainCall);
-    }
-
     public CompletableFuture<Integer> train(ExecutorService service) {
         return CompletableFuture.supplyAsync(this::trainCall, service);
     }

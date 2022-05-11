@@ -47,7 +47,7 @@ public class HealthBar extends ShapeRenderer {
         setColor(strokeColor);
         rect(
                 coordinates.getValue0() + positionOffset.getValue0(),
-                coordinates.getValue1()+ positionOffset.getValue1(),
+                coordinates.getValue1() + positionOffset.getValue1(),
                 width ,
                 height
         );

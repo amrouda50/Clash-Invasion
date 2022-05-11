@@ -157,13 +157,21 @@ public final class MainGamePageUI implements ApplicationListener {
         options.add(chooseTrainSoldier);
 
         // create towers
-        TableWithOptions.Option trainTowers = new TableWithOptions.Option("Train tower",
-                player.getTowerCost(),
-                atlasSkin,
-                app.getFont(),
-                0);
-        trainTowers.setActionable((option) -> {
-            methods.createTower();
+        TableWithOptions.Option createRomanFort = new TableWithOptions.Option("Create Roman Fort", player.getRomanFortCost(), atlasSkin, app.getFont(), 0);
+        createRomanFort.setActionable((option) -> {
+            methods.createTower(EntitySymbol.ROMAN_FORT);
+            this.tableWithOptions.setIsOpen(false);
+        });
+
+        TableWithOptions.Option createHillTower = new TableWithOptions.Option("Create Hill Tower", player.getHillTowerCost(), atlasSkin, app.getFont(), 0);
+        createHillTower.setActionable((option) -> {
+            methods.createTower(EntitySymbol.HILL_TOWER);
+            this.tableWithOptions.setIsOpen(false);
+        });
+
+        TableWithOptions.Option createStrategicTower = new TableWithOptions.Option("Create Strategic Tower", player.getStrategicTowerCost(), atlasSkin, app.getFont(), 0);
+        createStrategicTower.setActionable((option) -> {
+            methods.createTower(EntitySymbol.STRATEGIC_TOWER);
             this.tableWithOptions.setIsOpen(false);
         });
 
@@ -172,7 +180,7 @@ public final class MainGamePageUI implements ApplicationListener {
                 0,
                 atlasSkin,
                 app.getFont(),
-                new ArrayList<>(List.of(trainTowers)),
+                new ArrayList<>(List.of(createRomanFort, createHillTower, createStrategicTower)),
                 1
         );
         chooseTowerType.setActionable((option) -> tableWithOptions.goIntoChildOptions(option.getIndex()));
@@ -499,9 +507,9 @@ public final class MainGamePageUI implements ApplicationListener {
             return !player.equals(app.getCurrentPlayer());
         }
 
-        public void createTower() {
-            if (player.canCreateTower()) {
-                page.setChosenSymbol(EntitySymbol.TOWER);
+        public void createTower(EntitySymbol entitySymbol) {
+            if (player.canCreateTower(entitySymbol)) {
+                page.setChosenSymbol(entitySymbol);
                 InputClicker.enabled = true;
             } else {
                 System.out.println("Not enough money for this action");

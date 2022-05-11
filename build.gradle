@@ -89,9 +89,7 @@ project(":core") {
         finalizedBy jacocoTestReport // report is always generated after tests run
     }
 
-    def jacocoExclusions = [
-        '**/model/*',
-    ]
+    def jacocoExclusions = []
 
     jacocoTestReport {
         reports {

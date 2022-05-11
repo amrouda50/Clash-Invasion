@@ -8,31 +8,34 @@ import org.javatuples.Septet;
  * @author andreicristea
  * @author omarashour
  * @author Dinari
- * TODO: Logic part is missing
  */
-public class GameTowerLevel extends Level{
-    protected int hitsPointBonus;
-    public int level;
+public class GameTowerLevel extends Level {
+    protected final int hitsPointBonus;
+    protected final int radiusBonus;
+    protected final int attackBonus;
 
-    public GameTowerLevel(Septet<Integer, Integer, Integer, Integer, Integer, Integer, Integer> values, int hitsPointBonus) {
+
+    public GameTowerLevel(
+            Septet<Integer, Integer, Integer, Integer, Integer, Integer, Integer> values,
+            int hitsPointBonus,
+            int radiusBonus,
+            int attackBonus
+    ) {
         super(values);
-        this.level = level;
         this.hitsPointBonus = hitsPointBonus;
-    }
-
-    public void setHitsPointBonus(int hitsPointBonus) {
-        this.hitsPointBonus = hitsPointBonus;
-    }
-
-    public int getLevel() {
-        return level;
-    }
-
-    public void setLevel(int level) {
-        this.level = level;
+        this.radiusBonus = radiusBonus;
+        this.attackBonus = attackBonus;
     }
 
     public int getHitsPointBonus() {
         return hitsPointBonus;
+    }
+
+    public int getRadiusBonus() {
+        return radiusBonus;
+    }
+
+    public int getAttackBonus() {
+        return attackBonus;
     }
 }

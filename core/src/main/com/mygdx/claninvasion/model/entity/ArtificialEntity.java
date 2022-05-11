@@ -4,6 +4,7 @@ import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
+import com.mygdx.claninvasion.exceptions.EntityOutsideOfBoundsException;
 import com.mygdx.claninvasion.model.helpers.Direction;
 import com.mygdx.claninvasion.model.level.Level;
 import com.mygdx.claninvasion.model.level.LevelIterator;
@@ -17,50 +18,77 @@ import org.javatuples.Pair;
  * @version 0.01
  */
 public abstract class ArtificialEntity extends Entity {
+    /**
+     * health of the entity
+     */
     protected AtomicInteger health;
+
+    /**
+     * initial health, should be unchangeable
+     */
     protected int initHealth;
+    /**
+     * view health bar, linked for initialization purposes
+     */
     protected HealthBar hpBar;
+    /**
+     * level iterator of the current entity,
+     * from it depend  a lot of entity properties
+     * such as healing factor, max health or damage amount
+     */
     protected LevelIterator<? extends Level> level;
-    protected AtomicInteger reactionTime;
+    /**
+     * direction where entity is looking at
+     */
     protected Direction direction;
+
+    /**
+     * id of the entity
+     */
     private UUID id;
 
 
-    protected void setHealth(int newHealth) {
-        this.health.set(newHealth);
-    }
-
-    ArtificialEntity(EntitySymbol entitySymbol, Pair<Integer, Integer> position) {
-        super(entitySymbol, position);
+    /**
+     * @param entitySymbol - sprite type (location, name etc.)
+     * @param position - position in the cells array
+     * @param mapsize - size of the map, helps identifying if entity is not creatable
+     */
+    public ArtificialEntity(EntitySymbol entitySymbol, Pair<Integer, Integer> position, int mapsize) {
+        super(entitySymbol, position, mapsize);
         level = Levels.createLevelIterator();
         init();
         initHealth = health.get();
     }
 
-    ArtificialEntity(LevelIterator<Level> levelIterator) {
-        super();
-        level = levelIterator;
-        init();
-        initHealth = health.get();
+    protected void setHealth(int newHealth) {
+        this.health.set(newHealth);
     }
 
     private void init() {
         health = new AtomicInteger(level.current().getMaxHealth());
-        reactionTime = new AtomicInteger(level.current().getReactionTime());
         direction = Direction.DOWN;
         id = UUID.randomUUID();
     }
 
+    /**
+     * @param bar - the healthbar reference for change
+     */
     public void setHealthBar(HealthBar bar) {
         bar.setDimensions(getHealthBarSizes());
         bar.setPositionOffset(getHealthBarOffset());
         hpBar = bar;
     }
 
+    /**
+     * @return current health bar instance
+     */
     public HealthBar getHealthBar() {
         return hpBar;
     }
 
+    /**
+     * @return offset of the health bar (how far from entity)
+     */
     public Pair<Float, Float> getHealthBarOffset() {
         return new Pair<>(-22f , 43f);
     }
@@ -93,7 +121,7 @@ public abstract class ArtificialEntity extends Entity {
 
     /**
      * Damage
-     * @param amount - percent of injury
+     * @param amount - amount of injury
      */
     public void damage(int amount) {
         setDecreaseHealth(amount);
@@ -103,6 +131,9 @@ public abstract class ArtificialEntity extends Entity {
      * Position change function
      */
     public void changePosition(Pair<Integer, Integer> position) {
+       if (isNotInsideMap(position)) {
+           throw new EntityOutsideOfBoundsException(position);
+       }
        this.position = position;
     }
 
@@ -114,10 +145,14 @@ public abstract class ArtificialEntity extends Entity {
     }
 
     protected void setDecreaseHealth(int amount) {
-        if (health.get() <= 0) {
-            health.set(0);
+        if (hpBar == null) {
+            throw new NullPointerException("Instantiate health bar before");
+        }
+        if (amount > health.get()) {
+            health.set(level.current().getMinHealth());
             return;
         }
+
         float percent = amount / (float)health.get();
         health.set(health.get() - amount);
         if (hpBar != null) {
@@ -133,16 +168,29 @@ public abstract class ArtificialEntity extends Entity {
         }
     }
 
+    /**
+     * @return health percentage
+     */
     public float getHealthPercentage() {
-        return health.get() < 0
+        return health.get() <= 0
                 ? 0 :
                 (health.get() / (float) initHealth) * 100;
     }
 
+
+    /**
+     * @return thread safe percentage
+     */
     public AtomicLong getPercentage() {
-        return new AtomicLong(health.get() / (long) initHealth * 100);
+        return new AtomicLong(health.get() <= 0
+                ? 0 :
+                (long) ((health.get() / (float) initHealth) * 100));
     }
 
+
+    /**
+     * @return for checking if object is alive
+     */
     public boolean isAlive() {
         return health.get() > level.current().getMinHealth();
     }
@@ -154,6 +202,11 @@ public abstract class ArtificialEntity extends Entity {
         return level;
     }
 
+
+    /**
+     * Iterates level to next one
+     * @return whether level was changed
+     */
     public boolean changeLevel() {
         if (level.hasNext()) {
             level.next();
@@ -164,17 +217,23 @@ public abstract class ArtificialEntity extends Entity {
     }
 
     /**
-     * Change level
+     * set new level iterator
      */
-    public <T extends Level>void setLevel(LevelIterator<T> level) {
+    public <T extends Level> void setLevel(LevelIterator<T> level) {
         this.level = level;
     }
 
+    /**
+     * @return id of entity
+     */
     public UUID getId() {
         return id;
     }
 
+    /**
+     * @return levels reaction time
+     */
     public AtomicInteger getReactionTime() {
-        return reactionTime;
+        return new AtomicInteger(level.current().getReactionTime());
     }
 }

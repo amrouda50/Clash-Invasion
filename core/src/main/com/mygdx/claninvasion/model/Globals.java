@@ -37,6 +37,7 @@ public class Globals {
 
     public static final String PATH_FONT = "skin/custom-skin/ORIOND(1).fnt";
     public static final String PATH_ATLAS = "skin/custom-skin/skin.atlas";
+    public static final String PATH_TILEMAP = "/TileMap/Tilemap.tmx";
 
     public static final String COLOR_BLACK_BLUE = "#090919";
     public static final String COLOR_ROSE = "#E06367";
