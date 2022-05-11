@@ -128,6 +128,11 @@ public class Player implements Winnable {
         this.castle = castle;
     }
 
+    /*
+     *  This method creates a new mining farm
+     * @params cell
+     * @returns MiningFarm
+     * */
     public MiningFarm createNewMining(WorldCell cell) {
         if (!canCreateMining()) {
             System.out.println("Not enough money for this action");
@@ -151,6 +156,9 @@ public class Player implements Winnable {
         }
     }
 
+    /*
+     *  This method utilize the mines for gold farming
+     * */
     private void consumeGold() {
         while (true) {
             try {
@@ -207,8 +215,8 @@ public class Player implements Winnable {
     }
 
     /*
-    * This method removes the mining farms once they are exhausted
-    * */
+     *  This method will remove the exhausted mining farms
+     * */
     public void removeDeadMiningFarm() {
         for (MiningFarm farm : miningFarms) {
             if (!farm.isAlive()) {
@@ -233,8 +241,8 @@ public class Player implements Winnable {
     }
 
     /*
-    * This method adds the trained soldier onto the map
-    * */
+     *  This method adds the trained soldiers to the map
+     * */
     public void addTrainedToMapSoldier() {
         Soldier soldier = castle.getSoldiers().pop();
         try {
@@ -269,6 +277,11 @@ public class Player implements Winnable {
                 .thenRunAsync(after);
     }
 
+    /*
+     *  This method moves the soldier during attack phase
+     * @params index
+     * @return Boolean
+     * */
     public boolean attackCastle(int index) {
         if (soldiers.size() <= index) {
             return false;
@@ -291,6 +304,10 @@ public class Player implements Winnable {
         }
     }
 
+    /*
+     *  This method moves the soldier during attack phase
+     * @params index, upcoming
+     * */
     public void moveSoldier(int index, Thread upcoming) {
         Soldier soldier = getSoldiers().get(index);
 
@@ -321,6 +338,11 @@ public class Player implements Winnable {
         }
     }
 
+    /*
+     *  This method moves the soldier during attack phase
+     * @params Soldier, positionSrc, positionDest, callTimes
+     * @return Integer
+     * */
     public int moveSoldier(Soldier soldier, int positionSrc, int positionDest, int callTimes) {
         // lock reading of thread vulnerable data
         sync.readLock().lock();
@@ -381,6 +403,9 @@ public class Player implements Winnable {
         return miningFarms;
     }
 
+    /*
+     *  This method removes the dead soldiers from the map
+     * */
     public void removeDeadSoldiers() {
         List<Soldier> soldiers = getSoldiers();
         for(int i = 0; i < soldiers.size(); i++) {
@@ -434,6 +459,10 @@ public class Player implements Winnable {
         return getWealth() >= it.current().getCreationCost();
     }
 
+    /*
+     *  This method creates a tower
+     * @return Boolean
+     * */
     public boolean canCreateTower(EntitySymbol entitySymbol) {
         switch (entitySymbol) {
             case HILL_TOWER -> {
@@ -451,30 +480,58 @@ public class Player implements Winnable {
         }
     }
 
+    /*
+     *  This method checks is a hill tower can be created
+     * @return Boolean
+     * */
     public boolean canCreateHillTower() {
         return canCreateTower(gameHillTowerIterator);
     }
 
+    /*
+     *  This method checks is a strategic tower can be created
+     * @return Boolean
+     * */
     public boolean canCreateStrategicTower() {
         return canCreateTower(gameStrategicTowerIterator);
     }
 
+    /*
+     *  This method checks is a roman fort can be created
+     * @return Boolean
+     * */
     public boolean canCreateRomanFort() {
         return canCreateTower(gameRomanFortIterator);
     }
 
+    /*
+     *  This method checks is a dragon can be created
+     * @return Boolean
+     * */
     public boolean canCreateDragon() {
         return getWealth() >= Castle.AMOUNT_OF_SOLDIERS * dragonLevelIterator.current().getCreationCost();
     }
 
+    /*
+     *  This method checks is a barbarian can be created
+     * @return Boolean
+     * */
     public boolean canCreateBarbarian() {
         return getWealth() >= Castle.AMOUNT_OF_SOLDIERS * barbarianLevelIterator.current().getCreationCost();
     }
 
+    /*
+     *  This method checks is a mining farm can be created
+     *  @return Boolean
+     * */
     public boolean canCreateMining() {
         return getWealth() >= miningLevelIterator.current().getCreationCost() && miningFarms.size() < MAX_GOLDMINE;
     }
 
+    /*
+     *  This method checks if there is any next level or not
+     *  @return Boolean
+     * */
     public boolean canUpdateLevel() {
         return castle.getLevel().hasNext() && getWealth() >= INCREASE_LEVEL_COST;
     }
@@ -487,6 +544,10 @@ public class Player implements Winnable {
         return opponent;
     }
 
+    /*
+    *  This method checks is the castle is still healthy or not
+    *  @return Boolean
+    * */
     public boolean isAlive() {
         return castle.isAlive();
     }
@@ -576,14 +637,26 @@ public class Player implements Winnable {
         }
     }
 
+    /*
+     * This returns the iterator for the RomanFort Tower levels
+     * @return GameTowerLevelIterator
+     * */
     public GameTowerLevelIterator getGameRomanFortIterator() {
         return gameRomanFortIterator;
     }
 
+    /*
+     * This returns the iterator for the Hill Tower levels
+     * @return GameTowerLevelIterator
+     * */
     public GameTowerLevelIterator getGameHillTowerIterator() {
         return gameHillTowerIterator;
     }
 
+    /*
+    * This returns the iterator for the Strategic Tower levels
+    * @return GameTowerLevelIterator
+    * */
     public GameTowerLevelIterator getGameStrategicTowerIterator() {
         return gameStrategicTowerIterator;
     }
