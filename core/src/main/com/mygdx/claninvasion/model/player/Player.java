@@ -1,20 +1,14 @@
 package com.mygdx.claninvasion.model.player;
 
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.mygdx.claninvasion.model.GameModel;
 import com.mygdx.claninvasion.model.entity.*;
 import com.mygdx.claninvasion.model.entity.attacktype.AttackType;
-import com.mygdx.claninvasion.model.entity.attacktype.Attacks;
 import com.mygdx.claninvasion.model.level.*;
 import com.mygdx.claninvasion.model.map.WorldCell;
 import com.mygdx.claninvasion.model.map.WorldMap;
 import org.javatuples.Pair;
 
-import java.util.Collections;
-import javax.swing.text.html.parser.Entity;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Stack;
@@ -194,17 +188,16 @@ public class Player implements Winnable {
     /**
      * This method starts building towers for the active player
      */
-    public Tower buildTower(WorldCell cell, Attacks chosenAttackType) {
+    public Tower buildTower(WorldCell cell) {
         if (!canCreateTower()) {
             System.out.println("Not enough money for this action");
             return null;
         }
         Tower tower = (Tower) game.getWorldMap().createMapEntity(EntitySymbol.TOWER, cell, null);
         tower.setLevel(gameTowerLevelIterator);
-        tower.setAttackTypeName(chosenAttackType);
 
         towers.add(tower);
-        wealth.set(wealth.get() - (tower.getLevel().current().getCreationCost() + getAttackCost(chosenAttackType)));
+        wealth.set(wealth.get() - (tower.getLevel().current().getCreationCost()));
         return tower;
     }
 
@@ -224,10 +217,11 @@ public class Player implements Winnable {
      * This will add more soldiers
      * to player's army
      */
-    public CompletionStage<Void> trainSoldiers(EntitySymbol entitySymbol, Attacks attackType) {
+    public CompletionStage<Void> trainSoldiers(EntitySymbol entitySymbol, AttackType attackType) {
         return castle
                 .trainSoldiers(entitySymbol, (cost) -> {
-                    wealth.set(wealth.get() - (cost + getAttackCost(attackType)));
+                    int attackTypeCost = attackType == null ? 0 : attackType.getCost();
+                    wealth.set(wealth.get() - (cost + attackTypeCost));
                     return false;
                 },attackType)
                 .thenRunAsync(() -> System.out.println("New soldiers were successfully added with attack type " + attackType));
@@ -265,8 +259,8 @@ public class Player implements Winnable {
      * This will add more soldiers
      * to player's army
      */
-    public void trainSoldiers(EntitySymbol entitySymbol, Attacks attackType, Runnable after) {
-        trainSoldiers(entitySymbol,attackType)
+    public void trainSoldiers(EntitySymbol entitySymbol, AttackType attackType, Runnable after) {
+        trainSoldiers(entitySymbol, attackType)
                 .thenRunAsync(after);
     }
 
@@ -524,29 +518,6 @@ public class Player implements Winnable {
                 tower.changeLevel();
             }
         }
-    }
-
-    public int getAttackCost(Attacks attackType) {
-        int cost = 0;
-        switch(attackType) {
-            case SWORD:
-                break;
-            case SPEAR:
-                cost = 50;
-                break;
-            case FIRE:
-                cost = 100;
-                break;
-            case ARCHER:
-                cost = 0;
-                break;
-            case ARTILLERY:
-                cost = 200;
-                break;
-            default:
-                cost =  0;
-        }
-        return cost;
     }
 }
 

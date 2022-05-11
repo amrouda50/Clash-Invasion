@@ -120,13 +120,17 @@ public abstract class ArtificialEntity extends Entity {
         }
         float percent = amount / (float)health.get();
         health.set(health.get() - amount);
-        hpBar.substStamina(percent);
+        if (hpBar != null) {
+            hpBar.substStamina(percent);
+        }
     }
 
     protected void setIncreaseHealth() {
         float percent = level.current().getHealGoalPoint() / (float)health.get();
         health.set(level.current().getHealGoalPoint() + health.get());
-        hpBar.addStamina(percent);
+        if (hpBar != null) {
+            hpBar.addStamina(percent);
+        }
     }
 
     public float getHealthPercentage() {

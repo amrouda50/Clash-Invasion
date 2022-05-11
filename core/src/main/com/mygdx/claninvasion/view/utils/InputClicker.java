@@ -6,7 +6,6 @@ import com.mygdx.claninvasion.ClanInvasion;
 import com.mygdx.claninvasion.model.adapters.IsometricToOrthogonalAdapt;
 import com.mygdx.claninvasion.model.entity.ArtificialEntity;
 import com.mygdx.claninvasion.model.entity.EntitySymbol;
-import com.mygdx.claninvasion.model.entity.Tower;
 import com.mygdx.claninvasion.model.map.WorldCell;
 import com.mygdx.claninvasion.view.actors.HealthBar;
 import com.mygdx.claninvasion.view.screens.MainGamePage;
@@ -33,7 +32,7 @@ public class InputClicker implements RunnableTouchEvent {
                     HealthBar healthBar = new HealthBar(app.getCurrentPlayer().getColor());
                     ArtificialEntity artificialEntity = null;
                     if (worldCell.getOccupier() == null && EntitySymbol.TOWER == page.getChosenSymbol()) {
-                        artificialEntity = app.getCurrentPlayer().buildTower(worldCell, page.getChosenAttackType());
+                        artificialEntity = app.getCurrentPlayer().buildTower(worldCell);
                     } else if (worldCell.getOccupier() == null && EntitySymbol.MINING == page.getChosenSymbol()) {
                         artificialEntity = app.getCurrentPlayer().createNewMining(worldCell);
                     }

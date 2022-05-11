@@ -15,7 +15,7 @@ import com.mygdx.claninvasion.model.Globals;
 import com.mygdx.claninvasion.model.entity.*;
 import com.mygdx.claninvasion.model.entity.attacktype.AttackType;
 import com.mygdx.claninvasion.model.entity.attacktype.AttackTypeArcher;
-import com.mygdx.claninvasion.model.entity.attacktype.Attacks;
+import com.mygdx.claninvasion.model.entity.attacktype.AttackTypeSword;
 import com.mygdx.claninvasion.model.gamestate.Building;
 import com.mygdx.claninvasion.model.player.Player;
 import com.mygdx.claninvasion.view.actors.GameButton;
@@ -28,6 +28,7 @@ import org.javatuples.Pair;
 
 import java.util.*;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 
 public final class MainGamePageUI implements ApplicationListener {
     private Stage uiStage;
@@ -65,46 +66,54 @@ public final class MainGamePageUI implements ApplicationListener {
         page = gamePage;
     }
 
+    enum CreateSoldier {
+        BARBARIAN,
+        DRAGON
+    }
+
 
     private void initializeActions(Player player) {
         options = new ArrayList<>();
         PlayerActionMethods methods = new PlayerActionMethods(player);
+        AttackType attackTypeSword = new AttackTypeSword();
+        AttackType attackTypeArcher = new AttackTypeArcher();
+        AtomicReference<CreateSoldier> soldier = new AtomicReference<>(CreateSoldier.BARBARIAN);
 
-        TableWithOptions.Option AttackTypeSword = new TableWithOptions.Option(
-                "Attack Type Sword",
-                player.getAttackCost(Attacks.SWORD),
+        TableWithOptions.Option noAttackTypeOption = new TableWithOptions.Option(
+                "No attack type",
+                0,
                 atlasSkin,
                 app.getFont(),
                 0
         );
-        AttackTypeSword.setActionable((option) -> {
-            System.out.println("Creating a barbarian with attack name SWORD");
-            methods.createBarbarian(Attacks.SWORD);
-            this.tableWithOptions.setIsOpen(false);
-        });
-
-        TableWithOptions.Option AttackTypeSpear = new TableWithOptions.Option(
-                "Attack Type Spear",
-                player.getAttackCost(Attacks.SPEAR),
-                atlasSkin,
-                app.getFont(),
-                0
-        );
-        AttackTypeSpear.setActionable((option) -> {
-            methods.createBarbarian(Attacks.SPEAR);
-            this.tableWithOptions.setIsOpen(false);
-        });
-
-        TableWithOptions.Option AttackTypeFire = new TableWithOptions.Option(
-                "Attack Type Fire",
-                player.getAttackCost(Attacks.FIRE),
-                atlasSkin,
-                app.getFont(),
-                0
-        );
-        AttackTypeFire.setActionable((option) -> {
+        noAttackTypeOption.setActionable((option) -> {
             //methods.createBarbarian(Attacks.FIRE);
-            methods.createTower(Attacks.FIRE);
+            methods.createSoldier(soldier.get(),null);
+            this.tableWithOptions.setIsOpen(false);
+        });
+
+        TableWithOptions.Option attackTypeSwordOption = new TableWithOptions.Option(
+                "Attack Type Sword",
+                attackTypeSword.getCost(),
+                atlasSkin,
+                app.getFont(),
+                0
+        );
+        attackTypeSwordOption.setActionable((option) -> {
+            System.out.println("Creating a barbarian with attack name SWORD");
+            methods.createSoldier(soldier.get(), attackTypeSword);
+            this.tableWithOptions.setIsOpen(false);
+        });
+
+        TableWithOptions.Option attackTypeArcherOption = new TableWithOptions.Option(
+                "Attack Type Archer",
+                attackTypeArcher.getCost(),
+                atlasSkin,
+                app.getFont(),
+                0
+        );
+        attackTypeArcherOption.setActionable((option) -> {
+            methods.createSoldier(soldier.get(), attackTypeArcher);
             this.tableWithOptions.setIsOpen(false);
         });
 
@@ -115,18 +124,25 @@ public final class MainGamePageUI implements ApplicationListener {
                 player.getBarbarianCost(),
                 atlasSkin,
                 app.getFont(),
-                new ArrayList<>(List.of(AttackTypeSword,AttackTypeSpear,AttackTypeFire)),
+                new ArrayList<>(List.of(noAttackTypeOption, attackTypeSwordOption, attackTypeArcherOption)),
                 0
         );
         trainBarbarian.setActionable((option) -> {
-            //methods.createBarbarian();
-            //this.tableWithOptions.setIsOpen(false);
+            soldier.set(CreateSoldier.BARBARIAN);
             tableWithOptions.goIntoChildOptions(option.getIndex());
         });
-        TableWithOptions.Option trainDragon = new TableWithOptions.Option("Train Dragon", player.getDragonCost(), atlasSkin, app.getFont(), 1);
+
+        TableWithOptions.Option trainDragon = new TableWithOptions.Option(
+                "Train Dragon",
+                player.getDragonCost(),
+                atlasSkin,
+                app.getFont(),
+                new ArrayList<>(List.of(noAttackTypeOption, attackTypeSwordOption, attackTypeArcherOption)),
+                1
+        );
         trainDragon.setActionable((option) -> {
-            methods.createDragon();
-            this.tableWithOptions.setIsOpen(false);
+            soldier.set(CreateSoldier.DRAGON);
+            tableWithOptions.goIntoChildOptions(option.getIndex());
         });
         TableWithOptions.Option chooseTrainSoldier = new TableWithOptions.Option(
                 "Choose Train Soldier",
@@ -140,40 +156,15 @@ public final class MainGamePageUI implements ApplicationListener {
         chooseTrainSoldier.setActionable((option) -> tableWithOptions.goIntoChildOptions(option.getIndex()));
         options.add(chooseTrainSoldier);
 
-        //Tower attack types
-        TableWithOptions.Option AttackTypeArcher = new TableWithOptions.Option(
-                "Attack Type Archer",
-                player.getAttackCost(Attacks.ARCHER),
-                atlasSkin,
-                app.getFont(),
-                0
-        );
-        AttackTypeArcher.setActionable((option) -> {
-            methods.createTower(Attacks.ARCHER);
-            this.tableWithOptions.setIsOpen(false);
-        });
-
-        TableWithOptions.Option AttackTypeArtillery = new TableWithOptions.Option(
-                "Attack Type Artillery",
-                player.getAttackCost(Attacks.ARTILLERY),
-                atlasSkin,
-                app.getFont(),
-                0
-        );
-        AttackTypeArtillery.setActionable((option) -> {
-            methods.createTower(Attacks.ARTILLERY);
-            this.tableWithOptions.setIsOpen(false);
-        });
-
         // create towers
         TableWithOptions.Option trainTowers = new TableWithOptions.Option("Train tower",
                 player.getTowerCost(),
                 atlasSkin,
                 app.getFont(),
-                new ArrayList<>(List.of(AttackTypeArcher,AttackTypeFire,AttackTypeArtillery)),
                 0);
         trainTowers.setActionable((option) -> {
-            tableWithOptions.goIntoChildOptions(option.getIndex());
+            methods.createTower();
+            this.tableWithOptions.setIsOpen(false);
         });
 
         TableWithOptions.Option chooseTowerType = new TableWithOptions.Option(
@@ -508,10 +499,9 @@ public final class MainGamePageUI implements ApplicationListener {
             return !player.equals(app.getCurrentPlayer());
         }
 
-        public void createTower(Attacks attackTypeName) {
+        public void createTower() {
             if (player.canCreateTower()) {
                 page.setChosenSymbol(EntitySymbol.TOWER);
-                page.setChosenAttackType(attackTypeName);
                 InputClicker.enabled = true;
             } else {
                 System.out.println("Not enough money for this action");
@@ -528,21 +518,29 @@ public final class MainGamePageUI implements ApplicationListener {
             }
         }
 
-        public void createBarbarian(Attacks attackType) {
+        public void createSoldier(CreateSoldier soldier, AttackType type) {
+            if (soldier == CreateSoldier.BARBARIAN) {
+                createBarbarian(type);
+            } else {
+                createDragon(type);
+            }
+        }
+
+        public void createBarbarian(AttackType type) {
             if (disableClick()) return;
             if (player.canCreateBarbarian()) {
                 InputClicker.enabled = false;
-                player.trainSoldiers(EntitySymbol.BARBARIAN, attackType, () -> System.out.println("New barbarian trained"));
+                player.trainSoldiers(EntitySymbol.BARBARIAN, type, () -> System.out.println("New barbarian trained"));
             } else {
                 System.out.println("Not enough money for this action");
             }
         }
 
-        public void createDragon() {
+        public void createDragon(AttackType type) {
             if (disableClick()) return;
             if (player.canCreateDragon()) {
                 InputClicker.enabled = false;
-                //player.trainSoldiers(EntitySymbol.DRAGON, () -> System.out.println("New dragon trained"));
+                player.trainSoldiers(EntitySymbol.DRAGON, type, () -> System.out.println("New dragon trained"));
             } else {
                 System.out.println("Not enough money for this action");
             }

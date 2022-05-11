@@ -1,32 +1,33 @@
 package com.mygdx.claninvasion.model.entity.attacktype;
 
-import com.mygdx.claninvasion.model.entity.Soldier;
-import com.mygdx.claninvasion.model.entity.Tower;
+import java.util.Random;
 
-import java.util.ArrayList;
+import com.mygdx.claninvasion.model.entity.Castle;
+import com.mygdx.claninvasion.model.level.GameSoldierLevel;
 
-public class AttackTypeArcher extends AttackTypeTower {
-
-    /*
-    * Uses archer attack type to decrease the health of enemy
-    * first finds the neighbors then decreases their health
-    * @param Tower type
-    */
+public class AttackTypeArcher implements AttackType {
     @Override
-    public void attack() {
-            setDecreaseHealth(85);
-    }
-
-    public int getDecreaseHealth() {
-        return decreaseHealth;
-    }
-
-    public void setDecreaseHealth(int decreaseHealth) {
-        this.decreaseHealth = decreaseHealth;
+    // sometimes archer does not hit the goal
+    public void attack(Castle castle, float distance, GameSoldierLevel level) {
+        Random random = new Random();
+        boolean success = random.nextBoolean();
+        if (success && distance < level.getVisibleArea() + maxDistance()) {
+            castle.damage(level.getAttackIncrease() - damageAmount());
+        }
     }
 
     @Override
-    public Attacks getName() {
-        return Attacks.ARCHER;
+    public int damageAmount() {
+        return 1;
+    }
+
+    @Override
+    public int maxDistance() {
+        return 10;
+    }
+
+    @Override
+    public int getCost() {
+        return 200;
     }
 }

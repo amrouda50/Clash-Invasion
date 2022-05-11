@@ -1,6 +1,5 @@
 package com.mygdx.claninvasion.model.entity;
 
-import com.mygdx.claninvasion.model.entity.attacktype.Attacks;
 import com.mygdx.claninvasion.model.level.*;
 import org.javatuples.Pair;
 import java.util.concurrent.*;

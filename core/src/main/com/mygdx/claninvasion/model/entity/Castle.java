@@ -1,6 +1,6 @@
 package com.mygdx.claninvasion.model.entity;
 
-import com.mygdx.claninvasion.model.entity.attacktype.Attacks;
+import com.mygdx.claninvasion.model.entity.attacktype.AttackType;
 import com.mygdx.claninvasion.model.player.Player;
 import org.javatuples.Pair;
 
@@ -59,20 +59,19 @@ public final class Castle extends ArtificialEntity {
         return sum.orElse(0);
     }
 
-    public CompletionStage<Integer> trainSoldiers(EntitySymbol entitySymbol, Predicate<Integer> run, Attacks attackType) {
+    public CompletionStage<Integer> trainSoldiers(EntitySymbol entitySymbol, Predicate<Integer> run, AttackType attackType) {
         ExecutorService executor = newFixedThreadPool(2);
         int money = 0;
         for (int i = 0; i < AMOUNT_OF_SOLDIERS; i++) {
             Soldier soldier;
             if (entitySymbol == EntitySymbol.BARBARIAN) {
                 soldier = new Barbarian(EntitySymbol.BARBARIAN, generateRandomSoldierPosition());
-                soldier.setAttackType(Attacks.SWORD);
-
             } else if (entitySymbol == EntitySymbol.DRAGON) {
                 soldier = new Dragon(EntitySymbol.DRAGON, generateRandomSoldierPosition());
             } else {
                 throw new IllegalArgumentException("No such soldier exists");
             }
+            soldier.setAttackType(attackType);
             soldiers.add(soldier);
             money += soldier.getCost();
         }

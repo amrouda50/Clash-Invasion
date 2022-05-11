@@ -9,7 +9,6 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.mygdx.claninvasion.ClanInvasion;
 import com.mygdx.claninvasion.model.Globals;
 import com.mygdx.claninvasion.model.entity.*;
-import com.mygdx.claninvasion.model.entity.attacktype.Attacks;
 import com.mygdx.claninvasion.model.gamestate.BattleState;
 import com.mygdx.claninvasion.model.map.WorldCell;
 import com.mygdx.claninvasion.view.actors.HealthBar;
@@ -50,8 +49,6 @@ public class MainGamePage implements GamePage, UiUpdatable {
     private final FireFromEntity<Tower, Soldier> fireFromEntity = this::fireTower;
     private EntitySymbol chosenSymbol;
 
-    private Attacks chosenAttackType;
-
     /**
      * @param app - app instance
      */
@@ -59,7 +56,6 @@ public class MainGamePage implements GamePage, UiUpdatable {
         this.app = app;
         mainGamePageUI = new MainGamePageUI(app, this);
         chosenSymbol = null;
-        chosenAttackType = null;
 
         app.getModel().setChangeTurnCallback(() -> {
             chosenSymbol = null;
@@ -69,21 +65,6 @@ public class MainGamePage implements GamePage, UiUpdatable {
 
     public void setChosenSymbol(EntitySymbol entity) {
         chosenSymbol = entity;
-    }
-
-    public void setChosenAttackType(Attacks attackType) {
-        chosenAttackType = attackType;
-    }
-
-    public Attacks getChosenAttackType() {
-        if (chosenAttackType == Attacks.ARCHER) {
-            return Attacks.ARCHER;
-        } else if (chosenAttackType == Attacks.FIRE) {
-            return Attacks.FIRE;
-        } else if (chosenAttackType == Attacks.ARTILLERY) {
-            return Attacks.ARTILLERY;
-        }
-        return null;
     }
 
     public EntitySymbol getChosenSymbol() {
@@ -130,19 +111,10 @@ public class MainGamePage implements GamePage, UiUpdatable {
     private void fireTower(Tower tower, Soldier soldier) {
         Vector2 positionSrc = app.getMap().transformMapPositionToIso(tower.getPosition());
         Vector2 positionDest = app.getMap().transformMapPositionToIso(soldier.getPosition());
-        if (tower.getAttackTypeName() == Attacks.ARCHER) {
-            ArrowAnimated animated = new ArrowAnimated(positionSrc,
-                    positionDest, (SpriteBatch) renderer.getBatch());
-            arrows.add(animated);
-        } else if (tower.getAttackTypeName() == Attacks.FIRE) {
-            FireAnimated animated = new FireAnimated(positionSrc,
-                    positionDest, (SpriteBatch) renderer.getBatch());
-            fireballs.add(animated);
-        } else if (tower.getAttackTypeName() == Attacks.ARTILLERY) {
-            ArtilleryAnimated animated = new ArtilleryAnimated(positionSrc,
-                    positionDest, (SpriteBatch) renderer.getBatch());
-            bombs.add(animated);
-        }
+        FireAnimated animated = new FireAnimated(positionSrc,
+                positionDest, (SpriteBatch) renderer.getBatch());
+        fireballs.add(animated);
+        fireballs.add(animated);
     }
 
     private <T extends ArtificialEntity>
