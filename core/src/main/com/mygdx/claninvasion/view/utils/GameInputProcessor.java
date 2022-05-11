@@ -85,6 +85,35 @@ public class GameInputProcessor extends InputAdapter {
         }
     }
 
+    private void moveCamera() {
+        System.out.println(app.getModel().restrictCameraManipulations() + "Camera");
+        if (app.getModel().restrictCameraManipulations()) {
+            return;
+        }
+        Vector3 translate = new Vector3(0, 0, 0);
+        if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
+            translate.x -= 4;
+        } else if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
+            translate.x += 4;
+        } else if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
+            translate.y -= 4;
+        } else if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
+            translate.y += 4;
+        }
+        camera.translate(translate);
+    }
+
+    private void zoomCamera() {
+        if (app.getModel().restrictCameraManipulations()) {
+            return;
+        }
+        if (Gdx.input.isKeyPressed(Input.Keys.Z) && camera instanceof OrthographicCamera) {
+            ((OrthographicCamera) camera).zoom -= 0.03;
+        } else if (Gdx.input.isKeyPressed(Input.Keys.X) && camera instanceof OrthographicCamera) {
+            ((OrthographicCamera) camera).zoom += 0.03;
+        }
+    }
+
 
     /**
      * @return vector of the current mouse position
@@ -98,23 +127,8 @@ public class GameInputProcessor extends InputAdapter {
      * in parent class
      */
     public void onRender() {
-        Vector3 translate = new Vector3(0, 0, 0);
-
-        if (Gdx.input.isKeyPressed(Input.Keys.Z) && camera instanceof OrthographicCamera) {
-            ((OrthographicCamera) camera).zoom -= 0.03;
-        } else if (Gdx.input.isKeyPressed(Input.Keys.X) && camera instanceof OrthographicCamera) {
-            ((OrthographicCamera) camera).zoom += 0.03;
-        }
-
-        if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
-            translate.x -= 4;
-        } else if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
-            translate.x += 4;
-        } else if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
-            translate.y -= 4;
-        } else if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
-            translate.y += 4;
-        }
+        zoomCamera();
+        moveCamera();
 
         if (Gdx.input.isKeyPressed(Input.Keys.M)) {
              app.changeVolume();
@@ -131,8 +145,6 @@ public class GameInputProcessor extends InputAdapter {
         if (Gdx.input.justTouched()) {
             this.onTouch();
         }
-
-        camera.translate(translate);
     }
 
     @Override
