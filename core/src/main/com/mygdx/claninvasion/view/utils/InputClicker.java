@@ -31,8 +31,8 @@ public class InputClicker implements RunnableTouchEvent {
                 if (worldCell.contains(mouseOrtho3)) {
                     HealthBar healthBar = new HealthBar(app.getCurrentPlayer().getColor());
                     ArtificialEntity artificialEntity = null;
-                    if (worldCell.getOccupier() == null && EntitySymbol.TOWER == page.getChosenSymbol()) {
-                        artificialEntity = app.getCurrentPlayer().buildTower(worldCell);
+                    if (worldCell.getOccupier() == null && EntitySymbol.isTower(page.getChosenSymbol())) {
+                        artificialEntity = app.getCurrentPlayer().buildTower(worldCell, page.getChosenSymbol());
                     } else if (worldCell.getOccupier() == null && EntitySymbol.MINING == page.getChosenSymbol()) {
                         artificialEntity = app.getCurrentPlayer().createNewMining(worldCell);
                     }

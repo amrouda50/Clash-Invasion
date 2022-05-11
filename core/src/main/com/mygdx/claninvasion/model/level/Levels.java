@@ -16,15 +16,37 @@ public class Levels {
     public static final Septet<Integer, Integer, Integer, Integer, Integer, Integer, Integer> level3 =
             new Septet<>(320, 400, 1190, 0, 420, 20, 38);
 
-    private static final ArrayList<GameTowerLevel> towerLevels = new ArrayList<>(
+    private static final ArrayList<GameTowerLevel> romanFortLevels = new ArrayList<>(
             Arrays.asList(
                     // level 0
-                    new GameTowerLevel(level0, 200),
+                    new GameTowerLevel(level0, 200, 0, 0),
                     // level 1
-                    new GameTowerLevel(level1, 200),
+                    new GameTowerLevel(level1, 200, 0, 1),
                     // level 2
-                    new GameTowerLevel(level2, 170),
-                    new GameTowerLevel(level3, 190)
+                    new GameTowerLevel(level2, 170, 0, 5),
+                    new GameTowerLevel(level3, 190, 1, 10)
+            )
+    );
+
+    private static final ArrayList<GameTowerLevel> hillTowerLevels = new ArrayList<>(
+            Arrays.asList(
+                    // level 0
+                    new GameTowerLevel(new Septet<>(1000, 500, 2000, 0, 700, 20, 10), 200, 0, 0),
+                    // level 1
+                    new GameTowerLevel(new Septet<>(950, 550, 2000, 0, 700, 20, 10), 200, 1, 1),
+                    new GameTowerLevel(new Septet<>(920, 609, 2200, 0, 640, 20, 10), 200, 2, 1),
+                    new GameTowerLevel(new Septet<>(860, 664, 2300, 0, 610, 20, 10), 200, 2, 7)
+            )
+    );
+
+    private static final ArrayList<GameTowerLevel> strategicTowerLevels = new ArrayList<>(
+            Arrays.asList(
+                    // level 0
+                    new GameTowerLevel(new Septet<>(700, 540, 1000, 0, 400, 20, 10), 200, 0, 0),
+                    // level 1
+                    new GameTowerLevel(new Septet<>(850, 540, 1000, 0, 400, 20, 10), 200, 0, 100),
+                    new GameTowerLevel(new Septet<>(899, 490, 1000, 0, 350, 20, 10), 200, 0, 140),
+                    new GameTowerLevel(new Septet<>(1000, 490, 1000, 0, 350, 20, 10), 200, 0, 240)
             )
     );
 
@@ -80,7 +102,15 @@ public class Levels {
         return new GameSoldierLevelIterator(dragonLevels);
     }
 
-    public static GameTowerLevelIterator createTowerLevelIterator() {
-        return new GameTowerLevelIterator(towerLevels);
+    public static GameTowerLevelIterator createStrategicTowerIterator() {
+        return new GameTowerLevelIterator(strategicTowerLevels);
+    }
+
+    public static GameTowerLevelIterator createRomanFortTowerIterator() {
+        return new GameTowerLevelIterator(romanFortLevels);
+    }
+
+    public static GameTowerLevelIterator createHillTowerIterator() {
+        return new GameTowerLevelIterator(hillTowerLevels);
     }
 }

@@ -16,7 +16,9 @@ public class EntitiesCreators {
     private static final Map<EntitySymbol, EntityCreator<?>> creators = new HashMap<>(Map.of(
             EntitySymbol.BARBARIAN, (EntityCreator<Void>) (entitySymbol, position, args, mapSize) -> new Barbarian(entitySymbol, position , mapSize),
             EntitySymbol.DRAGON, (EntityCreator<Void>)  (entitySymbol, position, args ,  mapSize) -> new Dragon(entitySymbol, position, mapSize),
-            EntitySymbol.TOWER, (EntityCreator<Void>) (entitySymbol, position, args ,  mapSize) -> new Tower(entitySymbol, position , mapSize),
+            EntitySymbol.HILL_TOWER, (EntityCreator<Void>) (entitySymbol, position, args ,  mapSize) -> new HillTower(entitySymbol, position , mapSize),
+            EntitySymbol.ROMAN_FORT, (EntityCreator<Void>) (entitySymbol, position, args ,  mapSize) -> new RomanFort(entitySymbol, position , mapSize),
+            EntitySymbol.STRATEGIC_TOWER, (EntityCreator<Void>) (entitySymbol, position, args ,  mapSize) -> new StrategicTower(entitySymbol, position , mapSize),
             EntitySymbol.MINING, (EntityCreator<BlockingQueue<Integer>>) (entitySymbol, position, queue ,  mapSize) -> new MiningFarm(entitySymbol, position, (BlockingQueue<Integer>) queue , mapSize)
     ));
 

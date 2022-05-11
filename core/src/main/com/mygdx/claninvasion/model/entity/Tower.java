@@ -1,11 +1,13 @@
 package com.mygdx.claninvasion.model.entity;
 
+import com.mygdx.claninvasion.model.level.Level;
+import com.mygdx.claninvasion.model.level.LevelIterator;
 import com.mygdx.claninvasion.model.level.Levels;
+import com.mygdx.claninvasion.model.player.Player;
 import org.javatuples.Pair;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class Tower extends ArtificialEntity implements Defensible {
-    private final int radius = 4;
+public abstract class Tower extends ArtificialEntity implements Defensible {
     private Soldier targetedSolider = null;
     /**
      * @param entitySymbol - sprite type (location, name etc.)
@@ -14,7 +16,6 @@ public class Tower extends ArtificialEntity implements Defensible {
      */
     public Tower(EntitySymbol entitySymbol, Pair<Integer, Integer> position, int mapsize) {
         super(entitySymbol, position, mapsize);
-        level = Levels.createTowerLevelIterator();
         health = new AtomicInteger();
         super.setHealth(level.current().getMaxHealth());
     }
@@ -35,7 +36,7 @@ public class Tower extends ArtificialEntity implements Defensible {
                 entity.getVec2Position().x,
                 entity.getVec2Position().y
         );
-        return distance <= radius;
+        return distance <= getRadius();
     }
 
     /**
@@ -47,16 +48,12 @@ public class Tower extends ArtificialEntity implements Defensible {
         if (!artificialEntity.isAlive()) {
             return;
         }
-        artificialEntity.setDecreaseHealth(getDescreaseRate());
+        artificialEntity.setDecreaseHealth(getDecreaseRate());
     }
 
-    public int getDescreaseRate() {
-        return 85;
-    }
-
-    public int getRadius() {
-        return radius;
-    }
+    public abstract int getDecreaseRate();
+    public abstract int getRadius();
+    public abstract void setLevel(Player player);
 
     public void setTargetedSolider(Soldier targetedSolider) {
         this.targetedSolider = targetedSolider;
