@@ -16,7 +16,7 @@ import static com.mygdx.claninvasion.model.level.Levels.*;
 public class LevelIteratorTest {
 
     @Test
-    public void defaultlevelIteratorTest() {
+    public void defaultLevelIteratorTest() {
         DefaultGameLevelIterator gameLevelIterator = createLevelIterator();
         Assert.assertTrue(gameLevelIterator.hasNext());
         gameLevelIterator.next();
@@ -62,6 +62,26 @@ public class LevelIteratorTest {
 
         Assert.assertTrue(gameBarbarianLevelIterator.hasNext());
         Assert.assertEquals(gameBarbarianLevelIterator.next().getCreationTime(),500);
+
+    }
+
+    @Test
+    public void DragonLevelIteratorTest() {
+        GameSoldierLevelIterator gameDragonLevelIterator = createDragonLevelIterator();
+
+        Assert.assertEquals(gameDragonLevelIterator.current().getAttackIncrease(),4);
+        Assert.assertEquals(gameDragonLevelIterator.current().getVisibleArea(),3);
+        Assert.assertEquals(gameDragonLevelIterator.current().getMovementSpeed(),300);
+        Assert.assertEquals(gameDragonLevelIterator.current().getMaxHealth(),1100);
+        Assert.assertEquals(gameDragonLevelIterator.current().getCreationCost(),350);
+        Assert.assertEquals(gameDragonLevelIterator.current().getCreationTime(),750);
+        Assert.assertEquals(gameDragonLevelIterator.current().getMinHealth(),0);
+        Assert.assertEquals(gameDragonLevelIterator.current().getReactionTime(),450);
+        Assert.assertEquals(gameDragonLevelIterator.current().getHealHealthIncrease(),10);
+        Assert.assertEquals(gameDragonLevelIterator.current().getHealGoalPoint(),30);
+
+        Assert.assertTrue(gameDragonLevelIterator.hasNext());
+        Assert.assertEquals(gameDragonLevelIterator.next().getCreationTime(),650);
 
     }
 }
