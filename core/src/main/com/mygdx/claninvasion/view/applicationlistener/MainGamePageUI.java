@@ -218,8 +218,10 @@ public final class MainGamePageUI implements ApplicationListener {
     }
 
     public void resetDropdown() {
-        this.tableWithOptions.goBack();
-        this.tableWithOptions.setIsOpen(false);
+        if (this.tableWithOptions != null) {
+            this.tableWithOptions.goBack();
+            this.tableWithOptions.setIsOpen(false);
+        }
     }
 
     private void init() {
