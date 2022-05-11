@@ -1,13 +1,6 @@
 package com.mygdx.claninvasion.level;
 
-import com.badlogic.gdx.math.Vector2;
-import com.mygdx.claninvasion.model.entity.ArtificialEntity;
-import com.mygdx.claninvasion.model.entity.EntitySymbol;
-import com.mygdx.claninvasion.model.entity.Tower;
 import com.mygdx.claninvasion.model.level.*;
-import com.mygdx.claninvasion.model.player.Player;
-import com.mygdx.claninvasion.view.actors.HealthBar;
-import org.javatuples.Pair;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -28,9 +21,8 @@ public class LevelIteratorTest {
     }
 
     @Test
-    public void MiningGoldLevelIteratorTest() {
-        GameMiningLevelIterator gameMiningLevelIterator = createMiningLevelIterator()
-                ;
+    public void miningGoldLevelIteratorTest() {
+        GameMiningLevelIterator gameMiningLevelIterator = createMiningLevelIterator();
         Assert.assertEquals(gameMiningLevelIterator.current().getGoldBonus(),10);
         Assert.assertEquals(gameMiningLevelIterator.current().getMaxHealth(),1000);
         Assert.assertEquals(gameMiningLevelIterator.current().getCreationCost(),200);
@@ -42,11 +34,10 @@ public class LevelIteratorTest {
 
         Assert.assertTrue(gameMiningLevelIterator.hasNext());
         Assert.assertEquals(gameMiningLevelIterator.next().getCreationTime(),500);
-
     }
 
     @Test
-    public void BarbarianLevelIteratorTest() {
+    public void barbarianLevelIteratorTest() {
         GameSoldierLevelIterator gameBarbarianLevelIterator = createBarbarianLevelIterator();
 
         Assert.assertEquals(gameBarbarianLevelIterator.current().getAttackIncrease(),1);
@@ -62,11 +53,10 @@ public class LevelIteratorTest {
 
         Assert.assertTrue(gameBarbarianLevelIterator.hasNext());
         Assert.assertEquals(gameBarbarianLevelIterator.next().getCreationTime(),500);
-
     }
 
     @Test
-    public void DragonLevelIteratorTest() {
+    public void dragonLevelIteratorTest() {
         GameSoldierLevelIterator gameDragonLevelIterator = createDragonLevelIterator();
 
         Assert.assertEquals(gameDragonLevelIterator.current().getAttackIncrease(),4);
@@ -82,7 +72,6 @@ public class LevelIteratorTest {
 
         Assert.assertTrue(gameDragonLevelIterator.hasNext());
         Assert.assertEquals(gameDragonLevelIterator.next().getCreationTime(),650);
-
     }
 }
 

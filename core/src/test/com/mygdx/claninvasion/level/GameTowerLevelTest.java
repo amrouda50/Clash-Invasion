@@ -8,7 +8,7 @@ import static com.mygdx.claninvasion.model.level.Levels.*;
 
 public class GameTowerLevelTest {
     @Test
-    public void StrategicTowerIteratorTest() {
+    public void strategicTowerIteratorTest() {
         GameTowerLevelIterator gameStrategicTowerIterator = createStrategicTowerIterator();
         Assert.assertEquals(gameStrategicTowerIterator.current().getHitsPointBonus(),200);
         Assert.assertEquals(gameStrategicTowerIterator.current().getRadiusBonus(),0);
@@ -27,7 +27,7 @@ public class GameTowerLevelTest {
     }
 
     @Test
-    public void RomanFortTowerIteratorTest() {
+    public void romanFortTowerIteratorTest() {
         GameTowerLevelIterator gameRomanFortIterator = createRomanFortTowerIterator();
 
         Assert.assertEquals(gameRomanFortIterator.current().getHitsPointBonus(),200);
