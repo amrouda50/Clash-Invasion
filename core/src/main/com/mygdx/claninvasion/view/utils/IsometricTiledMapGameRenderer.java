@@ -1,6 +1,7 @@
 package com.mygdx.claninvasion.view.utils;
 
 import com.mygdx.claninvasion.exceptions.UnknownTiledMapLayerException;
+import com.mygdx.claninvasion.model.Globals;
 import org.javatuples.Pair;
 import org.javatuples.Quartet;
 
@@ -33,8 +34,8 @@ public class IsometricTiledMapGameRenderer extends BatchTiledMapRenderer {
     protected Vector2 topLeft = new Vector2();
     protected Vector2 bottomRight = new Vector2();
 
-    protected static String BACKGROUND_LAYER = "Layer1";
-    protected static String ENTITIES_LAYER = "Layer2";
+    protected String backgroundLayer = Globals.BACKGROUND_LAYER;
+    protected String entitiesLayer = Globals.ENTITIES_LAYER;
     protected EntityPlacer chooser;
     protected boolean firstRender;
 
@@ -75,7 +76,7 @@ public class IsometricTiledMapGameRenderer extends BatchTiledMapRenderer {
      */
     public void render(WorldMap worldMap, boolean firstRender) {
         beginRender();
-        worldMap.setEntitiesLayer((TiledMapTileLayer) map.getLayers().get(ENTITIES_LAYER));
+        worldMap.setEntitiesLayer((TiledMapTileLayer) map.getLayers().get(entitiesLayer));
         for (MapLayer layer : map.getLayers()) {
             renderMapLayer(layer, worldMap);
         }
@@ -232,7 +233,7 @@ public class IsometricTiledMapGameRenderer extends BatchTiledMapRenderer {
             batch.draw(region.getTexture(), vertices, 0, CreateVerticesCommand.NUM_VERTICES);
 
 
-            if (map != null && layer.getName().equals(BACKGROUND_LAYER)) {
+            if (map != null && layer.getName().equals(backgroundLayer)) {
                 WorldCell worldCell = new WorldCell(
                         xy,
                         position,
@@ -246,7 +247,7 @@ public class IsometricTiledMapGameRenderer extends BatchTiledMapRenderer {
                     map.addCell(worldCell);
                 }
                 counter.incrementAndGet();
-            } else if (map != null && layer.getName().equals(ENTITIES_LAYER)) {
+            } else if (map != null && layer.getName().equals(entitiesLayer)) {
                 WorldCell worldCell = map.getCell(position);
                 chooser.place(region, position, worldCell);
             } else if (map != null) {

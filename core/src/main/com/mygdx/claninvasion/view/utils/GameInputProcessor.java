@@ -3,8 +3,6 @@ package com.mygdx.claninvasion.view.utils;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputAdapter;
-import com.badlogic.gdx.graphics.Camera;
-import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.mygdx.claninvasion.ClanInvasion;
@@ -23,10 +21,6 @@ import org.javatuples.Pair;
  * @see com.badlogic.gdx.InputProcessor
  */
 public class GameInputProcessor extends InputAdapter {
-    /**
-     * camera of the application
-     */
-    private final Camera camera;
 
     private final RunnableTouchEvent onTouchEvent;
 
@@ -35,11 +29,9 @@ public class GameInputProcessor extends InputAdapter {
     private Pair<Integer, Integer> previousPosition;
 
     /**
-     * @param camera - camera of the application
      * @param event - event for click listeners
      */
-    public GameInputProcessor(Camera camera, RunnableTouchEvent event, ClanInvasion app) {
-        this.camera = camera;
+    public GameInputProcessor(RunnableTouchEvent event, ClanInvasion app) {
         onTouchEvent = event;
         this.app = app;
         System.out.println(app.getScreen());
@@ -51,13 +43,13 @@ public class GameInputProcessor extends InputAdapter {
      */
     private void onTouch() {
         Vector3 mousePosition = getMousePosition();
-        camera.unproject(mousePosition); // get the world position from camera
+        app.getCamera().unproject(mousePosition); // get the world position from camera
         onTouchEvent.run(mousePosition);
     }
 
     private void onHover() {
         Vector3 mousePosition = getMousePosition();
-        camera.unproject(mousePosition);
+        app.getCamera().unproject(mousePosition);
         if (app.getScreen() instanceof MainGamePage
                 && ((MainGamePage) app.getScreen()).getChosenSymbol() != null
         ) {
@@ -99,17 +91,17 @@ public class GameInputProcessor extends InputAdapter {
         } else if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
             translate.y += 4;
         }
-        camera.translate(translate);
+        app.getCamera().translate(translate);
     }
 
     private void zoomCamera() {
         if (app.getModel().restrictCameraManipulations()) {
             return;
         }
-        if (Gdx.input.isKeyPressed(Input.Keys.Z) && camera instanceof OrthographicCamera) {
-            ((OrthographicCamera) camera).zoom -= 0.03;
-        } else if (Gdx.input.isKeyPressed(Input.Keys.X) && camera instanceof OrthographicCamera) {
-            ((OrthographicCamera) camera).zoom += 0.03;
+        if (Gdx.input.isKeyPressed(Input.Keys.Z)) {
+            app.getCamera().zoom -= 0.03;
+        } else if (Gdx.input.isKeyPressed(Input.Keys.X)) {
+            app.getCamera().zoom += 0.03;
         }
     }
 

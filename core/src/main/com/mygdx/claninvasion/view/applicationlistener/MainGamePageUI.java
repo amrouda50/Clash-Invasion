@@ -561,7 +561,6 @@ public final class MainGamePageUI implements ApplicationListener {
     }
 
     private void addButtonListeners() {
-        uiStage.setDebugUnderMouse(true);
         Gdx.input.setInputProcessor(uiStage);
     }
 
