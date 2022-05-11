@@ -9,25 +9,27 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import org.javatuples.Pair;
 
-public class FireAnimated implements ApplicationListener {
-    private static final float MOVE_BY = 1f;
+public class Ammo implements ApplicationListener {
+    private static final float MOVE_BY = 2f;
     private static final float OFFSET = 2;
     private SpriteBatch batch;
     private Texture texture;
     private Sprite sprite;
     private final Vector2 positionDest;
     private final Vector2 currentPosition;
+    private final String source;
 
-    public FireAnimated(Vector2 position1, Vector2 position2, SpriteBatch batch) {
+    public Ammo(Vector2 position1, Vector2 position2, SpriteBatch batch, String source) {
         positionDest = position2;
         currentPosition = position1;
         this.batch = batch;
+        this.source = source;
     }
 
     @Override
     public void create() {
         batch = new SpriteBatch();
-        texture = new Texture(Gdx.files.internal("./BuildingBlocks/fire.png"));
+        texture = new Texture(Gdx.files.internal(source));
         sprite = new Sprite(texture);
     }
 
@@ -38,7 +40,7 @@ public class FireAnimated implements ApplicationListener {
     }
 
     public boolean isDone() {
-        return currentPosition.equals(positionDest);
+        return  currentPosition.dst(positionDest) - OFFSET <= 0f;
     }
 
     public void setView(OrthographicCamera camera) {
@@ -55,15 +57,13 @@ public class FireAnimated implements ApplicationListener {
             create();
         }
 
-        System.out.println("render fire at position " + currentPosition.toString());
-        System.out.println("destination " + positionDest);
-
         batch.begin();
         sprite.translate(currentPosition.x, currentPosition.y);
         sprite.draw(batch);
         batch.end();
 
         changeCurrentPosition();
+
     }
 
     protected void changeCurrentPosition() {

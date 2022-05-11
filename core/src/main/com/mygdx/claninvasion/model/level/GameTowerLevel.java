@@ -1,8 +1,6 @@
 package com.mygdx.claninvasion.model.level;
 
-import org.javatuples.Ennead;
 import org.javatuples.Septet;
-import org.javatuples.Sextet;
 
 /**
  * This class is responsible for determining the
@@ -10,17 +8,34 @@ import org.javatuples.Sextet;
  * @author andreicristea
  * @author omarashour
  * @author Dinari
- * TODO: Logic part is missing
  */
-public class GameTowerLevel extends Level{
-    protected int hitsPointBonus;
+public class GameTowerLevel extends Level {
+    protected final int hitsPointBonus;
+    protected final int radiusBonus;
+    protected final int attackBonus;
 
-    public GameTowerLevel(Septet<Integer, Integer, Integer, Integer, Integer, Integer, Integer> values, int hitsPointBonus) {
+
+    public GameTowerLevel(
+            Septet<Integer, Integer, Integer, Integer, Integer, Integer, Integer> values,
+            int hitsPointBonus,
+            int radiusBonus,
+            int attackBonus
+    ) {
         super(values);
         this.hitsPointBonus = hitsPointBonus;
+        this.radiusBonus = radiusBonus;
+        this.attackBonus = attackBonus;
     }
 
     public int getHitsPointBonus() {
         return hitsPointBonus;
+    }
+
+    public int getRadiusBonus() {
+        return radiusBonus;
+    }
+
+    public int getAttackBonus() {
+        return attackBonus;
     }
 }

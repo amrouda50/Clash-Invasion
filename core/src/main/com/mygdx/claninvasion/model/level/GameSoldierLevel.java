@@ -11,14 +11,14 @@ import org.javatuples.Sextet;
  * @author Dinari
  * TODO: Logic part is missing
  */
-public class GameSoldierLevel extends GameTowerLevel {
+public class GameSoldierLevel extends Level {
     protected int movementSpeed;
     protected int attackIncrease;
     protected int visibleArea;
 
     public GameSoldierLevel(Septet<Integer, Integer, Integer, Integer, Integer, Integer, Integer> values, int hitsPointBonus,
                             int movementSpeed, int attackIncrease, int visibleArea) {
-        super(values, hitsPointBonus);
+        super(values);
         this.movementSpeed = movementSpeed;
         this.attackIncrease = attackIncrease;
         this.visibleArea = visibleArea;
