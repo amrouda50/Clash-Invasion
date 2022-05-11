@@ -9,12 +9,7 @@ import com.mygdx.claninvasion.model.entity.Tower;
  */
 public class AttackTypeSoldier implements AttackType{
     @Override
-    public void attack(Tower tower) {
-
-    }
-
-    @Override
-    public void attack(Soldier soldier) {
+    public void attack() {
 
     }
 

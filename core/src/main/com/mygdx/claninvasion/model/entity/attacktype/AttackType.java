@@ -10,8 +10,8 @@ public interface AttackType {
     /**
      * Should represent the way of attacking of certain entity
      */
-    void attack(Tower tower);
-    void attack(Soldier soldier);
+    void attack();
+
     Attacks getName();
 
 }

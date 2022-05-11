@@ -1,6 +1,6 @@
 package com.mygdx.claninvasion.model.entity;
 
-import com.mygdx.claninvasion.model.entity.attacktype.Attacks;
+import com.mygdx.claninvasion.model.entity.attacktype.*;
 import com.mygdx.claninvasion.model.level.Level;
 import com.mygdx.claninvasion.model.level.LevelIterator;
 import com.mygdx.claninvasion.model.level.Levels;
@@ -12,13 +12,33 @@ public class Tower extends ArtificialEntity implements Defensible {
     private final int radius = 4;
 
     protected Attacks attackTypeName;
+    protected AttackTypeTower attackType;
+
+    public AttackType getAttackType() {
+        return attackType;
+    }
+
+    public void setAttackType(AttackTypeTower attackType) {
+        this.attackType = attackType;
+    }
 
     public Attacks getAttackTypeName() {
         return attackTypeName;
     }
 
     public void setAttackTypeName(Attacks attackTypeName) {
+        AttackTypeTower attackType;
         this.attackTypeName = attackTypeName;
+        if (attackTypeName == Attacks.FIRE) {
+            attackType = new AttackTypeFire();
+            setAttackType(attackType);
+        } else if (attackTypeName == Attacks.ARTILLERY) {
+            attackType = new AttackTypeArtillery();
+            setAttackType(attackType);
+        } else if (attackTypeName == Attacks.ARCHER) {
+            attackType = new AttackTypeArcher();
+            setAttackType(attackType);
+        }
     }
 
     public Tower(EntitySymbol entitySymbol, Pair<Integer, Integer> position) {
@@ -73,7 +93,10 @@ public class Tower extends ArtificialEntity implements Defensible {
             return;
         }
 
-        artificialEntity.setDecreaseHealth(85);
+        attackType.attack();
+
+        System.out.println("Tower is attacking and decreasing health by " + attackType.getDecreaseHealth());
+        artificialEntity.setDecreaseHealth(attackType.getDecreaseHealth());
     }
 }
 

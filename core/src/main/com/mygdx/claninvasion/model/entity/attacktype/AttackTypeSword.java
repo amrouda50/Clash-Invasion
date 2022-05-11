@@ -12,7 +12,7 @@ import java.util.ArrayList;
 public class AttackTypeSword extends AttackTypeSoldier{
 
     @Override
-    public void attack(Soldier soldier) {
+    public void attack() {
 
     }
 

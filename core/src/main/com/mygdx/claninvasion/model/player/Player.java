@@ -204,7 +204,7 @@ public class Player implements Winnable {
         tower.setAttackTypeName(chosenAttackType);
 
         towers.add(tower);
-        wealth.set(wealth.get() - tower.getLevel().current().getCreationCost());
+        wealth.set(wealth.get() - (tower.getLevel().current().getCreationCost() + getAttackCost(chosenAttackType)));
         return tower;
     }
 
@@ -287,19 +287,13 @@ public class Player implements Winnable {
         if (soldier.getPosition().equals(opponent.castle.getPosition())) {
             soldier.attackCastle(opponent.castle);
         }
-
-        int i=0;
-        for (Tower tower : towers) {
-            i++;
-            System.out.println("Attack type of Tower" + i + " is " + tower.getAttackTypeName());
-        }
     }
 
-  /*  public void attackCastle() {
+    public void attackCastle() {
         for (Soldier soldier : soldiers) {
             attackCastle(soldier);
         }
-    }*/
+    }
 
     public void moveSoldier(int index, Thread upcoming) {
         Soldier soldier = getSoldiers().get(index);

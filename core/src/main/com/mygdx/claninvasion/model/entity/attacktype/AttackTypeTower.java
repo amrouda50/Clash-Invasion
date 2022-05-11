@@ -8,21 +8,29 @@ import com.mygdx.claninvasion.model.entity.Tower;
  * TODO: Logic part is missing
  */
 public class AttackTypeTower implements AttackType{
+
+    protected int decreaseHealth;
+
+    public int getDecreaseHealth() {
+        return decreaseHealth;
+    }
+
+    public void setDecreaseHealth(int decreaseHealth) {
+        this.decreaseHealth = decreaseHealth;
+    }
+
     /**
      * Overrides base attack implementation
      * @see AttackType
      */
     @Override
-    public void attack(Tower tower) {
-    }
-
-    @Override
-    public void attack(Soldier soldier) {
+    public void attack() {
     }
 
     @Override
     public Attacks getName() {
         return Attacks.TOWER;
     }
+
 
 }
