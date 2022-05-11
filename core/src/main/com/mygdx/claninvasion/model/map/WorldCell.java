@@ -56,6 +56,7 @@ public class WorldCell {
         init(new Pair<>(worldPos.getValue0(), worldPos.getValue1()), mapPos, textureRegion);
     }
 
+
     private void init(Pair<Float, Float> worldPos, Pair<Integer, Integer> mapPos, TextureRegion textureRegion) {
         occupier = new ArrayList<>();
         worldPosition = new IsometricToOrthogonalAdapt(worldPos).getPoint();
@@ -185,6 +186,5 @@ public class WorldCell {
     public void removeEntity() {
         occupier = null;
     }
-
 
 }

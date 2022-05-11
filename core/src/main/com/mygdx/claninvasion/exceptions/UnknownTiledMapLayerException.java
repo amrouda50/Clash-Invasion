@@ -1,4 +1,4 @@
-package com.mygdx.claninvasion.view.exceptions;
+package com.mygdx.claninvasion.exceptions;
 
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 

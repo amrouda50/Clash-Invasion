@@ -1,6 +1,6 @@
 package com.mygdx.claninvasion.view.utils;
 
-import com.mygdx.claninvasion.view.exceptions.UnknownTiledMapLayerException;
+import com.mygdx.claninvasion.exceptions.UnknownTiledMapLayerException;
 import org.javatuples.Pair;
 import org.javatuples.Quartet;
 

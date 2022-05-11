@@ -12,7 +12,7 @@ import com.mygdx.claninvasion.model.entity.*;
 import com.mygdx.claninvasion.model.gamestate.BattleState;
 import com.mygdx.claninvasion.model.map.WorldCell;
 import com.mygdx.claninvasion.view.actors.HealthBar;
-import com.mygdx.claninvasion.view.applicationlistener.FireAnimated;
+import com.mygdx.claninvasion.view.applicationlistener.Ammo;
 import com.mygdx.claninvasion.view.applicationlistener.FireFromEntity;
 import com.mygdx.claninvasion.view.applicationlistener.MainGamePageUI;
 import com.mygdx.claninvasion.view.tiledmap.TiledMapStage;
@@ -41,17 +41,32 @@ public class MainGamePage implements GamePage, UiUpdatable {
     private GameInputProcessor inputProcessor;
     private final ClanInvasion app;
     private Stage entitiesStage;
-    private final List<FireAnimated> fireballs = Collections.synchronizedList(new CopyOnWriteArrayList<>());
+    private final List<Ammo> ammo = Collections.synchronizedList(new CopyOnWriteArrayList<>());
     private final MainGamePageUI mainGamePageUI;
     private TiledMap map;
     private final FireFromEntity<Tower, Soldier> fireFromEntity = this::fireTower;
+    private EntitySymbol chosenSymbol;
 
     /**
      * @param app - app instance
      */
     public MainGamePage(ClanInvasion app) {
         this.app = app;
-        mainGamePageUI = new MainGamePageUI(app);
+        mainGamePageUI = new MainGamePageUI(app, this);
+        chosenSymbol = null;
+
+        app.getModel().setChangeTurnCallback(() -> {
+            chosenSymbol = null;
+            mainGamePageUI.resetDropdown();
+        });
+    }
+
+    public void setChosenSymbol(EntitySymbol entity) {
+        chosenSymbol = entity;
+    }
+
+    public EntitySymbol getChosenSymbol() {
+        return chosenSymbol;
     }
 
     /**
@@ -67,8 +82,8 @@ public class MainGamePage implements GamePage, UiUpdatable {
         }
 
         app.getCamera().update();
-        inputProcessor = new GameInputProcessor(app.getCamera(), new InputClicker(app ,mainGamePageUI), app);
-        map = new TmxMapLoader().load(Gdx.files.getLocalStoragePath() + "/TileMap/Tilemap.tmx");
+        inputProcessor = new GameInputProcessor(app.getCamera(), new InputClicker(app, this), app);
+        map = new TmxMapLoader().load(Gdx.files.getLocalStoragePath() + Globals.PATH_TILEMAP);
         app.getMap().setTileset(map.getTileSets());
         renderer = new IsometricTiledMapGameRenderer(
                 map,
@@ -90,9 +105,9 @@ public class MainGamePage implements GamePage, UiUpdatable {
     private void fireTower(Tower tower, Soldier soldier) {
         Vector2 positionSrc = app.getMap().transformMapPositionToIso(tower.getPosition());
         Vector2 positionDest = app.getMap().transformMapPositionToIso(soldier.getPosition());
-        FireAnimated animated = new FireAnimated(positionSrc,
-                positionDest, (SpriteBatch) renderer.getBatch());
-        fireballs.add(animated);
+        Ammo animated = new Ammo(positionSrc,
+                positionDest, (SpriteBatch) renderer.getBatch(), tower.getProjectileSource());
+        ammo.add(animated);
     }
 
     private <T extends ArtificialEntity>
@@ -154,8 +169,8 @@ public class MainGamePage implements GamePage, UiUpdatable {
     /* Create fire animation
      */
     private void createFireAnimated() {
-        for (FireAnimated fireAnimated : fireballs) {
-            fireAnimated.create();
+        for (Ammo ammo : ammo) {
+            ammo.create();
         }
     }
 
@@ -173,7 +188,7 @@ public class MainGamePage implements GamePage, UiUpdatable {
             ((BattleState) app.getModel().getState()).setFireFromEntity(fireFromEntity);
         }
 
-        // create fire
+        // create fire, arrow and artillery
         createFireAnimated();
 
         app.getCamera().update();
@@ -202,14 +217,13 @@ public class MainGamePage implements GamePage, UiUpdatable {
     }
 
 
-
     private void updateAnimated() {
-        for (FireAnimated fireAnimated : fireballs) {
-            fireAnimated.setView(app.getCamera());
-            fireAnimated.render();
-            if (fireAnimated.isDone()) {
-                fireAnimated.dispose();
-                fireballs.remove(fireAnimated);
+        for (Ammo ammo : ammo) {
+            ammo.setView(app.getCamera());
+            ammo.render();
+            if (ammo.isDone()) {
+                ammo.dispose();
+                this.ammo.remove(ammo);
             }
         }
     }

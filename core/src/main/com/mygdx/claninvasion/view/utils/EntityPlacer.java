@@ -1,13 +1,14 @@
 package com.mygdx.claninvasion.view.utils;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.mygdx.claninvasion.model.GameModel;
 import com.mygdx.claninvasion.model.player.Player;
 import com.mygdx.claninvasion.model.entity.*;
 import com.mygdx.claninvasion.model.map.WorldCell;
 import com.mygdx.claninvasion.model.map.WorldMap;
+import com.mygdx.claninvasion.view.actors.HealthBar;
 import org.javatuples.Pair;
-import org.javatuples.Quartet;
 
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -30,8 +31,8 @@ public class EntityPlacer implements Placer {
         Pair<Integer, Integer>
                 reverseCastlePositions = getCastlePositions(castleReversePositions);
 
-        Castle player1Castle = new Castle(EntitySymbol.CASTEL_REVERSED, reverseCastlePositions, model.getPlayerOne());
-        Castle player2Castle = new Castle(EntitySymbol.CASTEL, castlePosition, model.getPlayerTwo());
+        Castle player1Castle = new Castle(EntitySymbol.CASTEL, castlePosition, model.getPlayerOne(), model.getWorldMap().getSize(), new HealthBar(Color.BLACK));
+        Castle player2Castle = new Castle(EntitySymbol.CASTEL_REVERSED, reverseCastlePositions, model.getPlayerTwo(), model.getWorldMap().getSize(), new HealthBar(Color.BLACK));
 
         setCastleCellOccupier(map, player1Castle);
         setCastleCellOccupier(map, player2Castle);
@@ -69,10 +70,10 @@ public class EntityPlacer implements Placer {
         } else if (EntitySymbol.CASTEL_REVERSED.sourcePart.equals(trimmedEntityName)) {
             castleReversePositions.add(position);
         } else if (EntitySymbol.TREE.sourcePart.equals(trimmedEntityName)) {
-            NaturalEntity entity = new NaturalEntity(EntitySymbol.TREE, position);
+            NaturalEntity entity = new NaturalEntity(EntitySymbol.TREE, position, model.getWorldMap().getRootedSizeMap());
             cell.setOccupier(entity);
         } else if (EntitySymbol.STONE.sourcePart.equals(trimmedEntityName)) {
-            NaturalEntity entity = new NaturalEntity(EntitySymbol.STONE, position);
+            NaturalEntity entity = new NaturalEntity(EntitySymbol.STONE, position , model.getWorldMap().getRootedSizeMap());
             cell.setOccupier(entity);
         }
     }

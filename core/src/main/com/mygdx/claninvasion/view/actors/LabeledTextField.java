@@ -1,16 +1,15 @@
 package com.mygdx.claninvasion.view.actors;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.scenes.scene2d.Event;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
+import com.mygdx.claninvasion.model.Globals;
 
 import java.util.function.Consumer;
 
@@ -28,14 +27,15 @@ public class LabeledTextField {
     private final Skin skin;
     private final TextField textField;
     private final TextField.TextFieldStyle fieldStyle;
-    private final BitmapFont font  = new BitmapFont(Gdx.files.internal("skin/skin/default.fnt"));
+    private final BitmapFont font;
 
     /**
      * @param skin - resource for ui widgets
      * @see Skin
      * @param placeholder - placeholder value
      */
-    public LabeledTextField(Skin skin, String placeholder) {
+    public LabeledTextField(Skin skin, String placeholder, BitmapFont font) {
+        this.font = font;
         labelStyle = new Label.LabelStyle();
         fieldStyle = new TextField.TextFieldStyle();
         this.skin = skin;
@@ -47,8 +47,9 @@ public class LabeledTextField {
 
 
     private void textFieldStyleInit() {
-        fieldStyle.cursor = skin.getDrawable("cursor");
-        fieldStyle.background = skin.getDrawable("textfield");
+        Skin localSkin = new Skin(Gdx.files.internal("skin/skin/uiskin.json"));
+        fieldStyle.cursor = localSkin.getDrawable("cursor");
+        fieldStyle.background = skin.getDrawable(Globals.ATLAS_INPUT);
         fieldStyle.font = font;
         fieldStyle.fontColor = new Color(255, 255, 255, 1);
     }
@@ -74,9 +75,9 @@ public class LabeledTextField {
      * @see Table
      */
     public void applyToTheTable(Table table) {
-        table.add(getLabel()).pad(2);
+        table.add(getLabel()).left().padLeft(20);
         table.row();
-        table.add(getTextField());
+        table.add(getTextField()).growX().padLeft(20).padRight(20).padBottom(20);
     }
 
     /**

@@ -59,6 +59,7 @@ public class BattleState extends CommonGameState {
             });
         }
         if (tempThread != null) {
+            tempThread.setDaemon(true);
             tempThread.start();
         }
     }
@@ -93,18 +94,18 @@ public class BattleState extends CommonGameState {
                                     if (!tower.canFire(soldier)) {
                                         break;
                                     }
-                                    if (tower.targetedSolider == null || !tower.targetedSolider.isAlive()) {
-                                        tower.targetedSolider = soldier;
+                                    if (tower.getTargetedSolider() == null || !tower.getTargetedSolider().isAlive()) {
+                                        tower.setTargetedSolider(soldier);
                                     }
                                     if (fireFromEntity != null) {
-                                        fireFromEntity.fire(tower, tower.targetedSolider);
+                                        fireFromEntity.fire(tower, tower.getTargetedSolider());
                                     }
-                                    tower.attack(tower.targetedSolider);
+                                    tower.attack(tower.getTargetedSolider());
 
                                 }
-                            }, 200, TimeUnit.MILLISECONDS);
+                            }, 20, TimeUnit.MILLISECONDS);
                     try {
-                        scheduledExecutorService.awaitTermination(500, TimeUnit.MILLISECONDS);
+                        scheduledExecutorService.awaitTermination(tower.getLevel().current().getReactionTime(), TimeUnit.MILLISECONDS);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }

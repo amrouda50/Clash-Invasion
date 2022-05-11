@@ -1,9 +1,11 @@
 package com.mygdx.claninvasion.model.entity;
 
+import com.badlogic.gdx.graphics.Color;
+import com.mygdx.claninvasion.model.entity.attacktype.AttackType;
 import com.mygdx.claninvasion.model.player.Player;
+import com.mygdx.claninvasion.view.actors.HealthBar;
 import org.javatuples.Pair;
 
-import java.util.Optional;
 import java.util.Stack;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -13,17 +15,26 @@ import static java.util.concurrent.Executors.newFixedThreadPool;
 
 /**
  * Castle entity
- * TODO: Logic part is missing
  */
 public final class Castle extends ArtificialEntity {
     private final Player player;
     private final Stack<Soldier> soldiers;
     public static int AMOUNT_OF_SOLDIERS = 1;
-    private Pair<Integer, Integer> soldierPosition;
+    private final Pair<Integer, Integer> soldierPosition;
+    private final int mapsize;
 
-    public Castle(EntitySymbol symbol, Pair<Integer, Integer> position, Player player) {
-        super(symbol, position);
+
+    /**
+     * @param symbol - sprite type (location, name etc.)
+     * @param position - position in the cells array
+     * @param player - player which has current castle
+     * @param mapsize - size of the map, helps identifying if entity is not creatable
+     */
+    public Castle(EntitySymbol symbol, Pair<Integer, Integer> position, Player player , int mapsize, HealthBar healthBar) {
+        super(symbol, position ,  mapsize);
+        this.mapsize = mapsize;
         health = new AtomicInteger(level.current().getMaxHealth() + 1000);
+        hpBar = healthBar;
         initHealth = health.get();
         soldiers = new Stack<>();
         this.player = player;
@@ -39,6 +50,10 @@ public final class Castle extends ArtificialEntity {
         );
     }
 
+    /**
+     * Not possible for this entity
+     * @param position - position where to go
+     */
     @Override
     public void changePosition(Pair<Integer, Integer> position) {
         throw new RuntimeException("Can not change castle position");
@@ -53,23 +68,19 @@ public final class Castle extends ArtificialEntity {
         this.health.set(this.health.get() - amount);
     }
 
-    public int getSoldiersMoneyCost() {
-        Optional<Integer> sum = soldiers.stream().map(Soldier::getCost).reduce(Integer::sum);
-        return sum.orElse(0);
-    }
-
-    public CompletionStage<Integer> trainSoldiers(EntitySymbol entitySymbol, Predicate<Integer> run) {
+    public CompletionStage<Integer> trainSoldiers(EntitySymbol entitySymbol, Predicate<Integer> run, AttackType attackType) {
         ExecutorService executor = newFixedThreadPool(2);
         int money = 0;
         for (int i = 0; i < AMOUNT_OF_SOLDIERS; i++) {
             Soldier soldier;
             if (entitySymbol == EntitySymbol.BARBARIAN) {
-                soldier = new Barbarian(EntitySymbol.BARBARIAN, generateRandomSoldierPosition());
+                soldier = new Barbarian(EntitySymbol.BARBARIAN, generateRandomSoldierPosition() , this.mapsize);
             } else if (entitySymbol == EntitySymbol.DRAGON) {
-                soldier = new Dragon(EntitySymbol.DRAGON, generateRandomSoldierPosition());
+                soldier = new Dragon(EntitySymbol.DRAGON, generateRandomSoldierPosition() , this.mapsize);
             } else {
                 throw new IllegalArgumentException("No such soldier exists");
             }
+            soldier.setAttackType(attackType);
             soldiers.add(soldier);
             money += soldier.getCost();
         }
@@ -90,12 +101,8 @@ public final class Castle extends ArtificialEntity {
     }
 
     /**
-     * Damage attacked soldier
-     * TODO Implement logic
+     * @return - trained soldiers
      */
-    public void damageOpponents() {
-    }
-
     public Stack<Soldier> getSoldiers() {
         return soldiers;
     }
