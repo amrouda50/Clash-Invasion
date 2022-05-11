@@ -15,6 +15,7 @@ import com.mygdx.claninvasion.model.Globals;
 import com.mygdx.claninvasion.model.entity.*;
 import com.mygdx.claninvasion.model.entity.attacktype.AttackType;
 import com.mygdx.claninvasion.model.entity.attacktype.AttackTypeArcher;
+import com.mygdx.claninvasion.model.entity.attacktype.AttackTypeDefault;
 import com.mygdx.claninvasion.model.entity.attacktype.AttackTypeSword;
 import com.mygdx.claninvasion.model.gamestate.Building;
 import com.mygdx.claninvasion.model.player.Player;
@@ -77,18 +78,19 @@ public final class MainGamePageUI implements ApplicationListener {
         PlayerActionMethods methods = new PlayerActionMethods(player);
         AttackType attackTypeSword = new AttackTypeSword();
         AttackType attackTypeArcher = new AttackTypeArcher();
+        AttackType attackTypeDefault = new AttackTypeDefault();
         AtomicReference<CreateSoldier> soldier = new AtomicReference<>(CreateSoldier.BARBARIAN);
 
         TableWithOptions.Option noAttackTypeOption = new TableWithOptions.Option(
-                "No attack type",
-                0,
+                "Default attack type",
+                attackTypeDefault.getCost(),
                 atlasSkin,
                 app.getFont(),
                 0
         );
         noAttackTypeOption.setActionable((option) -> {
             //methods.createBarbarian(Attacks.FIRE);
-            methods.createSoldier(soldier.get(),null);
+            methods.createSoldier(soldier.get(),attackTypeDefault);
             this.tableWithOptions.setIsOpen(false);
         });
 

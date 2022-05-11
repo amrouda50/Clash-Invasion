@@ -1,6 +1,7 @@
 package com.mygdx.claninvasion.model.entity;
 
 import com.mygdx.claninvasion.model.entity.attacktype.AttackType;
+import com.mygdx.claninvasion.model.entity.attacktype.AttackTypeDefault;
 import com.mygdx.claninvasion.model.level.GameSoldierLevelIterator;
 import org.javatuples.Pair;
 import java.util.concurrent.*;
@@ -16,10 +17,14 @@ public abstract class Soldier extends ArtificialEntity {
 
     public Soldier(EntitySymbol entitySymbol, Pair<Integer, Integer> position, int mapsize) {
         super(entitySymbol, position, mapsize);
+        attackType = new AttackTypeDefault();
     }
 
 
     public void setAttackType(AttackType attackType) {
+        if (attackType == null) {
+            throw new NullPointerException("Attack type can not be null");
+        }
         this.attackType = attackType;
     }
 
@@ -33,14 +38,7 @@ public abstract class Soldier extends ArtificialEntity {
 
         GameSoldierLevelIterator level = (GameSoldierLevelIterator) this.level;
         // without attack type soldier is weak, like in dark souls to hit only with palm
-        if (attackType == null &&  (distance < (level.current().getVisibleArea()))) {
-            castle.setDecreaseHealth(level.current().getAttackIncrease());
-            return true;
-        } else if (attackType != null) {
-            return attackType.attack(castle, distance, level.current());
-        }
-
-        return false;
+        return attackType.attack(castle, distance, level.current());
     }
 
     /*
