@@ -1,13 +1,7 @@
 package com.mygdx.claninvasion.model.entity.attacktype;
 
-import com.mygdx.claninvasion.model.entity.Soldier;
-import com.mygdx.claninvasion.model.entity.Tower;
-
-import java.util.ArrayList;
-
 /**
  * Fire attack type
- * TODO: Logic part is missing
  */
 public class AttackTypeFire extends AttackTypeTower{
 
@@ -17,12 +11,21 @@ public class AttackTypeFire extends AttackTypeTower{
      */
     @Override
     public void attack() {
-        ArrayList<Soldier> enemies;
-        //enemies = tower.getNeighbors();
-        /*for(Soldier enemy: enemies) {
-            if(enemy.checkNeighbors(3)) { //Checks if the neighbor is within 3 radius distance
-                enemy.damage(5); //Highest damage amount
-            }
-        }*/
+     setDecreaseHealth(70);
+    }
+
+    @Override
+    public int getDecreaseHealth() {
+        return super.getDecreaseHealth();
+    }
+
+    @Override
+    public void setDecreaseHealth(int decreaseHealth) {
+        super.setDecreaseHealth(decreaseHealth);
+    }
+
+    @Override
+    public Attacks getName() {
+        return super.getName();
     }
 }
